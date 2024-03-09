@@ -9,10 +9,17 @@ import (
 	"strings"
 )
 
-type Preferences struct {
+type LocalState struct {
 	Profile struct {
-		Name string `json:"name"`
+		InfoCache     map[string]Profile `json:"info_cache"`
+		ProfilesOrder []string           `json:"profiles_order"`
 	} `json:"profile"`
+}
+
+type Profile struct {
+	Directory    string
+	Name         string `json:"name"`
+	ShortcutName string `json:"shortcut_name"`
 }
 
 func main() {
@@ -21,12 +28,13 @@ func main() {
 		clean("~/AppData/Local/Google/Chrome/User Data/"),
 	}
 
-	directories := enumerateDirectories(paths)
+	// directories := enumerateDirectories(paths)
 
-	for _, directory := range directories {
-		path := filepath.Join(directory, "Preferences")
-		profileName := parseProfileName(path)
-		log.Printf("ディレクトリ: %s, プロファイル名: %s", directory, profileName)
+	for _, path := range paths {
+		profiles := parseProfiles(path)
+		for _, p := range profiles {
+			log.Printf("ディレクトリ: %s, プロファイル名: %s", p.Directory, p.ShortcutName)
+		}
 	}
 }
 
@@ -42,22 +50,27 @@ func clean(path string) string {
 	return filepath.Clean(path)
 }
 
-// preferencesファイルを読み込み、
-// プロファイル名を返す。
-func parseProfileName(path string) string {
+// Local Stateファイルを読み込み、
+// プロファイル構造体を返す。
+func parseProfiles(directory string) []Profile {
+	path := filepath.Join(directory, "Local State")
 	text, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var prefs Preferences
-	if err := json.Unmarshal(text, &prefs); err != nil {
-		log.Fatal(err)
+	var data LocalState
+	err = json.Unmarshal(text, &data)
+	if err != nil {
+		log.Fatal("Local Stateファイルのjsonデコードに失敗:", err)
 	}
 
-	// profile -> name
-	profileName := prefs.Profile.Name
-	return profileName
+	profiles := make([]Profile, len(data.Profile.InfoCache))
+	for i, v := range data.Profile.ProfilesOrder {
+		profiles[i] = data.Profile.InfoCache[v]
+		profiles[i].Directory = v
+	}
+	return profiles
 }
 
 // 指定されたパス配列内のディレクトリから、
