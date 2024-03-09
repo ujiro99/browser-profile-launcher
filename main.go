@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/ujiro99/chrome-profile-selector/profile"
+	"chrome-profile-selector/profile"
 )
 
 func main() {
