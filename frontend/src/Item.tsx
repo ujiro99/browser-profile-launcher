@@ -20,6 +20,9 @@ export function Item({ profile, indices, onError }: ItemProps) {
   function select() {
     Run(profile.browser, profile.directory).then((err) => {
       onError(err);
+      if (!err) {
+        window.runtime.Quit();
+      }
     });
   }
 
