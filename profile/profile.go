@@ -2,28 +2,30 @@ package profile
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"os"
+	"os/exec"
 	"os/user"
 	"path/filepath"
 )
 
 type localState struct {
 	Profile struct {
-		InfoCache     map[string]profile `json:"info_cache"`
+		InfoCache     map[string]Profile `json:"info_cache"`
 		ProfilesOrder []string           `json:"profiles_order"`
 	} `json:"profile"`
 }
 
-type profile struct {
+type Profile struct {
 	Name         string `json:"name"`
 	ShortcutName string `json:"shortcut_name"`
-	Browser      string
-	Directory    string
-	IcoPath      string
+	Browser      string `json:"browser"`
+	Directory    string `json:"directory"`
+	IcoPath      string `json:"ico_path"`
 }
 
-func List() []profile {
+func List() []Profile {
 	paths := map[string]string{
 		"chrome": expand("~/AppData/Local/Google/Chrome/User Data/"),
 		"msedge": expand("~/AppData/Local/Microsoft/Edge/User Data/"),
@@ -33,9 +35,12 @@ func List() []profile {
 		"msedge": "Edge Profile.ico",
 	}
 
-	var profiles []profile
+	var profiles []Profile
 	for b, path := range paths {
-		p := parseProfiles(path)
+		p, err := parseProfiles(path)
+		if err != nil {
+			break
+		}
 		for i, v := range p {
 			p[i].Browser = b
 			p[i].IcoPath = filepath.Join(path, v.Directory, iconName[b])
@@ -49,9 +54,10 @@ func expand(path string) string {
 	if len(path) > 1 && path[0:2] == "~/" {
 		my, err := user.Current()
 		if err != nil {
-			panic(err)
+			log.Println("ユーザーが見つかりません", err)
+		} else {
+			path = my.HomeDir + path[1:]
 		}
-		path = my.HomeDir + path[1:]
 	}
 	path = os.ExpandEnv(path)
 	return filepath.Clean(path)
@@ -59,23 +65,43 @@ func expand(path string) string {
 
 // Local Stateファイルを読み込み、
 // プロファイル構造体を返す。
-func parseProfiles(directory string) []profile {
+func parseProfiles(directory string) ([]Profile, error) {
 	path := filepath.Join(directory, "Local State")
 	text, err := os.ReadFile(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Local Stateファイルが見つかりません:", err)
+		return nil, err
 	}
 
 	var data localState
 	err = json.Unmarshal(text, &data)
 	if err != nil {
-		log.Fatal("Local Stateファイルのjsonデコードに失敗:", err)
+		log.Println("Local Stateファイルのjsonデコードに失敗:", err)
+		return nil, err
 	}
 
-	profiles := make([]profile, len(data.Profile.InfoCache))
+	profiles := make([]Profile, len(data.Profile.InfoCache))
 	for i, v := range data.Profile.ProfilesOrder {
 		profiles[i] = data.Profile.InfoCache[v]
 		profiles[i].Directory = v
 	}
-	return profiles
+	return profiles, nil
+}
+
+func Run(browser string, directory string) error {
+	var cmd *exec.Cmd
+	if browser == "chrome" {
+		args := []string{"/c", "start", "chrome", "--profile-directory=" + directory}
+		cmd = exec.Command("cmd", args...)
+	} else if browser == "msedge" {
+		args := []string{"/c", "start", "msedge", "--profile-directory=" + directory}
+		cmd = exec.Command("cmd", args...)
+	}
+	if cmd == nil {
+		return errors.New("Invalid browser")
+	}
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+	return nil
 }
