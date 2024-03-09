@@ -16,6 +16,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
+//go:embed all:frontend/dist
 var assets embed.FS
 
 type IcoLoader struct {
@@ -31,7 +32,7 @@ func (h *IcoLoader) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	if !strings.HasSuffix(req.URL.Path, ".ico") {
 		return
 	}
-	println("Req: ", req.URL.Path)
+	log.Println("Req: ", req.URL.Path)
 
 	query := req.URL.Query()
 	browser := query.Get("browser")
@@ -57,9 +58,6 @@ func (h *IcoLoader) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	println("app created")
-	log.Println("app created")
-
 	app := NewApp()
 
 	err := wails.Run(&options.App{
@@ -74,15 +72,10 @@ func main() {
 		LogLevel:           logger.DEBUG,
 		LogLevelProduction: logger.ERROR,
 		OnStartup:          app.startup,
-		Debug: options.Debug{
-			OpenInspectorOnStartup: true,
-		},
 		Bind: []interface{}{
 			app,
 		},
 	})
-
-	println("app open")
 
 	if err != nil {
 		println("Error:", err.Error())
