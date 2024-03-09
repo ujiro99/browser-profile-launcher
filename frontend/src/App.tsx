@@ -10,9 +10,13 @@ type ListItem = {
   indices?: readonly RangeTuple[];
 };
 
+const FocusDefault = 0;
+
 function App() {
   const [list, setList] = useState<ListItem[]>();
   const [query, setQuery] = useState("");
+  const [focus, setFocus] = useState(FocusDefault);
+  const [composing, setComposing] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -26,17 +30,6 @@ function App() {
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
-
-  const updateQuery = (e: any) => setQuery(e.target.value);
-
-  const onClick = (browser: string, directory: string) => {
-    Run(browser, directory).then((err) => {
-      setErrorMsg(err);
-      if (!err) {
-        // window.runtime.Quit();
-      }
-    });
-  };
 
   let filtered = list;
   if (list && query.length > 0) {
@@ -59,23 +52,78 @@ function App() {
     console.debug(filtered);
   }
 
+  const updateQuery = (e: any) => {
+    setQuery(e.target.value);
+    setFocus(FocusDefault);
+  };
+
+  const onClick = (browser: string, directory: string) => {
+    Run(browser, directory).then((err) => {
+      setErrorMsg(err);
+      if (!err) {
+        // 起動成功したら終了する。これはランチャーとしての定め
+        window.runtime.Quit();
+      }
+    });
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (composing) {
+      // IME入力中は何もしない
+      return;
+    }
+    const key = e.code;
+    if (key === "ArrowUp") {
+      if (focus > FocusDefault) {
+        setFocus((pre) => pre - 1);
+        e.preventDefault();
+      }
+    }
+    if (key === "ArrowDown") {
+      if (focus < (filtered?.length || 0) - 1) {
+        setFocus((pre) => pre + 1);
+        e.preventDefault();
+      }
+    }
+    if (key === "Enter") {
+      if (filtered) {
+        const item = filtered[focus];
+        if (item) {
+          const { browser, directory } = item.profile;
+          console.debug("Enter", browser, directory);
+          onClick(browser, directory);
+          e.preventDefault();
+        }
+      }
+    }
+  };
+
+  const focusClass = (i: number) => {
+    return i === focus ? "focused" : "";
+  };
+
   return (
     <div id="App">
       <div id="input" className="input-box">
         <input
           type="text"
-          id="name"
+          name="query"
           className="input"
           onChange={updateQuery}
-          name="query"
+          onKeyDown={onKeyDown}
+          onCompositionStart={() => setComposing(true)}
+          onCompositionEnd={() => setComposing(false)}
           ref={inputRef}
           placeholder="絞り込み検索..."
         />
       </div>
       {errorMsg && <p className="error">{errorMsg}</p>}
       <ul className="profileList">
-        {filtered?.map((item) => (
-          <li key={item.profile.browser + item.profile.directory}>
+        {filtered?.map((item, i) => (
+          <li
+            key={item.profile.browser + item.profile.directory}
+            className={focusClass(i)}
+          >
             <Item {...item} onClick={onClick} />
           </li>
         ))}

@@ -1,5 +1,6 @@
 :root {
   --red-600: rgb(220 38 38);
+  --sky-500: rgb(14 165 233);
 }
 
 body {
@@ -52,6 +53,10 @@ body {
   border-bottom: solid 1px #f0f0f0;
 }
 
+.profileList > li.focused {
+  border-left: solid 4px var(--sky-500);
+}
+
 .profileItem__button {
   padding: 6px 8px;
   display: flex;
@@ -63,7 +68,8 @@ body {
   border: none;
 }
 
-.profileItem__button:hover {
+.profileItem__button:hover,
+.focused .profileItem__button {
   background: #f0f0f0;
 }
 
