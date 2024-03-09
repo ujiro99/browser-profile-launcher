@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -10,6 +11,7 @@ import (
 	"chrome-profile-selector/profile"
 
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
@@ -55,6 +57,9 @@ func (h *IcoLoader) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	println("app created")
+	log.Println("app created")
+
 	app := NewApp()
 
 	err := wails.Run(&options.App{
@@ -65,11 +70,19 @@ func main() {
 			Assets:  assets,
 			Handler: NewIcoLoader(),
 		},
-		OnStartup: app.startup,
+		Logger:             logger.NewFileLogger("chrome-profile-selector.log"),
+		LogLevel:           logger.DEBUG,
+		LogLevelProduction: logger.ERROR,
+		OnStartup:          app.startup,
+		Debug: options.Debug{
+			OpenInspectorOnStartup: true,
+		},
 		Bind: []interface{}{
 			app,
 		},
 	})
+
+	println("app open")
 
 	if err != nil {
 		println("Error:", err.Error())
