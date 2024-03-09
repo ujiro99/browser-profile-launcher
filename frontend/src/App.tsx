@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Fuse, { RangeTuple } from "fuse.js";
 import "./App.css";
 import { profile } from "../wailsjs/go/models";
-import { List } from "../wailsjs/go/main/App";
+import { List, Run } from "../wailsjs/go/main/App";
 import { Item } from "./Item";
 
 type ListItem = {
@@ -21,12 +21,22 @@ function App() {
       console.table(profiles);
       setList(profiles.map((profile) => ({ profile })));
     });
+  }, []);
+
+  useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
   const updateQuery = (e: any) => setQuery(e.target.value);
 
-  const onErr = (msg: string) => setErrorMsg(msg);
+  const onClick = (browser: string, directory: string) => {
+    Run(browser, directory).then((err) => {
+      setErrorMsg(err);
+      if (!err) {
+        // window.runtime.Quit();
+      }
+    });
+  };
 
   let filtered = list;
   if (list && query.length > 0) {
@@ -66,7 +76,7 @@ function App() {
       <ul className="profileList">
         {filtered?.map((item) => (
           <li key={item.profile.browser + item.profile.directory}>
-            <Item {...item} onError={onErr} />
+            <Item {...item} onClick={onClick} />
           </li>
         ))}
       </ul>

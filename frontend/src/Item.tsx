@@ -1,12 +1,11 @@
 import "./App.css";
 import { RangeTuple } from "fuse.js";
 import { profile as goProfile } from "../wailsjs/go/models";
-import { Run } from "../wailsjs/go/main/App";
 
 type ItemProps = {
   profile: goProfile.Profile;
   indices?: readonly RangeTuple[];
-  onError: (msg: string) => void;
+  onClick: (browser: string, directory: string) => void;
 };
 
 type LabelMatch = {
@@ -14,17 +13,12 @@ type LabelMatch = {
   match?: boolean;
 };
 
-export function Item({ profile, indices, onError }: ItemProps) {
+export function Item({ profile, indices, onClick }: ItemProps) {
   const icoPath = `/profile.ico?browser=${profile.browser}&directory=${profile.directory}`;
 
-  function select() {
-    Run(profile.browser, profile.directory).then((err) => {
-      onError(err);
-      if (!err) {
-        window.runtime.Quit();
-      }
-    });
-  }
+  const click = () => {
+    onClick(profile.browser, profile.directory);
+  };
 
   let labels: LabelMatch[] = [{ str: profile.shortcut_name }];
   if (indices) {
@@ -44,7 +38,7 @@ export function Item({ profile, indices, onError }: ItemProps) {
 
   return (
     <div className="profileItem">
-      <button type="button" className="profileItem__button" onClick={select}>
+      <button type="button" className="profileItem__button" onClick={click}>
         <img
           className="profileItem__img"
           src={icoPath}
