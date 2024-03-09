@@ -14,7 +14,7 @@ body {
 }
 
 .input-box {
-  padding: 10px 10px 0;
+  padding: 10px;
   height: 40px;
 }
 
@@ -32,7 +32,7 @@ body {
 
 .profileList {
   margin: 0;
-  padding: 10px;
+  padding: 0 10px 10px;
   overflow: hidden;
   overflow-y: auto;
 }
