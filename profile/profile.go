@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"os/user"
 	"path/filepath"
+	"sort"
 )
 
 type localState struct {
@@ -45,6 +46,8 @@ func List() []Profile {
 			p[i].Browser = b
 			p[i].IcoPath = filepath.Join(path, v.Directory, iconName[b])
 		}
+		// sort by ShortcutName
+		sort.SliceStable(p, func(i, j int) bool { return p[i].ShortcutName < p[j].ShortcutName })
 		profiles = append(profiles, p...)
 	}
 	return profiles

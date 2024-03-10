@@ -80,10 +80,11 @@ body {
 }
 
 .profileItem__label {
-  font-size: 1.2em;
+  font-size: 1.1em;
   margin: 0;
-  color: #777;
+  color: #555;
   line-height: 1;
+  text-align: left;
 }
 
 .profileItem__label--match {
