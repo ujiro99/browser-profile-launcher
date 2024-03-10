@@ -62,7 +62,7 @@ func main() {
 
 	err := wails.Run(&options.App{
 		Title:  "chrome-profile-selector",
-		Width:  320,
+		Width:  420,
 		Height: 580,
 		AssetServer: &assetserver.Options{
 			Assets:  assets,
