@@ -9,6 +9,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"sort"
+	"syscall"
 )
 
 type localState struct {
@@ -103,6 +104,7 @@ func Run(browser string, directory string) error {
 	if cmd == nil {
 		return errors.New("Invalid browser")
 	}
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	if err := cmd.Run(); err != nil {
 		return err
 	}
