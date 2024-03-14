@@ -1,6 +1,6 @@
 import "./App.css";
-import { RangeTuple } from "fuse.js";
-import { profile as goProfile } from "../wailsjs/go/models";
+import type { RangeTuple } from "fuse.js";
+import type { profile as goProfile } from "../wailsjs/go/models";
 
 type ItemProps = {
   profile: goProfile.Profile;
