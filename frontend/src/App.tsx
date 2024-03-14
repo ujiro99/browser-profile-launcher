@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import Fuse, { RangeTuple } from "fuse.js";
-import "./App.css";
-import { profile } from "../wailsjs/go/models";
+import Fuse from "fuse.js";
+import type { RangeTuple } from "fuse.js";
+import type { profile } from "../wailsjs/go/models";
 import { List, Run } from "../wailsjs/go/main/App";
 import { Item } from "./Item";
+import { Quit, Environment } from "../wailsjs/runtime/runtime";
+import "./App.css";
 
 type ListItem = {
   profile: profile.Profile;
@@ -16,25 +18,26 @@ function App() {
   const [list, setList] = useState<ListItem[]>();
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(FocusDefault);
+  const [isDev, setIsDev] = useState(false);
   const [composing, setComposing] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    inputRef.current?.focus();
     List().then((profiles) => {
       console.table(profiles);
       setList(profiles.map((profile) => ({ profile })));
     });
-  }, []);
-
-  useEffect(() => {
-    inputRef.current?.focus();
+    Environment().then((env) => {
+      setIsDev(env.buildType === "dev");
+    });
   }, []);
 
   let filtered = list;
   if (list && query.length > 0) {
-    const fuse = new Fuse(list, {
-      keys: ["profile.shortcut_name", "profile.browser"],
+    const fuse = new Fuse<ListItem>(list, {
+      keys: ["profile.shortcut_name"],
       includeMatches: true,
     });
     filtered = fuse.search(query).map((res) => {
@@ -60,9 +63,10 @@ function App() {
   const onClick = (browser: string, directory: string) => {
     Run(browser, directory).then((err) => {
       setErrorMsg(err);
-      if (!err) {
+      if (!err && !isDev) {
         // 起動成功したら終了する。これはランチャーとしての定め
-        window.runtime.Quit();
+        // 開発モードの場合は再起動が面倒なため、終了しない
+        Quit();
       }
     });
   };
