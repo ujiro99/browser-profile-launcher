@@ -1,5 +1,5 @@
 import { LoadConfig, SaveConfig } from "../../wailsjs/go/main/App";
-import type { ProfileKey } from "./util";
+import type { ProfileKey } from "../lib/utils";
 import { Environment } from "../../wailsjs/runtime/runtime";
 
 export enum ConfigKey {

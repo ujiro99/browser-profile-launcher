@@ -16,7 +16,6 @@ body {
 
 .input-box {
   padding: 10px;
-  height: 40px;
 }
 
 .input-box .input {
@@ -24,18 +23,15 @@ body {
   border-radius: 8px;
   outline: none;
   padding: 4px 10px;
-  height: 2em;
-  width: calc(100% - 20px);
+  width: 100%;
   background-color: rgba(240, 240, 240, 1);
   -webkit-font-smoothing: antialiased;
-  font-size: 1em;
+  font-size: 0.9em;
 }
 
 .profileList {
   margin: 0;
   padding: 0 10px 10px;
-  overflow: hidden;
-  overflow-y: auto;
 }
 
 .profileList > li {
@@ -85,13 +81,13 @@ body {
 }
 
 .profileItem__img {
-  width: 2em;
-  height: 2em;
-  margin-right: 0.7em;
+  width: 1.8em;
+  height: 1.8em;
+  margin-right: 0.6em;
 }
 
 .profileItem__label {
-  font-size: 1.1em;
+  font-size: 1em;
   margin: 0;
   color: #555;
   line-height: 1;

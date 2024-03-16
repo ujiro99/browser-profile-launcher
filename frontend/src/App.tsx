@@ -5,10 +5,12 @@ import type { profile } from "../wailsjs/go/models";
 import { List, Run } from "../wailsjs/go/main/App";
 import { Quit } from "../wailsjs/runtime/runtime";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { Item } from "./Item";
 import { useHistory } from "./hooks/useHistory";
 import { useEnv } from "./hooks/useEnv";
-import { utils } from "./services/util";
+import * as utils from "./lib/utils";
 import "./App.css";
 
 type ListItem = {
@@ -126,16 +128,19 @@ function App() {
         />
       </div>
       {errorMsg && <p className="error">{errorMsg}</p>}
-      <ul className="profileList">
-        {filtered?.map((item, i) => (
-          <li
-            key={item.profile.browser + item.profile.directory}
-            className={focusClass(i)}
-          >
-            <Item {...item} onClick={onClick} />
-          </li>
-        ))}
-      </ul>
+
+      <ScrollArea>
+        <ul className="profileList">
+          {filtered?.map((item, i) => (
+            <li
+              key={item.profile.browser + item.profile.directory}
+              className={focusClass(i)}
+            >
+              <Item {...item} onClick={onClick} />
+            </li>
+          ))}
+        </ul>
+      </ScrollArea>
     </div>
   );
 }

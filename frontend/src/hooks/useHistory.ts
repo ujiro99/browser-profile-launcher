@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Config, ConfigKey } from "../services/config";
 import type { ConfigType } from "../services/config";
-import type { ProfileKey } from "../services/util";
+import type { ProfileKey } from "../lib/utils";
 
 type HistoryType = [ProfileKey[], (value: ProfileKey) => void];
 
