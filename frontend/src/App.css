@@ -10,58 +10,37 @@ body {
 #App {
   height: 100vh;
   background: #fff;
-  display: flex;
-  flex-direction: column;
+  overflow: hidden;
 }
 
 .input-box {
-  padding: 10px;
+  padding: 8px 8px 2px;
 }
 
 .input-box .input {
   border: none;
   border-radius: 8px;
   outline: none;
-  padding: 4px 10px;
+  padding: 6px 10px;
   width: 100%;
   background-color: rgba(240, 240, 240, 1);
   -webkit-font-smoothing: antialiased;
   font-size: 0.9em;
 }
 
-.profileList {
-  margin: 0;
-  padding: 0 10px 10px;
+.result-tabs {
+  height: calc(100% - 50px);
+
+  --border: 215 2% 78%;
 }
 
-.profileList > li {
-  position: relative;
-  list-style: none;
-  border-left: solid 1px #f0f0f0;
-  border-right: solid 1px #f0f0f0;
-}
-
-.profileList > li + li,
-.profileList > li:first-child {
-  border-top: solid 1px #f0f0f0;
-}
-
-.profileList > li:last-child {
-  border-bottom: solid 1px #f0f0f0;
-}
-
-.profileList > li.focused {
-  padding-left: 4px;
-}
-
-.profileList > li.focused:before {
-  content: "";
+.tab-indicator {
   position: absolute;
-  display: block;
-  left: -0px;
-  width: 4px;
-  height: 100%;
-  border-left: solid 4px var(--sky-500);
+  transition: all 0.1s ease-out;
+  background: rgb(55 65 81);
+  height: 4px;
+  bottom: -4px;
+  border-radius: 4px;
 }
 
 .profileItem__button {

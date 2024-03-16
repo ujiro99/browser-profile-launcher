@@ -1,6 +1,5 @@
-import "./App.css";
 import type { RangeTuple } from "fuse.js";
-import type { profile as goProfile } from "../wailsjs/go/models";
+import type { profile as goProfile } from "../../wailsjs/go/models";
 
 type ItemProps = {
   profile: goProfile.Profile;
@@ -45,13 +44,18 @@ export function Item({ profile, indices, onClick }: ItemProps) {
           alt={profile.shortcut_name}
         />
         <p className="profileItem__label">
-          {labels.map((label) => {
+          {labels.map((label, i) => {
             if (label.match) {
               return (
-                <span className="profileItem__label--match">{label.str}</span>
+                <span
+                  key={`${i}${label.str}`}
+                  className="profileItem__label--match"
+                >
+                  {label.str}
+                </span>
               );
             }
-            return <span>{label.str}</span>;
+            return <span key={`${i}${label.str}`}>{label.str}</span>;
           })}
         </p>
       </button>

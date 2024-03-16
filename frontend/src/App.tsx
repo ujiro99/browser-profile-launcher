@@ -1,34 +1,46 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import Fuse from "fuse.js";
-import type { RangeTuple } from "fuse.js";
+import React from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import type { profile } from "../wailsjs/go/models";
 import { List, Run } from "../wailsjs/go/main/App";
 import { Quit } from "../wailsjs/runtime/runtime";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-import { Item } from "./Item";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ProfileList } from "@/components/ProfileList";
 import { useHistory } from "./hooks/useHistory";
 import { useEnv } from "./hooks/useEnv";
 import * as utils from "./lib/utils";
-import "./App.css";
+import type { ListItem } from "./lib/utils";
 
-type ListItem = {
-  profile: profile.Profile;
-  indices?: readonly RangeTuple[];
-};
+import "./App.css";
 
 const FocusDefault = 0;
 
+interface TabList {
+  [key: string]: ListItem[];
+}
+
+interface TabRefs {
+  [key: string]: React.RefObject<HTMLButtonElement>;
+}
+
 function App() {
-  const [list, setList] = useState<ListItem[]>();
+  const tabs = ["all", "history"];
+  const [list, setList] = useState<ListItem[]>([]);
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(FocusDefault);
+  const [currentTab, setCurrentTab] = useState(tabs[0]);
   const [composing, setComposing] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [history, addHistory] = useHistory();
   const { isDev } = useEnv();
+  const indicatorRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const lists = {
+    all: utils.filter(list, query),
+    history: utils.filter(utils.mapListItem(list, history), query),
+  } as TabList;
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -38,33 +50,17 @@ function App() {
     });
   }, []);
 
-  let filtered = list;
-  if (list && query.length > 0) {
-    const fuse = new Fuse<ListItem>(list, {
-      keys: ["profile.shortcut_name"],
-      includeMatches: true,
-    });
-    filtered = fuse.search(query).map((res) => {
-      const item = { profile: res.item.profile } as ListItem;
-      if (res.matches) {
-        const match = res.matches.find(
-          (m) => m.key === "profile.shortcut_name",
-        );
-        if (match) {
-          item.indices = match.indices;
-        }
+  useEffect(() => {
+    const ref = indicatorRef.current;
+    if (ref) {
+      const tab = refsByTabs[currentTab];
+      const pad = 4;
+      if (tab.current) {
+        ref.style.left = `${tab.current.offsetLeft + pad}px`;
+        ref.style.width = `${tab.current.offsetWidth - pad * 2}px`;
       }
-      return item;
-    });
-    console.debug(filtered);
-  }
-
-  const refsByIdx = useMemo(() => {
-    if (filtered) {
-      return filtered.map(() => React.createRef<HTMLLIElement>());
     }
-    return [];
-  }, [filtered]);
+  }, [currentTab]);
 
   const updateQuery = (e: any) => {
     setQuery(e.target.value);
@@ -93,24 +89,18 @@ function App() {
     if (key === "ArrowUp") {
       if (focus > FocusDefault) {
         setFocus((pre) => pre - 1);
-        refsByIdx[focus - 1].current?.scrollIntoView({
-          block: "nearest",
-          behavior: "smooth",
-        });
         e.preventDefault();
       }
     }
     if (key === "ArrowDown") {
+      const filtered = lists[currentTab];
       if (focus < (filtered?.length || 0) - 1) {
         setFocus((pre) => pre + 1);
-        refsByIdx[focus + 1].current?.scrollIntoView({
-          block: "nearest",
-          behavior: "smooth",
-        });
         e.preventDefault();
       }
     }
     if (key === "Enter") {
+      const filtered = lists[currentTab];
       if (filtered) {
         const item = filtered[focus];
         if (item) {
@@ -123,9 +113,12 @@ function App() {
     }
   };
 
-  const focusClass = (i: number) => {
-    return i === focus ? "focused" : "";
-  };
+  const refsByTabs = useMemo(() => {
+    return tabs.reduce((acc, cur) => {
+      acc[cur] = React.createRef<HTMLButtonElement>();
+      return acc;
+    }, {} as TabRefs);
+  }, []);
 
   return (
     <div id="App">
@@ -144,19 +137,51 @@ function App() {
       </div>
       {errorMsg && <p className="error">{errorMsg}</p>}
 
-      <ScrollArea>
-        <ul className="profileList">
-          {filtered?.map((item, i) => (
-            <li
-              key={item.profile.browser + item.profile.directory}
-              className={focusClass(i)}
-              ref={refsByIdx[i]}
-            >
-              <Item {...item} onClick={onClick} />
-            </li>
-          ))}
-        </ul>
-      </ScrollArea>
+      <Tabs
+        defaultValue={tabs[0]}
+        className="w-full px-2 result-tabs"
+        onValueChange={setCurrentTab}
+      >
+        <TabsList className="p-0 h-[auto] relative bg-transparent">
+          <TabsTrigger
+            className="py-1 px-2 data-[state=active]:shadow-none"
+            value="history"
+            ref={refsByTabs.history}
+          >
+            History
+          </TabsTrigger>
+          <TabsTrigger
+            className="py-1 px-3 data-[state=active]:shadow-none"
+            value="all"
+            ref={refsByTabs.all}
+          >
+            All
+          </TabsTrigger>
+          <div className="tab-indicator" ref={indicatorRef} />
+        </TabsList>
+        <TabsContent value="history" className="h-full mt-3">
+          <ScrollArea type="auto" className="h-full">
+            {lists.history && (
+              <ProfileList
+                list={lists.history}
+                focusIdx={focus}
+                onClick={onClick}
+              />
+            )}
+          </ScrollArea>
+        </TabsContent>
+        <TabsContent value="all" className="h-full mt-3">
+          <ScrollArea type="auto" className="h-full">
+            {lists.all && (
+              <ProfileList
+                list={lists.all}
+                focusIdx={focus}
+                onClick={onClick}
+              />
+            )}
+          </ScrollArea>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

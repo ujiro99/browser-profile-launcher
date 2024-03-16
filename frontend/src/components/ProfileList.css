@@ -1,0 +1,33 @@
+.profileList {
+  margin: 0;
+}
+
+.profileList > li {
+  position: relative;
+  list-style: none;
+  border-left: solid 1px #f0f0f0;
+  border-right: solid 1px #f0f0f0;
+}
+
+.profileList > li + li,
+.profileList > li:first-child {
+  border-top: solid 1px #f0f0f0;
+}
+
+.profileList > li:last-child {
+  border-bottom: solid 1px #f0f0f0;
+}
+
+.profileList > li.focused {
+  padding-left: 4px;
+}
+
+.profileList > li.focused:before {
+  content: "";
+  position: absolute;
+  display: block;
+  left: -0px;
+  width: 4px;
+  height: 100%;
+  border-left: solid 4px var(--sky-500);
+}
