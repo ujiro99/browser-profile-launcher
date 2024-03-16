@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import type { profile } from "../wailsjs/go/models";
 import { List, Run } from "../wailsjs/go/main/App";
 import { Quit } from "../wailsjs/runtime/runtime";
+import { useTranslation } from "react-i18next";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,6 +34,7 @@ function App() {
   const [composing, setComposing] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [history, addHistory] = useHistory();
+  const { t } = useTranslation();
   const { isDev } = useEnv();
   const indicatorRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -132,7 +134,7 @@ function App() {
           onCompositionStart={() => setComposing(true)}
           onCompositionEnd={() => setComposing(false)}
           ref={inputRef}
-          placeholder="絞り込み検索..."
+          placeholder={t("keywordSearch")}
         />
       </div>
       {errorMsg && <p className="error">{errorMsg}</p>}
@@ -143,44 +145,30 @@ function App() {
         onValueChange={setCurrentTab}
       >
         <TabsList className="p-0 h-[auto] relative bg-transparent">
-          <TabsTrigger
-            className="py-1 px-2 data-[state=active]:shadow-none"
-            value="history"
-            ref={refsByTabs.history}
-          >
-            History
-          </TabsTrigger>
-          <TabsTrigger
-            className="py-1 px-3 data-[state=active]:shadow-none"
-            value="all"
-            ref={refsByTabs.all}
-          >
-            All
-          </TabsTrigger>
+          {tabs.map((tab) => (
+            <TabsTrigger
+              className="py-1 px-2 data-[state=active]:shadow-none"
+              value={tab}
+              ref={refsByTabs[tab]}
+            >
+              {t(tab)}
+            </TabsTrigger>
+          ))}
           <div className="tab-indicator" ref={indicatorRef} />
         </TabsList>
-        <TabsContent value="history" className="h-full mt-3">
-          <ScrollArea type="auto" className="h-full">
-            {lists.history && (
-              <ProfileList
-                list={lists.history}
-                focusIdx={focus}
-                onClick={onClick}
-              />
-            )}
-          </ScrollArea>
-        </TabsContent>
-        <TabsContent value="all" className="h-full mt-3">
-          <ScrollArea type="auto" className="h-full">
-            {lists.all && (
-              <ProfileList
-                list={lists.all}
-                focusIdx={focus}
-                onClick={onClick}
-              />
-            )}
-          </ScrollArea>
-        </TabsContent>
+        {tabs.map((tab) => (
+          <TabsContent value={tab} className="h-full mt-3">
+            <ScrollArea type="auto" className="h-full">
+              {lists[tab] && (
+                <ProfileList
+                  list={lists[tab]}
+                  focusIdx={focus}
+                  onClick={onClick}
+                />
+              )}
+            </ScrollArea>
+          </TabsContent>
+        ))}
       </Tabs>
     </div>
   );
