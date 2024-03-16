@@ -3,10 +3,11 @@ import Fuse from "fuse.js";
 import type { RangeTuple } from "fuse.js";
 import type { profile } from "../wailsjs/go/models";
 import { List, Run } from "../wailsjs/go/main/App";
-import { Quit, Environment } from "../wailsjs/runtime/runtime";
+import { Quit } from "../wailsjs/runtime/runtime";
 
 import { Item } from "./Item";
 import { useHistory } from "./hooks/useHistory";
+import { useEnv } from "./hooks/useEnv";
 import { utils } from "./services/util";
 import "./App.css";
 
@@ -21,10 +22,10 @@ function App() {
   const [list, setList] = useState<ListItem[]>();
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(FocusDefault);
-  const [isDev, setIsDev] = useState(false);
   const [composing, setComposing] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [history, addHistory] = useHistory();
+  const { isDev } = useEnv();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -32,9 +33,6 @@ function App() {
     List().then((profiles) => {
       console.table(profiles);
       setList(profiles.map((profile) => ({ profile })));
-    });
-    Environment().then((env) => {
-      setIsDev(env.buildType === "dev");
     });
   }, []);
 

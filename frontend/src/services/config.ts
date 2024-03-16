@@ -1,5 +1,6 @@
 import { LoadConfig, SaveConfig } from "../../wailsjs/go/main/App";
 import type { ProfileKey } from "./util";
+import { Environment } from "../../wailsjs/runtime/runtime";
 
 export enum ConfigKey {
   history = "history",
@@ -18,18 +19,25 @@ export type ConfigType = {
   [ConfigKey.profileTags]: ProfileTags[];
 };
 
-type ChangeListener = (config: ConfigType, area: ConfigKey) => void;
+type ChangeListener = (config: ConfigType, area?: ConfigKey) => void;
 
 export class Config {
   private static _instance: Config;
+  private isDev = false;
   private config = {} as ConfigType;
   private listeners = [] as ChangeListener[];
 
   private constructor() {
-    console.debug("Config.constructor");
     LoadConfig().then((config) => {
+      console.debug("Config Loaded", this.config);
       if (config) {
         this.config = JSON.parse(config);
+        this.notifyListeners();
+      }
+    });
+    Environment().then((env) => {
+      if (env.buildType === "dev") {
+        this.isDev = true;
       }
     });
   }
@@ -46,14 +54,24 @@ export class Config {
   }
 
   set(value: ConfigType, changedKey: ConfigKey) {
+    console.debug("Config Updated", value);
     this.config = value;
-    SaveConfig(JSON.stringify(this.config));
-    for (const l of this.listeners) {
-      l(this.config, changedKey);
+    this.notifyListeners(changedKey);
+
+    if (this.isDev) {
+      SaveConfig(JSON.stringify(this.config, null, 2));
+    } else {
+      SaveConfig(JSON.stringify(this.config));
     }
   }
 
   addChangeListener(listener: ChangeListener) {
     this.listeners.push(listener);
+  }
+
+  private notifyListeners(changedKey?: ConfigKey) {
+    for (const l of this.listeners) {
+      l(this.config, changedKey);
+    }
   }
 }
