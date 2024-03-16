@@ -4,4 +4,8 @@ import {profile} from '../models';
 
 export function List():Promise<Array<profile.Profile>>;
 
+export function LoadConfig():Promise<string>;
+
 export function Run(arg1:string,arg2:string):Promise<string>;
+
+export function SaveConfig(arg1:string):Promise<void>;

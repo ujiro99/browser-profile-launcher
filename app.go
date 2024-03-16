@@ -28,3 +28,11 @@ func (a *App) Run(browser string, directory string) string {
 func (a *App) List() []profile.Profile {
 	return profile.List()
 }
+
+func (a *App) LoadConfig() (string, error) {
+	return Load()
+}
+
+func (a *App) SaveConfig(text string) error {
+	return Save(text)
+}

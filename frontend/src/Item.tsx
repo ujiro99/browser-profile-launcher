@@ -5,7 +5,7 @@ import type { profile as goProfile } from "../wailsjs/go/models";
 type ItemProps = {
   profile: goProfile.Profile;
   indices?: readonly RangeTuple[];
-  onClick: (browser: string, directory: string) => void;
+  onClick: (profile: goProfile.Profile) => void;
 };
 
 type LabelMatch = {
@@ -17,7 +17,7 @@ export function Item({ profile, indices, onClick }: ItemProps) {
   const icoPath = `/profile.ico?browser=${profile.browser}&directory=${profile.directory}`;
 
   const click = () => {
-    onClick(profile.browser, profile.directory);
+    onClick(profile);
   };
 
   let labels: LabelMatch[] = [{ str: profile.shortcut_name }];

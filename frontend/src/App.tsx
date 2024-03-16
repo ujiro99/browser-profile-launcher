@@ -3,8 +3,11 @@ import Fuse from "fuse.js";
 import type { RangeTuple } from "fuse.js";
 import type { profile } from "../wailsjs/go/models";
 import { List, Run } from "../wailsjs/go/main/App";
-import { Item } from "./Item";
 import { Quit, Environment } from "../wailsjs/runtime/runtime";
+
+import { Item } from "./Item";
+import { useHistory } from "./hooks/useHistory";
+import { utils } from "./services/util";
 import "./App.css";
 
 type ListItem = {
@@ -21,6 +24,7 @@ function App() {
   const [isDev, setIsDev] = useState(false);
   const [composing, setComposing] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [history, addHistory] = useHistory();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -60,13 +64,15 @@ function App() {
     setFocus(FocusDefault);
   };
 
-  const onClick = (browser: string, directory: string) => {
-    Run(browser, directory).then((err) => {
+  const onClick = (p: profile.Profile) => {
+    Run(p.browser, p.directory).then((err) => {
       setErrorMsg(err);
-      if (!err && !isDev) {
+      if (!err) {
         // 起動成功したら終了する。これはランチャーとしての定め
         // 開発モードの場合は再起動が面倒なため、終了しない
-        Quit();
+        if (!isDev) Quit();
+        // 履歴に追加
+        addHistory(utils.profileKey(p));
       }
     });
   };
@@ -95,7 +101,7 @@ function App() {
         if (item) {
           const { browser, directory } = item.profile;
           console.debug("Enter", browser, directory);
-          onClick(browser, directory);
+          onClick(item.profile);
           e.preventDefault();
         }
       }
