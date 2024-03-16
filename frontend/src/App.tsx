@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Fuse from "fuse.js";
 import type { RangeTuple } from "fuse.js";
 import type { profile } from "../wailsjs/go/models";
@@ -59,6 +59,13 @@ function App() {
     console.debug(filtered);
   }
 
+  const refsByIdx = useMemo(() => {
+    if (filtered) {
+      return filtered.map(() => React.createRef<HTMLLIElement>());
+    }
+    return [];
+  }, [filtered]);
+
   const updateQuery = (e: any) => {
     setQuery(e.target.value);
     setFocus(FocusDefault);
@@ -86,12 +93,20 @@ function App() {
     if (key === "ArrowUp") {
       if (focus > FocusDefault) {
         setFocus((pre) => pre - 1);
+        refsByIdx[focus - 1].current?.scrollIntoView({
+          block: "nearest",
+          behavior: "smooth",
+        });
         e.preventDefault();
       }
     }
     if (key === "ArrowDown") {
       if (focus < (filtered?.length || 0) - 1) {
         setFocus((pre) => pre + 1);
+        refsByIdx[focus + 1].current?.scrollIntoView({
+          block: "nearest",
+          behavior: "smooth",
+        });
         e.preventDefault();
       }
     }
@@ -135,6 +150,7 @@ function App() {
             <li
               key={item.profile.browser + item.profile.directory}
               className={focusClass(i)}
+              ref={refsByIdx[i]}
             >
               <Item {...item} onClick={onClick} />
             </li>
