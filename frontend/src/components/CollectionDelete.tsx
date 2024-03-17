@@ -17,14 +17,16 @@ import "./CollectionAdd.css";
 type Props = {
   className?: string;
   collection: Collection;
+  onDeleted: (collection: Collection) => void;
 };
 
-export function CollectionDelete({ className, collection }: Props) {
+export function CollectionDelete({ className, collection, onDeleted }: Props) {
   const { t } = useTranslation();
   const { removeCollection } = useCollection();
 
   const deleteCollection = () => {
     removeCollection(collection);
+    onDeleted(collection);
   };
 
   return (

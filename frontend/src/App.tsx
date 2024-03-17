@@ -121,6 +121,16 @@ function App() {
     });
   };
 
+  const onDeletedTab = (collection: string) => {
+    if (collection === currentTab) {
+      // 削除したら、一つ前のタブに移動
+      const idx = tabs.findIndex((tab) => tab === collection);
+      if (idx > 1) {
+        setCurrentTab(tabs[idx - 1]);
+      }
+    }
+  };
+
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (composing) {
       // IME入力中は何もしない
@@ -173,6 +183,7 @@ function App() {
 
       <Tabs
         defaultValue={tabs[0]}
+        value={currentTab}
         className="w-full px-2 result-tabs"
         onValueChange={setCurrentTab}
       >
@@ -200,7 +211,11 @@ function App() {
                 />
               )}
               {!isDefaultTab(tab) && (
-                <CollectionDelete className="tab-remove" collection={tab} />
+                <CollectionDelete
+                  className="tab-remove"
+                  collection={tab}
+                  onDeleted={onDeletedTab}
+                />
               )}
             </ScrollArea>
           </TabsContent>
