@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useState, useRef } from "react";
 import {
   Popover,
   PopoverContent,
@@ -16,6 +16,7 @@ type Props = {
 };
 
 export function CollectionAdd({ className }: Props) {
+  const [open, setOpen] = useState(false);
   const { t } = useTranslation();
   const { collections, setCollection } = useCollection();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -24,12 +25,13 @@ export function CollectionAdd({ className }: Props) {
     const val = inputRef.current?.value;
     if (val) {
       setCollection([...collections, val]);
+      setOpen(false);
     }
   };
 
   return (
     <div className={`CollectionAdd ${className}`}>
-      <Popover modal={true}>
+      <Popover modal={true} open={open} onOpenChange={setOpen}>
         <PopoverTrigger className="CollectionAdd__button">
           <Plus />
         </PopoverTrigger>
