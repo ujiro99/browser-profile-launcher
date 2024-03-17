@@ -74,10 +74,10 @@ function App() {
           setFocus((pre) => pre + 1);
           e.preventDefault();
         }
-      } else if (key === "ArrowLeft") {
+      } else if (key === "ArrowLeft" || (key === "Tab" && e.shiftKey)) {
         setPrevTab();
         e.preventDefault();
-      } else if (key === "ArrowRight") {
+      } else if (key === "ArrowRight" || key === "Tab") {
         setNextTab();
         e.preventDefault();
       } else if (key === "Enter") {
