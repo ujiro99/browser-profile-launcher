@@ -21,7 +21,7 @@ export function ProfileList({ list, focusIdx, onClick }: ListProps) {
   }, [list]);
 
   useEffect(() => {
-    if (refsByIdx.length > 0) {
+    if (refsByIdx.length > 0 && refsByIdx[focusIdx]) {
       refsByIdx[focusIdx].current?.scrollIntoView({
         block: "nearest",
         behavior: "smooth",

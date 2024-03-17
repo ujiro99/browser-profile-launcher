@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import type { profile } from "../wailsjs/go/models";
 import { List, Run } from "../wailsjs/go/main/App";
 import { Quit } from "../wailsjs/runtime/runtime";
@@ -57,7 +57,50 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // タブインジケーターの計算
+    const keydown = (e: KeyboardEvent) => {
+      if (composing) {
+        // IME入力中は何もしない
+        return;
+      }
+      const key = e.code;
+      if (key === "ArrowUp") {
+        if (focus > FocusDefault) {
+          setFocus((pre) => pre - 1);
+          e.preventDefault();
+        }
+      } else if (key === "ArrowDown") {
+        const filtered = lists[currentTab];
+        if (focus < (filtered?.length || 0) - 1) {
+          setFocus((pre) => pre + 1);
+          e.preventDefault();
+        }
+      } else if (key === "ArrowLeft") {
+        setPrevTab();
+        e.preventDefault();
+      } else if (key === "ArrowRight") {
+        setNextTab();
+        e.preventDefault();
+      } else if (key === "Enter") {
+        const filtered = lists[currentTab];
+        if (filtered) {
+          const item = filtered[focus];
+          if (item) {
+            const { browser, directory } = item.profile;
+            console.debug("Enter", browser, directory);
+            onClick(item.profile);
+            e.preventDefault();
+          }
+        }
+      }
+    };
+    window.addEventListener("keydown", keydown);
+    return () => {
+      window.removeEventListener("keydown", keydown);
+    };
+  }, [composing, currentTab, focus]);
+
+  // タブインジケーターの計算
+  useEffect(() => {
     const ref = indicatorRef.current;
     if (ref) {
       const tab = refsByTabs[currentTab];
@@ -83,6 +126,7 @@ function App() {
     );
   }, [collections, profileCollections]);
 
+  // 表示されるリストを作成
   const lists = useMemo(() => {
     // デフォルトのタブを追加
     const l = {
@@ -121,46 +165,39 @@ function App() {
     });
   };
 
+  // 前のタブに移動
+  const setPrevTab = useCallback(() => {
+    let idx = tabs.findIndex((tab) => tab === currentTab);
+    if (idx <= 0) {
+      idx = tabs.length;
+    }
+    setCurrentTab(tabs[idx - 1]);
+  }, [currentTab, tabs]);
+
+  // 次のタブに移動
+  const setNextTab = useCallback(() => {
+    let idx = tabs.findIndex((tab) => tab === currentTab);
+    idx = (idx + 1) % tabs.length;
+    setCurrentTab(tabs[idx]);
+  }, [currentTab, tabs]);
+
+  // 削除したら、一つ前のタブに移動
   const onDeletedTab = (collection: string) => {
     if (collection === currentTab) {
-      // 削除したら、一つ前のタブに移動
-      const idx = tabs.findIndex((tab) => tab === collection);
-      if (idx > 1) {
-        setCurrentTab(tabs[idx - 1]);
-      }
+      setPrevTab();
     }
   };
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDownInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (composing) {
       // IME入力中は何もしない
       return;
     }
     const key = e.code;
-    if (key === "ArrowUp") {
-      if (focus > FocusDefault) {
-        setFocus((pre) => pre - 1);
-        e.preventDefault();
-      }
-    }
-    if (key === "ArrowDown") {
-      const filtered = lists[currentTab];
-      if (focus < (filtered?.length || 0) - 1) {
-        setFocus((pre) => pre + 1);
-        e.preventDefault();
-      }
-    }
-    if (key === "Enter") {
-      const filtered = lists[currentTab];
-      if (filtered) {
-        const item = filtered[focus];
-        if (item) {
-          const { browser, directory } = item.profile;
-          console.debug("Enter", browser, directory);
-          onClick(item.profile);
-          e.preventDefault();
-        }
-      }
+    if (key === "ArrowLeft") {
+      e.stopPropagation();
+    } else if (key === "ArrowRight") {
+      e.stopPropagation();
     }
   };
 
@@ -172,7 +209,7 @@ function App() {
           name="query"
           className="input"
           onChange={updateQuery}
-          onKeyDown={onKeyDown}
+          onKeyDown={onKeyDownInput}
           onCompositionStart={() => setComposing(true)}
           onCompositionEnd={() => setComposing(false)}
           ref={inputRef}
