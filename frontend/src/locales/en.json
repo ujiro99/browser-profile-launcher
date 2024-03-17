@@ -6,5 +6,9 @@
   "collections-desc": "Select collections you wish to classify.",
   "add": "Add",
   "add-desc": "Enter the name of a collection you wish to add.",
-  "add-placeholder": "Name of collection..."
+  "add-placeholder": "Name of collection...",
+  "delete": "Delete",
+  "delete-collection": "Deleting Collections",
+  "delete-desc": "Do you want to delete this collection?\nThis operation cannot be undone.",
+  "": ""
 }

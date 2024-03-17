@@ -6,5 +6,9 @@
   "collections-desc": "分類先のコレクションを選んでください。",
   "add": "追加",
   "add-desc": "追加するコレクション名を入力してください。",
-  "add-placeholder": "コレクション名..."
+  "add-placeholder": "コレクション名...",
+  "delete": "削除",
+  "delete-collection": "コレクションの削除",
+  "delete-desc": "コレクションを削除しますか？\nこの操作は取り消せません。",
+  "": ""
 }

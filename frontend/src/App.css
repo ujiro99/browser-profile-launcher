@@ -12,10 +12,12 @@ body {
   height: 100vh;
   background: #fff;
   overflow: hidden;
+  --input-height: 50px;
 }
 
 .input-box {
   padding: 8px 8px 4px;
+  height: var(--input-height);
 }
 
 .input {
@@ -30,7 +32,7 @@ body {
 }
 
 .result-tabs {
-  height: calc(100% - 50px);
+  height: calc(100% - var(--input-height));
 
   --border: 215 2% 78%;
 }
@@ -45,6 +47,15 @@ body {
   @apply transition-all;
   @apply ease-out;
   @apply duration-100;
+}
+
+.tab-content {
+  height: calc(100% - var(--input-height));
+}
+
+.tab-remove {
+  margin-top: 10px;
+  text-align: center;
 }
 
 .error {

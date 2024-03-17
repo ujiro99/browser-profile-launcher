@@ -10,6 +10,7 @@ import { uniq } from "../lib/utils";
 type CollectionType = {
   collections: Collection[];
   setCollection: (value: Collection[]) => void;
+  removeCollection: (value: Collection) => void;
   profileCollections: ProfileCollections[];
   setProfileCollection: (value: ProfileCollections[]) => void;
 };
@@ -35,6 +36,23 @@ export const useCollection = (): CollectionType => {
     );
   };
 
+  const removeCollection = (value: Collection) => {
+    const ncs = collections.filter((c) => c !== value);
+    const npcs = profileCollections
+      .map((p) => {
+        return {
+          ...p,
+          collections: p.collections.filter((c) => c !== value),
+        };
+      })
+      .filter((p) => p.collections.length > 0);
+    Config.getInstance().set({
+      ...config,
+      [ConfigKey.collections]: ncs,
+      [ConfigKey.profileCollections]: npcs,
+    });
+  };
+
   const setProfileCollection = (value: ProfileCollections[]) => {
     Config.getInstance().set(
       {
@@ -48,6 +66,7 @@ export const useCollection = (): CollectionType => {
   return {
     collections,
     setCollection,
+    removeCollection,
     profileCollections,
     setProfileCollection,
   };

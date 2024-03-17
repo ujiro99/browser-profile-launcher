@@ -23,7 +23,7 @@ export function CollectionAdd({ className }: Props) {
   const addCollection = () => {
     const val = inputRef.current?.value;
     if (val) {
-      setCollection([val, ...collections]);
+      setCollection([...collections, val]);
     }
   };
 

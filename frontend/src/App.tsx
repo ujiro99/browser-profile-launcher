@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileList } from "@/components/ProfileList";
 import { CollectionAdd } from "@/components/CollectionAdd";
+import { CollectionDelete } from "@/components/CollectionDelete";
 import { useHistory } from "./hooks/useHistory";
 import { useCollection } from "@/hooks/useCollection";
 import { useEnv } from "./hooks/useEnv";
@@ -27,9 +28,14 @@ interface TabRefs {
   [key: string]: React.RefObject<HTMLButtonElement>;
 }
 
+const DEFAULT_TABS = ["all", "history"];
+function isDefaultTab(tab: string): boolean {
+  return DEFAULT_TABS.includes(tab);
+}
+
 function App() {
   const { collections, profileCollections } = useCollection();
-  const tabs = ["all", "history", ...collections];
+  const tabs = [...DEFAULT_TABS, ...collections];
   const [list, setList] = useState<ListItem[]>([]);
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(FocusDefault);
@@ -180,11 +186,11 @@ function App() {
               {t(tab)}
             </TabsTrigger>
           ))}
-          <CollectionAdd className="ml-auto" />
+          <CollectionAdd />
           <div className="tab-indicator" ref={indicatorRef} />
         </TabsList>
         {tabs.map((tab) => (
-          <TabsContent value={tab} className="h-full mt-3">
+          <TabsContent value={tab} className="tab-content mt-3">
             <ScrollArea type="auto" className="h-full">
               {lists[tab] && (
                 <ProfileList
@@ -192,6 +198,9 @@ function App() {
                   focusIdx={focus}
                   onClick={onClick}
                 />
+              )}
+              {!isDefaultTab(tab) && (
+                <CollectionDelete className="tab-remove" collection={tab} />
               )}
             </ScrollArea>
           </TabsContent>

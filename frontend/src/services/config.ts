@@ -55,16 +55,11 @@ export class Config {
     return this.config;
   }
 
-  set(value: ConfigType, changedKey: ConfigKey) {
+  set(value: ConfigType, changedKey?: ConfigKey) {
     console.debug("Config Updated", value);
     this.config = value;
     this.notifyListeners(changedKey);
-
-    if (this.isDev) {
-      SaveConfig(JSON.stringify(this.config, null, 2));
-    } else {
-      SaveConfig(JSON.stringify(this.config));
-    }
+    SaveConfig(JSON.stringify(this.config, null, 2));
   }
 
   addChangeListener(listener: ChangeListener) {
