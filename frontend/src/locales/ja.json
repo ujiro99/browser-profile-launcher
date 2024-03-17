@@ -1,5 +1,10 @@
 {
   "all": "全て",
   "history": "履歴",
-  "keywordSearch": "絞り込み検索..."
+  "keywordSearch": "絞り込み検索...",
+  "collections": "コレクション",
+  "collections-desc": "分類先のコレクションを選んでください。",
+  "add": "追加",
+  "add-desc": "追加するコレクション名を入力してください。",
+  "add-placeholder": "コレクション名..."
 }

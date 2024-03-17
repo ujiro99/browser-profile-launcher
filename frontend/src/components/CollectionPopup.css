@@ -1,0 +1,14 @@
+.CollectionPopup {
+}
+
+.CollectionPopup__input {
+  @apply grid;
+  @apply gap-1;
+  grid-template-columns: 1fr 60px;
+}
+
+.CollectionPopup__input svg {
+  --size: 18px;
+  width: var(--size);
+  height: var(--size);
+}

@@ -49,3 +49,7 @@ export function mapListItem(list: ListItem[], keys: ProfileKey[]): ListItem[] {
     })
     .filter((p) => p !== undefined) as ListItem[];
 }
+
+export function uniq<T>(arr: T[]) {
+  return arr.filter((elm, idx, self) => self.indexOf(elm) === idx);
+}

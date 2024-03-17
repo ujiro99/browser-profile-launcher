@@ -1,0 +1,16 @@
+.CollectionButton svg {
+  --size: 28px;
+  width: var(--size);
+  height: var(--size);
+  transition:
+    background,
+    fill 0.14s ease-out;
+  padding: 4px;
+  @apply fill-neutral-400;
+  @apply rounded-md;
+}
+
+.CollectionButton svg:hover {
+  background: var(--hover-bg);
+  @apply fill-neutral-700;
+}

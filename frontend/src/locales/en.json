@@ -1,5 +1,10 @@
 {
   "all": "All",
   "history": "History",
-  "keywordSearch": "Keyword Search"
+  "keywordSearch": "Keyword Search",
+  "collections": "Collections",
+  "collections-desc": "Select collections you wish to classify.",
+  "add": "Add",
+  "add-desc": "Enter the name of a collection you wish to add.",
+  "add-placeholder": "Name of collection..."
 }

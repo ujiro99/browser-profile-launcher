@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileList } from "@/components/ProfileList";
+import { CollectionAdd } from "@/components/CollectionAdd";
 import { useHistory } from "./hooks/useHistory";
 import { useEnv } from "./hooks/useEnv";
 import * as utils from "./lib/utils";
@@ -154,6 +155,7 @@ function App() {
               {t(tab)}
             </TabsTrigger>
           ))}
+          <CollectionAdd className="ml-auto" />
           <div className="tab-indicator" ref={indicatorRef} />
         </TabsList>
         {tabs.map((tab) => (

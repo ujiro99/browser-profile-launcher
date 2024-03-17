@@ -1,5 +1,8 @@
 import type { RangeTuple } from "fuse.js";
 import type { profile as goProfile } from "../../wailsjs/go/models";
+import { CollectionPopup } from "./CollectionPopup";
+
+import "./Item.css";
 
 type ItemProps = {
   profile: goProfile.Profile;
@@ -59,6 +62,7 @@ export function Item({ profile, indices, onClick }: ItemProps) {
           })}
         </p>
       </button>
+      <CollectionPopup className="profileItem__collection" profile={profile} />
     </div>
   );
 }

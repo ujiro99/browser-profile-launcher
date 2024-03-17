@@ -1,6 +1,7 @@
 :root {
   --red-600: rgb(220 38 38);
   --sky-500: rgb(14 165 233);
+  --hover-bg: rgba(245, 245, 245, 1);
 }
 
 body {
@@ -14,18 +15,18 @@ body {
 }
 
 .input-box {
-  padding: 8px 8px 2px;
+  padding: 8px 8px 4px;
 }
 
-.input-box .input {
+.input {
   border: none;
   border-radius: 8px;
   outline: none;
-  padding: 6px 10px;
+  padding: 8px 10px;
   width: 100%;
-  background-color: rgba(240, 240, 240, 1);
   -webkit-font-smoothing: antialiased;
   font-size: 0.9em;
+  @apply bg-neutral-100;
 }
 
 .result-tabs {
@@ -36,46 +37,14 @@ body {
 
 .tab-indicator {
   position: absolute;
-  transition: all 0.1s ease-out;
   background: rgb(55 65 81);
   height: 4px;
   bottom: -4px;
   border-radius: 4px;
-}
 
-.profileItem__button {
-  padding: 6px 8px;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  background: #fff;
-  transition: background 0.2s ease-out;
-  cursor: pointer;
-  border: none;
-}
-
-.profileItem__button:hover,
-.focused .profileItem__button {
-  background: #f0f0f0;
-}
-
-.profileItem__img {
-  width: 1.8em;
-  height: 1.8em;
-  margin-right: 0.6em;
-}
-
-.profileItem__label {
-  font-size: 1em;
-  margin: 0;
-  color: #555;
-  line-height: 1;
-  text-align: left;
-}
-
-.profileItem__label--match {
-  font-weight: bold;
-  color: #333;
+  @apply transition-all;
+  @apply ease-out;
+  @apply duration-100;
 }
 
 .error {

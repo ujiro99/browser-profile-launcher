@@ -4,19 +4,21 @@ import { Environment } from "../../wailsjs/runtime/runtime";
 
 export enum ConfigKey {
   history = "history",
-  tags = "tags",
-  profileTags = "profileTags",
+  collections = "collections",
+  profileCollections = "profileCollections",
 }
 
-type ProfileTags = {
-  profileKey: ProfileKey;
-  tags: string[];
+export type Collection = string;
+
+export type ProfileCollections = {
+  key: ProfileKey;
+  collections: Collection[];
 };
 
 export type ConfigType = {
   [ConfigKey.history]: ProfileKey[];
-  [ConfigKey.tags]: string[];
-  [ConfigKey.profileTags]: ProfileTags[];
+  [ConfigKey.collections]: Collection[];
+  [ConfigKey.profileCollections]: ProfileCollections[];
 };
 
 type ChangeListener = (config: ConfigType, area?: ConfigKey) => void;

@@ -1,0 +1,20 @@
+.CollectionAdd {
+  --size: 28px;
+  height: var(--size);
+}
+
+.CollectionAdd__button svg {
+  width: var(--size);
+  height: var(--size);
+  transition:
+    background,
+    fill 0.14s ease-out;
+  padding: 4px;
+  @apply fill-neutral-500;
+  @apply rounded-md;
+}
+
+.CollectionAdd__button svg:hover {
+  background: var(--hover-bg);
+  @apply fill-neutral-800;
+}

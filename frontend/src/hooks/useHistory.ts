@@ -2,14 +2,11 @@ import { useState, useEffect } from "react";
 import { Config, ConfigKey } from "../services/config";
 import type { ConfigType } from "../services/config";
 import type { ProfileKey } from "../lib/utils";
+import { uniq } from "../lib/utils";
 
 type HistoryType = [ProfileKey[], (value: ProfileKey) => void];
 
 const HISTORY_MAX = 100;
-
-function uniq<T>(arr: T[]) {
-  return arr.filter((elm, idx, self) => self.indexOf(elm) === idx);
-}
 
 export const useHistory = (): HistoryType => {
   const [config, setConfig] = useState<ConfigType>({} as ConfigType);
