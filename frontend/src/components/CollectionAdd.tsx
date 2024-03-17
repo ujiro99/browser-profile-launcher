@@ -17,6 +17,7 @@ type Props = {
 
 export function CollectionAdd({ className }: Props) {
   const [open, setOpen] = useState(false);
+  const [composing, setComposing] = useState(false);
   const { t } = useTranslation();
   const { collections, setCollection } = useCollection();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -26,6 +27,19 @@ export function CollectionAdd({ className }: Props) {
     if (val) {
       setCollection([...collections, val]);
       setOpen(false);
+    }
+  };
+
+  const onKeyDownInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (composing) {
+      // IME入力中は何もしない
+      return;
+    }
+    const key = e.code;
+    if (key === "ArrowLeft") {
+      e.stopPropagation();
+    } else if (key === "ArrowRight") {
+      e.stopPropagation();
     }
   };
 
@@ -47,6 +61,9 @@ export function CollectionAdd({ className }: Props) {
                 ref={inputRef}
                 className="input h-8"
                 placeholder={t("add-placeholder")}
+                onKeyDown={onKeyDownInput}
+                onCompositionStart={() => setComposing(true)}
+                onCompositionEnd={() => setComposing(false)}
               />
               <Button
                 onClick={addCollection}
