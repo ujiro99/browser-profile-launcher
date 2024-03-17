@@ -25,7 +25,8 @@ export function CollectionPopup({ className, profile }: CollectionPopuProps) {
   const current = profileCollections.find((c) => key === c.key);
 
   const onChange = (collections: string[]) => {
-    const newVal = [...profileCollections, { key, collections }];
+    let newVal = profileCollections.filter((c) => c.key !== key);
+    newVal = [...newVal, { key, collections }];
     setProfileCollection(newVal);
   };
 

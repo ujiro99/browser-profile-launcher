@@ -10,9 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileList } from "@/components/ProfileList";
 import { CollectionAdd } from "@/components/CollectionAdd";
 import { useHistory } from "./hooks/useHistory";
+import { useCollection } from "@/hooks/useCollection";
 import { useEnv } from "./hooks/useEnv";
 import * as utils from "./lib/utils";
-import type { ListItem } from "./lib/utils";
+import type { ListItem, ProfileKey } from "./lib/utils";
 
 import "./App.css";
 
@@ -27,7 +28,8 @@ interface TabRefs {
 }
 
 function App() {
-  const tabs = ["all", "history"];
+  const { collections, profileCollections } = useCollection();
+  const tabs = ["all", "history", ...collections];
   const [list, setList] = useState<ListItem[]>([]);
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(FocusDefault);
@@ -40,11 +42,6 @@ function App() {
   const indicatorRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const lists = {
-    all: utils.filter(list, query),
-    history: utils.filter(utils.mapListItem(list, history), query),
-  } as TabList;
-
   useEffect(() => {
     inputRef.current?.focus();
     List().then((profiles) => {
@@ -54,6 +51,7 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // タブインジケーターの計算
     const ref = indicatorRef.current;
     if (ref) {
       const tab = refsByTabs[currentTab];
@@ -64,6 +62,40 @@ function App() {
       }
     }
   }, [currentTab]);
+
+  // コレクション毎のProfileKeyを作成
+  const keys = useMemo(() => {
+    return collections.reduce(
+      (acc, cur) => {
+        const pcs = profileCollections.filter((p) =>
+          p.collections.includes(cur),
+        );
+        acc[cur] = pcs.map((p) => p.key);
+        return acc;
+      },
+      {} as { [key: string]: ProfileKey[] },
+    );
+  }, [collections, profileCollections]);
+
+  const lists = useMemo(() => {
+    // デフォルトのタブを追加
+    const l = {
+      all: utils.filter(list, query),
+      history: utils.filter(utils.mapListItem(list, history), query),
+    } as TabList;
+    // コレクションのタブを追加
+    for (const [k, v] of Object.entries(keys)) {
+      l[k] = utils.filter(utils.mapListItem(list, v), query);
+    }
+    return l;
+  }, [list, history, keys, query]);
+
+  const refsByTabs = useMemo(() => {
+    return tabs.reduce((acc, cur) => {
+      acc[cur] = React.createRef<HTMLButtonElement>();
+      return acc;
+    }, {} as TabRefs);
+  }, [tabs]);
 
   const updateQuery = (e: any) => {
     setQuery(e.target.value);
@@ -115,13 +147,6 @@ function App() {
       }
     }
   };
-
-  const refsByTabs = useMemo(() => {
-    return tabs.reduce((acc, cur) => {
-      acc[cur] = React.createRef<HTMLButtonElement>();
-      return acc;
-    }, {} as TabRefs);
-  }, []);
 
   return (
     <div id="App">
