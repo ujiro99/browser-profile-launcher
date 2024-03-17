@@ -91,7 +91,7 @@ function App() {
     } as TabList;
     // コレクションのタブを追加
     for (const [k, v] of Object.entries(keys)) {
-      l[k] = utils.filter(utils.mapListItem(list, v), query);
+      l[k] = utils.sort(utils.filter(utils.mapListItem(list, v), query));
     }
     return l;
   }, [list, history, keys, query]);

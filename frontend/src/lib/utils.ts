@@ -42,6 +42,12 @@ export function filter(list: ListItem[], query: string): ListItem[] {
   return filtered;
 }
 
+export function sort(list: ListItem[]): ListItem[] {
+  return list.sort((a, b) => {
+    return a.profile.shortcut_name.localeCompare(b.profile.shortcut_name);
+  });
+}
+
 export function mapListItem(list: ListItem[], keys: ProfileKey[]): ListItem[] {
   return keys
     .map((key) => {
