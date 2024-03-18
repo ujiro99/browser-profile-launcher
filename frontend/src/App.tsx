@@ -156,11 +156,11 @@ function App() {
     Run(p.browser, p.directory).then((err) => {
       setErrorMsg(err);
       if (!err) {
+        // 履歴に追加
+        addHistory(utils.profileKey(p));
         // 起動成功したら終了する。これはランチャーとしての定め
         // 開発モードの場合は再起動が面倒なため、終了しない
         if (!isDev) Quit();
-        // 履歴に追加
-        addHistory(utils.profileKey(p));
       }
     });
   };
