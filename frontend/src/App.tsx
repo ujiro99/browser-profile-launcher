@@ -39,7 +39,7 @@ function App() {
   const [list, setList] = useState<ListItem[]>([]);
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(FocusDefault);
-  const [currentTab, setCurrentTab] = useState(tabs[0]);
+  const [currentTab, _setCurrentTab] = useState(tabs[0]);
   const [composing, setComposing] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [history, addHistory] = useHistory();
@@ -186,6 +186,12 @@ function App() {
     if (collection === currentTab) {
       setPrevTab();
     }
+  };
+
+  // tabを移動したら、focusを長さに合わせる
+  const setCurrentTab = (tab: string) => {
+    _setCurrentTab(tab);
+    setFocus(Math.min(focus, lists[tab]?.length - 1 || 0));
   };
 
   const onKeyDownInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
