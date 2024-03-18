@@ -233,7 +233,7 @@ function App() {
         <TabsList className="p-0 h-[auto] relative bg-transparent">
           {tabs.map((tab) => (
             <TabsTrigger
-              className="py-1 px-2 data-[state=active]:shadow-none hover:bg-neutral-100 hover:data-[state=active]:bg-neutral-100"
+              className="tab-button"
               value={tab}
               ref={refsByTabs[tab]}
             >

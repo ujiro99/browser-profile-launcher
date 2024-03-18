@@ -53,6 +53,21 @@ body {
   height: calc(100% - var(--input-height));
 }
 
+#App .tab-button {
+  @apply py-1;
+  @apply px-2;
+}
+
+.tab-button:focus-visible,
+.tab-button[data-state="active"] {
+  box-shadow: none !important;
+}
+
+.tab-button:hover,
+.tab-button[data-state="active"]:hover {
+  @apply bg-neutral-100;
+}
+
 .tab-remove {
   margin-top: 10px;
   text-align: center;
