@@ -24,7 +24,6 @@ export function ProfileList({ list, focusIdx, onClick }: ListProps) {
     if (refsByIdx.length > 0 && refsByIdx[focusIdx]) {
       refsByIdx[focusIdx].current?.scrollIntoView({
         block: "nearest",
-        behavior: "smooth",
       });
     }
   }, [focusIdx, refsByIdx]);
