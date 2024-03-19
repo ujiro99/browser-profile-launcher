@@ -1,12 +1,21 @@
 import { LoadConfig, SaveConfig } from "../../wailsjs/go/main/App";
 import type { ProfileKey } from "../lib/utils";
 import { Environment } from "../../wailsjs/runtime/runtime";
+import defaultConfig from "./defaultConfig.json";
 
 export enum ConfigKey {
   history = "history",
   collections = "collections",
   profileCollections = "profileCollections",
+  behaviorAfterLaunch = "behaviorAfterLaunch",
 }
+
+export type ConfigType = {
+  [ConfigKey.history]: ProfileKey[];
+  [ConfigKey.collections]: Collection[];
+  [ConfigKey.profileCollections]: ProfileCollections[];
+  [ConfigKey.behaviorAfterLaunch]: BehaviorAfterLaunch;
+};
 
 export type Collection = string;
 
@@ -15,11 +24,11 @@ export type ProfileCollections = {
   collections: Collection[];
 };
 
-export type ConfigType = {
-  [ConfigKey.history]: ProfileKey[];
-  [ConfigKey.collections]: Collection[];
-  [ConfigKey.profileCollections]: ProfileCollections[];
-};
+export enum BehaviorAfterLaunch {
+  none = "none",
+  close = "close",
+  minimize = "minimize",
+}
 
 type ChangeListener = (config: ConfigType, area?: ConfigKey) => void;
 
@@ -30,13 +39,20 @@ export class Config {
   private listeners = [] as ChangeListener[];
 
   private constructor() {
-    LoadConfig().then((config) => {
-      console.debug("Config Loaded", this.config);
-      if (config) {
-        this.config = JSON.parse(config);
+    LoadConfig()
+      .then((config) => {
+        console.debug("Config Loaded", this.config);
+        if (config) {
+          this.config = JSON.parse(config);
+        }
+      })
+      .catch((err) => {
+        console.warn("Can't load config", err);
+        this.config = defaultConfig as ConfigType;
+      })
+      .finally(() => {
         this.notifyListeners();
-      }
-    });
+      });
     Environment().then((env) => {
       if (env.buildType === "dev") {
         this.isDev = true;

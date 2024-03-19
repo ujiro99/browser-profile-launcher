@@ -2,11 +2,15 @@ import { useState, useEffect } from "react";
 import { Config } from "../services/config";
 import type { ConfigType, ConfigKey } from "../services/config";
 
-export const useConfig = () => {
-  const [config, setConfig] = useState<ConfigType>();
+type useConfigType = [ConfigType, (value: ConfigType, area: ConfigKey) => void];
+
+export const useConfig = (): useConfigType => {
+  const [config, setConfig] = useState<ConfigType>({} as ConfigType);
 
   useEffect(() => {
-    setConfig(Config.getInstance().get());
+    const c = Config.getInstance();
+    setConfig(c.get());
+    c.addChangeListener((conf) => setConfig(conf));
   }, []);
 
   const set = (value: ConfigType, area: ConfigKey) => {

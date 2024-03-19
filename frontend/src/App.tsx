@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import type { profile } from "../wailsjs/go/models";
 import { List, Run } from "../wailsjs/go/main/App";
-import { Quit } from "../wailsjs/runtime/runtime";
+import { Quit, WindowMinimise } from "../wailsjs/runtime/runtime";
 import { useTranslation } from "react-i18next";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,9 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileList } from "@/components/ProfileList";
 import { CollectionAdd } from "@/components/CollectionAdd";
 import { CollectionDelete } from "@/components/CollectionDelete";
-import { useHistory } from "./hooks/useHistory";
+import { useHistory } from "@/hooks/useHistory";
 import { useCollection } from "@/hooks/useCollection";
-import { useEnv } from "./hooks/useEnv";
+import { useConfig } from "@/hooks/useConfig";
+import { useEnv } from "@/hooks/useEnv";
+import { ConfigKey, BehaviorAfterLaunch } from "@/services/config";
 import * as utils from "./lib/utils";
 import type { ListItem, ProfileKey } from "./lib/utils";
 
@@ -43,6 +45,7 @@ function App() {
   const [composing, setComposing] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [history, addHistory] = useHistory();
+  const [config] = useConfig();
   const { t } = useTranslation();
   const { isDev } = useEnv();
   const indicatorRef = useRef<HTMLDivElement>(null);
@@ -158,9 +161,14 @@ function App() {
       if (!err) {
         // 履歴に追加
         addHistory(utils.profileKey(p));
-        // 起動成功したら終了する。これはランチャーとしての定め
-        // 開発モードの場合は再起動が面倒なため、終了しない
-        if (!isDev) Quit();
+
+        const behavior = config[ConfigKey.behaviorAfterLaunch];
+        if (behavior === BehaviorAfterLaunch.minimize) {
+          !isDev && WindowMinimise();
+        } else if (behavior === BehaviorAfterLaunch.close) {
+          // 開発モードの場合は再起動が面倒なため、終了しない
+          !isDev && Quit();
+        }
       }
     });
   };
