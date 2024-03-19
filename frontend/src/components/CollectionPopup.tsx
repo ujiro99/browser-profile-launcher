@@ -22,6 +22,7 @@ export function CollectionPopup({ className, profile }: CollectionPopuProps) {
   const { t } = useTranslation();
   const { collections, profileCollections, setProfileCollection } =
     useCollection();
+  const empty = collections.length === 0;
   const key = useMemo(() => profileKey(profile), [profile]);
   const current = profileCollections.find((c) => key === c.key);
 
@@ -42,7 +43,7 @@ export function CollectionPopup({ className, profile }: CollectionPopuProps) {
             <div className="space-y-2">
               <h4 className="font-medium leading-none">{t("collections")}</h4>
               <p className="text-sm text-muted-foreground">
-                {t("collections-desc")}
+                {empty ? t("collections-desc-empty") : t("collections-desc")}
               </p>
             </div>
             <ToggleGroup

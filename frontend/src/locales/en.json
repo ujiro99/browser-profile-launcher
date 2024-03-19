@@ -4,6 +4,7 @@
   "keywordSearch": "Keyword Search",
   "collections": "Collections",
   "collections-desc": "Select collections you wish to classify.",
+  "collections-desc-empty": "To get started, click the + button above 👆 to add a collection.",
   "add": "Add",
   "add-desc": "Enter the name of a collection you wish to add.",
   "add-placeholder": "Name of collection...",
