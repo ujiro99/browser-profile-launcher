@@ -39,7 +39,7 @@
 
 .profileItem__collection {
   position: absolute;
-  right: 4px;
+  right: 8px;
   top: 6px;
   opacity: 0;
   transition: opacity 0.14s ease-out;

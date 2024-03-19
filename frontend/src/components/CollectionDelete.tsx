@@ -35,10 +35,10 @@ export function CollectionDelete({ className, collection, onDeleted }: Props) {
         <DialogTrigger className="text-neutral-400 hover:text-rose-600 hover:bg-rose-50 py-1 px-3 rounded-lg transition text-sm">
           {t("delete")}
         </DialogTrigger>
-        <DialogContent className="w-80 rounded">
+        <DialogContent className="w-72 rounded">
           <DialogHeader>
             <DialogTitle>
-              <Warning className="fill-neutral-600 inline" />
+              <Warning className="CollectionDelete__title-warning" />
               {t("delete-collection")}
             </DialogTitle>
             <DialogDescription>

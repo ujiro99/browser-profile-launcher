@@ -67,7 +67,7 @@ export function CollectionAdd({ className }: Props) {
               />
               <Button
                 onClick={addCollection}
-                className="py-1 px-2 h-8 rounded-lg text-xs"
+                className="py-1 pr-2 pl-1 h-8 rounded-lg text-xs"
               >
                 <Plus className="fill-neutral-600" />
                 {t("add")}

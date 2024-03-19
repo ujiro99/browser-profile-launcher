@@ -18,3 +18,11 @@
   background: var(--hover-bg);
   @apply fill-neutral-800;
 }
+
+.CollectionDelete__title-warning {
+  height: 1.2em;
+  margin-top: -2px;
+  display: inline-block;
+
+  @apply fill-neutral-600;
+}
