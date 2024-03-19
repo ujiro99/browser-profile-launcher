@@ -6,11 +6,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import LibraryAdd from "@/assets/library_add.svg?react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useCollection } from "@/hooks/useCollection";
-import { CollectionButton } from "./CollectionButton";
-import "./CollectionPopup.css";
 import { profileKey } from "@/lib/utils";
+
+import "./CollectionPopup.css";
 
 type CollectionPopuProps = {
   profile: profileModel.Profile;
@@ -33,8 +34,8 @@ export function CollectionPopup({ className, profile }: CollectionPopuProps) {
   return (
     <div className={`CollectionPopup ${className}`}>
       <Popover modal={true}>
-        <PopoverTrigger>
-          <CollectionButton />
+        <PopoverTrigger className="CollectionButton">
+          <LibraryAdd />
         </PopoverTrigger>
         <PopoverContent collisionPadding={8}>
           <div className="grid gap-2">

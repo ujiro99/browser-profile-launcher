@@ -32,6 +32,9 @@ func (h *IcoLoader) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	if !strings.HasSuffix(req.URL.Path, ".ico") {
 		return
 	}
+	if req.URL.Path == "/favicon.ico" {
+		return
+	}
 	log.Println("Req: ", req.URL.Path)
 
 	query := req.URL.Query()

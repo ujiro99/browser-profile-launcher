@@ -243,6 +243,7 @@ function App() {
             <TabsTrigger
               className="tab-button"
               value={tab}
+              key={tab}
               ref={refsByTabs[tab]}
             >
               {t(tab)}
@@ -252,7 +253,7 @@ function App() {
           <div className="tab-indicator" ref={indicatorRef} />
         </TabsList>
         {tabs.map((tab) => (
-          <TabsContent value={tab} className="tab-content mt-3">
+          <TabsContent value={tab} key={tab} className="tab-content mt-3">
             <ScrollArea type="auto" className="h-full">
               {lists[tab] && (
                 <ProfileList
