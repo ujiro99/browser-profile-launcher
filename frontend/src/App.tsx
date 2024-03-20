@@ -195,7 +195,7 @@ function App() {
   // tabを移動したら、focusを長さに合わせる
   const setCurrentTab = (tab: string) => {
     _setCurrentTab(tab);
-    setFocus(Math.min(focus, lists[tab]?.length - 1 || 0));
+    setFocus(Math.max(Math.min(focus, lists[tab]?.length - 1), 0));
   };
 
   return (
