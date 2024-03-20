@@ -1,0 +1,33 @@
+.input {
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  padding: 8px 10px;
+  width: 100%;
+  -webkit-font-smoothing: antialiased;
+  font-size: 0.9em;
+  @apply bg-neutral-100;
+}
+
+.input-clear-button {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+}
+
+.input-clear-button > svg {
+  --size: 24px;
+  width: var(--size);
+  height: var(--size);
+  transition:
+    background,
+    fill 0.14s ease-out;
+  padding: 4px;
+  @apply fill-neutral-500;
+  @apply rounded-full;
+}
+
+.input-clear-button > svg:hover {
+  background: #e5e5e5;
+  @apply fill-neutral-800;
+}

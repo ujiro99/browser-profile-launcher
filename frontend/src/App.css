@@ -20,17 +20,6 @@ body {
   height: var(--input-height);
 }
 
-.input {
-  border: none;
-  border-radius: 8px;
-  outline: none;
-  padding: 8px 10px;
-  width: 100%;
-  -webkit-font-smoothing: antialiased;
-  font-size: 0.9em;
-  @apply bg-neutral-100;
-}
-
 .result-tabs {
   height: calc(100% - var(--input-height));
 
