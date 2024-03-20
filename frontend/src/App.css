@@ -43,7 +43,7 @@ body {
   position: absolute;
   background: rgb(55 65 81);
   height: 4px;
-  bottom: -2px;
+  bottom: 0px;
   border-radius: 4px;
 
   @apply transition-all;
@@ -58,11 +58,9 @@ body {
 #App .tab-button {
   @apply py-1;
   @apply px-2;
-}
-
-.tab-button:focus-visible,
-.tab-button[data-state="active"] {
-  box-shadow: none !important;
+  margin-top: -6px;
+  box-shadow: none;
+  outline: none;
 }
 
 .tab-button:hover,

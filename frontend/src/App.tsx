@@ -235,7 +235,7 @@ function App() {
         onValueChange={setCurrentTab}
       >
         <TabsList
-          className="p-0 h-[32px] w-full relative bg-transparent scroll-horizontal"
+          className="p-0 h-[34px] w-full relative bg-transparent scroll-horizontal"
           onWheel={onWheel}
           ref={tablistRef}
         >
