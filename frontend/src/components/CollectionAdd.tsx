@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -12,11 +12,7 @@ import Plus from "@/assets/plus.svg?react";
 
 import "./CollectionAdd.css";
 
-type Props = {
-  className?: string;
-};
-
-export function CollectionAdd({ className }: Props) {
+export function CollectionAdd() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const { t } = useTranslation();
@@ -37,7 +33,7 @@ export function CollectionAdd({ className }: Props) {
   };
 
   return (
-    <div className={`CollectionAdd ${className}`}>
+    <div className="CollectionAdd">
       <Popover modal={true} open={open} onOpenChange={setOpen}>
         <PopoverTrigger className="CollectionAdd__button">
           <Plus />

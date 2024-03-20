@@ -1,6 +1,7 @@
 .CollectionAdd {
   --size: 28px;
   height: var(--size);
+  margin-top: -6px;
 }
 
 .CollectionAdd__button svg {
