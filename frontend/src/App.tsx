@@ -16,7 +16,7 @@ import { useHistory } from "@/hooks/useHistory";
 import { useCollection } from "@/hooks/useCollection";
 import { useConfig } from "@/hooks/useConfig";
 import { useEnv } from "@/hooks/useEnv";
-import { ConfigKey, BehaviorAfterLaunch } from "@/services/config";
+import { Config, ConfigKey, BehaviorAfterLaunch } from "@/services/config";
 import Clock from "@/assets/clock.svg?react";
 import LibraryAdd from "@/assets/library_add.svg?react";
 import * as utils from "./lib/utils";
@@ -42,13 +42,13 @@ function isDefaultTab(tab: string): boolean {
 function App() {
   const { collections, profileCollections } = useCollection();
   const tabs = [...DEFAULT_TABS, ...collections];
+  const [config, setConfig] = useConfig();
   const [list, setList] = useState<ListItem[]>([]);
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(FocusDefault);
   const [currentTab, _setCurrentTab] = useState(tabs[0]);
   const [errorMsg, setErrorMsg] = useState("");
   const [history, addHistory] = useHistory();
-  const [config] = useConfig();
   const { t } = useTranslation();
   const { isDev } = useEnv();
   const indicatorRef = useRef<HTMLDivElement>(null);
@@ -103,6 +103,14 @@ function App() {
     List().then((profiles) => {
       console.table(profiles);
       setList(profiles.map((profile) => ({ profile })));
+    });
+
+    // アクティブタブを復帰
+    Config.getInstance().addLoadedListener((conf) => {
+      const lastTab = conf[ConfigKey.lastTab];
+      if (lastTab) {
+        _setCurrentTab(lastTab);
+      }
     });
   }, []);
 
@@ -227,6 +235,7 @@ function App() {
   const setCurrentTab = (tab: string) => {
     _setCurrentTab(tab);
     setFocus(Math.max(Math.min(focus, lists[tab]?.length - 1), 0));
+    setConfig({ ...config, [ConfigKey.lastTab]: tab }, ConfigKey.lastTab);
   };
 
   // tablist上での横スクロール

@@ -9,6 +9,7 @@ export enum ConfigKey {
   profileCollections = "profileCollections",
   behaviorAfterLaunch = "behaviorAfterLaunch",
   language = "language",
+  lastTab = "lastTab",
 }
 
 export type ConfigType = {
@@ -17,6 +18,7 @@ export type ConfigType = {
   [ConfigKey.profileCollections]: ProfileCollections[];
   [ConfigKey.behaviorAfterLaunch]: BehaviorAfterLaunch;
   [ConfigKey.language]: string;
+  [ConfigKey.lastTab]: string;
 };
 
 export type Collection = string;
@@ -39,13 +41,14 @@ export class Config {
   private isDev = false;
   private config = {} as ConfigType;
   private listeners = [] as ChangeListener[];
+  private loadedListeners = [] as ChangeListener[];
 
   private constructor() {
     LoadConfig()
       .then((config) => {
-        console.debug("Config Loaded", this.config);
         if (config) {
           this.config = JSON.parse(config);
+          console.debug("Config Loaded", this.config);
         }
       })
       .catch((err) => {
@@ -53,6 +56,7 @@ export class Config {
         this.config = defaultConfig as ConfigType;
       })
       .finally(() => {
+        this.notifyLoadedListeners();
         this.notifyListeners();
       });
     Environment().then((env) => {
@@ -84,8 +88,22 @@ export class Config {
     this.listeners.push(listener);
   }
 
+  addLoadedListener(listener: ChangeListener) {
+    this.loadedListeners.push(listener);
+    // 既にLoadedの場合は即座に通知
+    if (this.config) {
+      listener(this.config);
+    }
+  }
+
   private notifyListeners(changedKey?: ConfigKey) {
     for (const l of this.listeners) {
+      l(this.config, changedKey);
+    }
+  }
+
+  private notifyLoadedListeners(changedKey?: ConfigKey) {
+    for (const l of this.loadedListeners) {
       l(this.config, changedKey);
     }
   }
