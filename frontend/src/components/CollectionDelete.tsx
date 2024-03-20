@@ -41,22 +41,20 @@ export function CollectionDelete({ className, collection, onDeleted }: Props) {
               <Warning className="CollectionDelete__title-warning" />
               {t("delete-collection")}
             </DialogTitle>
-            <DialogDescription>
-              <div className="grid gap-2">
-                <p className="text-base text-muted-foreground whitespace-pre-line">
-                  {t("delete-desc")}
-                </p>
-                <p className="text-lg font-bold break-all">{collection}</p>
-                <Button
-                  variant="destructive"
-                  onClick={deleteCollection}
-                  className="center mt-2 mx-[auto] py-1 px-2 h-8 w-14 rounded-lg text-md"
-                >
-                  {t("delete")}
-                </Button>
-              </div>
+            <DialogDescription className="text-base text-muted-foreground whitespace-pre-line">
+              {t("delete-desc")}
             </DialogDescription>
           </DialogHeader>
+          <div className="grid gap-2 text-center">
+            <span className="text-lg font-bold break-all">{collection}</span>
+            <Button
+              variant="destructive"
+              onClick={deleteCollection}
+              className="center mt-2 mx-[auto] py-1 px-2 h-8 w-14 rounded-lg text-md"
+            >
+              {t("delete")}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
