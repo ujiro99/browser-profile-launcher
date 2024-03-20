@@ -8,6 +8,7 @@ export enum ConfigKey {
   collections = "collections",
   profileCollections = "profileCollections",
   behaviorAfterLaunch = "behaviorAfterLaunch",
+  language = "language",
 }
 
 export type ConfigType = {
@@ -15,6 +16,7 @@ export type ConfigType = {
   [ConfigKey.collections]: Collection[];
   [ConfigKey.profileCollections]: ProfileCollections[];
   [ConfigKey.behaviorAfterLaunch]: BehaviorAfterLaunch;
+  [ConfigKey.language]: string;
 };
 
 export type Collection = string;
