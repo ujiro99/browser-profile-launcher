@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileList } from "@/components/ProfileList";
 import { CollectionAdd } from "@/components/CollectionAdd";
 import { CollectionDelete } from "@/components/CollectionDelete";
+import { Input } from "@/components/Input";
 import { useHistory } from "@/hooks/useHistory";
 import { useCollection } from "@/hooks/useCollection";
 import { useConfig } from "@/hooks/useConfig";
@@ -42,7 +43,6 @@ function App() {
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(FocusDefault);
   const [currentTab, _setCurrentTab] = useState(tabs[0]);
-  const [composing, setComposing] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [history, addHistory] = useHistory();
   const [config] = useConfig();
@@ -50,70 +50,6 @@ function App() {
   const { isDev } = useEnv();
   const indicatorRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    inputRef.current?.focus();
-    List().then((profiles) => {
-      console.table(profiles);
-      setList(profiles.map((profile) => ({ profile })));
-    });
-  }, []);
-
-  useEffect(() => {
-    const keydown = (e: KeyboardEvent) => {
-      if (composing) {
-        // IME入力中は何もしない
-        return;
-      }
-      const key = e.code;
-      if (key === "ArrowUp") {
-        if (focus > FocusDefault) {
-          setFocus((pre) => pre - 1);
-          e.preventDefault();
-        }
-      } else if (key === "ArrowDown") {
-        const filtered = lists[currentTab];
-        if (focus < (filtered?.length || 0) - 1) {
-          setFocus((pre) => pre + 1);
-          e.preventDefault();
-        }
-      } else if (key === "ArrowLeft" || (key === "Tab" && e.shiftKey)) {
-        setPrevTab();
-        e.preventDefault();
-      } else if (key === "ArrowRight" || key === "Tab") {
-        setNextTab();
-        e.preventDefault();
-      } else if (key === "Enter") {
-        const filtered = lists[currentTab];
-        if (filtered) {
-          const item = filtered[focus];
-          if (item) {
-            const { browser, directory } = item.profile;
-            console.debug("Enter", browser, directory);
-            onClick(item.profile);
-            e.preventDefault();
-          }
-        }
-      }
-    };
-    window.addEventListener("keydown", keydown);
-    return () => {
-      window.removeEventListener("keydown", keydown);
-    };
-  }, [composing, currentTab, focus]);
-
-  // タブインジケーターの計算
-  useEffect(() => {
-    const ref = indicatorRef.current;
-    if (ref) {
-      const tab = refsByTabs[currentTab];
-      const pad = 4;
-      if (tab.current) {
-        ref.style.left = `${tab.current.offsetLeft + pad}px`;
-        ref.style.width = `${tab.current.offsetWidth - pad * 2}px`;
-      }
-    }
-  }, [currentTab]);
 
   // コレクション毎のProfileKeyを作成
   const keys = useMemo(() => {
@@ -149,6 +85,66 @@ function App() {
       return acc;
     }, {} as TabRefs);
   }, [tabs]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+    List().then((profiles) => {
+      console.table(profiles);
+      setList(profiles.map((profile) => ({ profile })));
+    });
+  }, []);
+
+  useEffect(() => {
+    const keydown = (e: KeyboardEvent) => {
+      const key = e.code;
+      if (key === "ArrowUp") {
+        if (focus > FocusDefault) {
+          setFocus((pre) => pre - 1);
+          e.preventDefault();
+        }
+      } else if (key === "ArrowDown") {
+        const filtered = lists[currentTab];
+        if (focus < (filtered?.length || 0) - 1) {
+          setFocus((pre) => pre + 1);
+          e.preventDefault();
+        }
+      } else if (key === "ArrowLeft" || (key === "Tab" && e.shiftKey)) {
+        setPrevTab();
+        e.preventDefault();
+      } else if (key === "ArrowRight" || key === "Tab") {
+        setNextTab();
+        e.preventDefault();
+      } else if (key === "Enter") {
+        const filtered = lists[currentTab];
+        if (filtered) {
+          const item = filtered[focus];
+          if (item) {
+            const { browser, directory } = item.profile;
+            console.debug("Enter", browser, directory);
+            onClick(item.profile);
+            e.preventDefault();
+          }
+        }
+      }
+    };
+    window.addEventListener("keydown", keydown);
+    return () => {
+      window.removeEventListener("keydown", keydown);
+    };
+  }, [currentTab, focus, lists]);
+
+  // タブインジケーターの計算
+  useEffect(() => {
+    const ref = indicatorRef.current;
+    if (ref) {
+      const tab = refsByTabs[currentTab];
+      const pad = 4;
+      if (tab.current) {
+        ref.style.left = `${tab.current.offsetLeft + pad}px`;
+        ref.style.width = `${tab.current.offsetWidth - pad * 2}px`;
+      }
+    }
+  }, [currentTab, refsByTabs]);
 
   const updateQuery = (e: any) => {
     setQuery(e.target.value);
@@ -202,36 +198,12 @@ function App() {
     setFocus(Math.min(focus, lists[tab]?.length - 1 || 0));
   };
 
-  const onKeyDownInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (composing) {
-      // IME入力中は何もしない
-      return;
-    }
-    const key = e.code;
-    if (key === "ArrowLeft") {
-      e.stopPropagation();
-    } else if (key === "ArrowRight") {
-      e.stopPropagation();
-    }
-  };
-
   return (
     <div id="App">
       <div id="input" className="input-box">
-        <input
-          type="text"
-          name="query"
-          className="input"
-          onChange={updateQuery}
-          onKeyDown={onKeyDownInput}
-          onCompositionStart={() => setComposing(true)}
-          onCompositionEnd={() => setComposing(false)}
-          ref={inputRef}
-          placeholder={t("keywordSearch")}
-        />
+        <Input onChange={updateQuery} placeholder={t("keywordSearch")} />
       </div>
       {errorMsg && <p className="error">{errorMsg}</p>}
-
       <Tabs
         defaultValue={tabs[0]}
         value={currentTab}
