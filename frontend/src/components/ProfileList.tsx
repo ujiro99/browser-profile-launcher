@@ -2,7 +2,6 @@ import React, { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import type { profile } from "../../wailsjs/go/models";
 
-import LibraryAdd from "@/assets/library_add.svg?react";
 import type { ListItem } from "../lib/utils";
 import { Item } from "./Item";
 import "./ProfileList.css";
@@ -37,8 +36,7 @@ export function ProfileList({ list, focusIdx, onClick }: ListProps) {
     <ul className="profileList">
       {empty && (
         <div className="profileList__empty">
-          👉 <LibraryAdd className="profileList__empty-icon" />
-          <p className="profileList__empty-desc">{t("collections-add")}</p>
+          <p className="profileList__empty-desc">{t("no-results")}</p>
         </div>
       )}
       {list?.map((item, i) => (

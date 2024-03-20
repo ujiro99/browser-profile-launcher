@@ -17,6 +17,7 @@ import { useConfig } from "@/hooks/useConfig";
 import { useEnv } from "@/hooks/useEnv";
 import { ConfigKey, BehaviorAfterLaunch } from "@/services/config";
 import Clock from "@/assets/clock.svg?react";
+import LibraryAdd from "@/assets/library_add.svg?react";
 import * as utils from "./lib/utils";
 import type { ListItem, ProfileKey } from "./lib/utils";
 
@@ -80,6 +81,14 @@ function App() {
     }
     return l;
   }, [list, history, keys, query]);
+
+  const currentCollectionEmpty = useMemo(() => {
+    const profiles = keys[currentTab];
+    if (profiles) {
+      return utils.mapListItem(list, profiles).length === 0;
+    }
+    return false;
+  }, [currentTab, keys, list]);
 
   const refsByTabs = useMemo(() => {
     return tabs.reduce((acc, cur) => {
@@ -257,12 +266,21 @@ function App() {
         {tabs.map((tab) => (
           <TabsContent value={tab} key={tab} className="tab-content mt-2">
             <ScrollArea type="auto" className="h-full">
-              {lists[tab] && (
-                <ProfileList
-                  list={lists[tab]}
-                  focusIdx={focus}
-                  onClick={onClick}
-                />
+              {currentCollectionEmpty ? (
+                <div className="profileList__empty">
+                  👉 <LibraryAdd className="profileList__empty-icon" />
+                  <p className="profileList__empty-desc">
+                    {t("collections-add")}
+                  </p>
+                </div>
+              ) : (
+                lists[tab] && (
+                  <ProfileList
+                    list={lists[tab]}
+                    focusIdx={focus}
+                    onClick={onClick}
+                  />
+                )
               )}
               {!isDefaultTab(tab) && (
                 <CollectionDelete
