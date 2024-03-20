@@ -26,11 +26,24 @@ body {
   --border: 215 2% 78%;
 }
 
+#App .scroll-horizontal {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  justify-content: flex-start;
+}
+.scroll-horizontal::-webkit-scrollbar {
+  display: none;
+}
+
 .tab-indicator {
   position: absolute;
   background: rgb(55 65 81);
   height: 4px;
-  bottom: -4px;
+  bottom: -2px;
   border-radius: 4px;
 
   @apply transition-all;

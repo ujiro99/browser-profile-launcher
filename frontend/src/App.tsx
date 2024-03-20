@@ -50,6 +50,7 @@ function App() {
   const { isDev } = useEnv();
   const indicatorRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const tablistRef = useRef<HTMLDivElement>(null);
 
   // コレクション毎のProfileKeyを作成
   const keys = useMemo(() => {
@@ -137,11 +138,27 @@ function App() {
   useEffect(() => {
     const ref = indicatorRef.current;
     if (ref) {
-      const tab = refsByTabs[currentTab];
+      const tabRef = refsByTabs[currentTab];
       const pad = 4;
-      if (tab.current) {
-        ref.style.left = `${tab.current.offsetLeft + pad}px`;
-        ref.style.width = `${tab.current.offsetWidth - pad * 2}px`;
+      if (tabRef.current) {
+        const tab = tabRef.current;
+        ref.style.left = `${tab.offsetLeft + pad}px`;
+        ref.style.width = `${tab.offsetWidth - pad * 2}px`;
+
+        if (tablistRef.current) {
+          const list = tablistRef.current;
+          if (list.scrollLeft > tab.offsetLeft) {
+            // 左にはみ出している場合
+            list.scrollLeft = tab.offsetLeft;
+          } else if (
+            list.scrollLeft + list.offsetWidth <
+            tab.offsetLeft + tab.offsetWidth
+          ) {
+            // 右にはみ出している場合
+            list.scrollLeft =
+              tab.offsetLeft + tab.offsetWidth - list.offsetWidth;
+          }
+        }
       }
     }
   }, [currentTab, refsByTabs]);
@@ -198,6 +215,13 @@ function App() {
     setFocus(Math.max(Math.min(focus, lists[tab]?.length - 1), 0));
   };
 
+  // tablist上での横スクロール
+  const onWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (tablistRef.current) {
+      tablistRef.current.scrollLeft += e.deltaY;
+    }
+  };
+
   return (
     <div id="App">
       <div id="input" className="input-box">
@@ -210,7 +234,11 @@ function App() {
         className="w-full px-2 result-tabs"
         onValueChange={setCurrentTab}
       >
-        <TabsList className="p-0 h-[auto] relative bg-transparent">
+        <TabsList
+          className="p-0 h-[32px] w-full relative bg-transparent scroll-horizontal"
+          onWheel={onWheel}
+          ref={tablistRef}
+        >
           {tabs.map((tab) => (
             <TabsTrigger
               className="tab-button"
@@ -225,7 +253,7 @@ function App() {
           <div className="tab-indicator" ref={indicatorRef} />
         </TabsList>
         {tabs.map((tab) => (
-          <TabsContent value={tab} key={tab} className="tab-content mt-3">
+          <TabsContent value={tab} key={tab} className="tab-content mt-2">
             <ScrollArea type="auto" className="h-full">
               {lists[tab] && (
                 <ProfileList
