@@ -31,3 +31,23 @@
   height: 100%;
   border-left: solid 4px var(--sky-500);
 }
+
+.profileList__empty {
+  text-align: center;
+  margin-top: 1.8em;
+}
+
+.profileList__empty-icon {
+  @apply fill-neutral-500;
+  display: inline-block;
+  padding: 4px;
+  --size: 28px;
+  width: var(--size);
+  height: var(--size);
+}
+
+.profileList__empty-desc {
+  margin-top: 0.2em;
+  margin-bottom: 1.8em;
+  color: #555;
+}

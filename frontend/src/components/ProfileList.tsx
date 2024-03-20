@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import type { profile } from "../../wailsjs/go/models";
 
+import LibraryAdd from "@/assets/library_add.svg?react";
 import type { ListItem } from "../lib/utils";
 import { Item } from "./Item";
 import "./ProfileList.css";
@@ -12,6 +14,9 @@ type ListProps = {
 };
 
 export function ProfileList({ list, focusIdx, onClick }: ListProps) {
+  const { t } = useTranslation();
+  const empty = list.length === 0;
+
   const focusClass = (i: number) => {
     return i === focusIdx ? "focused" : "";
   };
@@ -30,6 +35,12 @@ export function ProfileList({ list, focusIdx, onClick }: ListProps) {
 
   return (
     <ul className="profileList">
+      {empty && (
+        <div className="profileList__empty">
+          <LibraryAdd className="profileList__empty-icon" />
+          <p className="profileList__empty-desc">{t("collections-add")}</p>
+        </div>
+      )}
       {list?.map((item, i) => (
         <li
           key={item.profile.browser + item.profile.directory}
