@@ -16,6 +16,7 @@ import { useCollection } from "@/hooks/useCollection";
 import { useConfig } from "@/hooks/useConfig";
 import { useEnv } from "@/hooks/useEnv";
 import { ConfigKey, BehaviorAfterLaunch } from "@/services/config";
+import Clock from "@/assets/clock.svg?react";
 import * as utils from "./lib/utils";
 import type { ListItem, ProfileKey } from "./lib/utils";
 
@@ -246,6 +247,7 @@ function App() {
               key={tab}
               ref={refsByTabs[tab]}
             >
+              {tab === "history" && <Clock className="tab-icon" />}
               {t(tab)}
             </TabsTrigger>
           ))}
