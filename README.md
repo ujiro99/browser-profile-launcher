@@ -1,19 +1,16 @@
-# README
+# chrome-profile-selector
 
 ## About
+**chrome-profile-selector** is a tool that allows you to easily select and launch your browser profile.
 
-This is the official Wails React-TS template.
+## Install
+🚧 It's currently under application to the Windows Store.
 
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
+## Privacy Policy
+- This application and developer do not collect any personal information or privacy-related information about user.
+- This application and developer do not collect information of keyboard typing by user.
+- This application and developer do not collect the information of files opened by AppName.
 
-## Live Development
-
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
-
-## Building
-
-To build a redistributable, production mode package, use `wails build`.
+## Support
+If you need support, please create a new issue from the issues page.  
+[Issue Page](https://github.com/ujiro99/chrome-profile-selector/issues)
