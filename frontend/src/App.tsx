@@ -11,6 +11,7 @@ import { ProfileList } from "@/components/ProfileList";
 import { CollectionAdd } from "@/components/CollectionAdd";
 import { CollectionDelete } from "@/components/CollectionDelete";
 import { Input } from "@/components/Input";
+import { Tips } from "@/components/Tips";
 import { useHistory } from "@/hooks/useHistory";
 import { useCollection } from "@/hooks/useCollection";
 import { useConfig } from "@/hooks/useConfig";
@@ -238,7 +239,12 @@ function App() {
   return (
     <div id="App">
       <div id="input" className="input-box">
-        <Input onChange={updateQuery} placeholder={t("keywordSearch")} />
+        <Input
+          className="flex-1"
+          onChange={updateQuery}
+          placeholder={t("keywordSearch")}
+        />
+        <Tips />
       </div>
       {errorMsg && <p className="error">{errorMsg}</p>}
       <Tabs

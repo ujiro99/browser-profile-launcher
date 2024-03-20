@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { useState, useRef, useCallback } from "react";
 import Close from "../assets/close.svg?react";
 
@@ -46,13 +46,13 @@ export function Input(props: InputProps) {
       }
       inputRef.current.dispatchEvent(new Event("input", { bubbles: true }));
     }
-  }, [inputRef]);
+  }, []);
 
   return (
-    <div className="relative flex items-center">
+    <div className={`relative flex items-center ${props.className}`}>
       <input
         type="text"
-        className={`input ${props.className}`}
+        className="input"
         onChange={props.onChange}
         onKeyDown={onKeyDown}
         onCompositionStart={() => setComposing(true)}

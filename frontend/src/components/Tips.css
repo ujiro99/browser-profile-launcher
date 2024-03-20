@@ -1,0 +1,8 @@
+.Tips__list {
+  padding: 6px 0 0 22px;
+}
+
+.Tips__item {
+  font-size: 14px;
+  list-style: disc;
+}

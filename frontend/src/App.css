@@ -18,6 +18,9 @@ body {
 .input-box {
   padding: 8px 8px 4px;
   height: var(--input-height);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .result-tabs {
