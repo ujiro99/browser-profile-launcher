@@ -2,6 +2,9 @@
 
 ## About
 **chrome-profile-selector** is a tool that allows you to easily select and launch your browser profile.
+- Google Chrome and Microsoft edge profiles can be automatically listed and launched.
+- You can search profile names by keywords.
+- You can categorize them into your favorite collections and manage them.
 
 ## Install
 🚧 It's currently under application to the Windows Store.
