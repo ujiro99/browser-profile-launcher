@@ -37,7 +37,7 @@ export function ProfileList({ list, focusIdx, onClick }: ListProps) {
     <ul className="profileList">
       {empty && (
         <div className="profileList__empty">
-          <LibraryAdd className="profileList__empty-icon" />
+          👉 <LibraryAdd className="profileList__empty-icon" />
           <p className="profileList__empty-desc">{t("collections-add")}</p>
         </div>
       )}

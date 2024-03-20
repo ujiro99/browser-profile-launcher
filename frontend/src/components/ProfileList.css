@@ -35,6 +35,11 @@
 .profileList__empty {
   text-align: center;
   margin-top: 1.8em;
+  @apply w-72;
+  @apply mx-[auto];
+  @apply p-4;
+  @apply bg-neutral-100;
+  @apply rounded-xl;
 }
 
 .profileList__empty-icon {
@@ -48,6 +53,7 @@
 
 .profileList__empty-desc {
   margin-top: 0.2em;
-  margin-bottom: 1.8em;
+  padding-bottom: 8px;
   color: #555;
+  word-break: keep-all;
 }

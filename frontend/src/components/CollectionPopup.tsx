@@ -56,7 +56,7 @@ export function CollectionPopup({ className, profile }: CollectionPopuProps) {
                 <ToggleGroupItem
                   value={c}
                   key={c}
-                  className="px-3 pb-[3px] h-7 text-neutral-500 font-medium hover:font-bold rounded-full text-sm"
+                  className="px-3 pb-[3px] h-7 text-neutral-500 font-medium hover:font-bold rounded-full text-sm border"
                 >
                   {c}
                 </ToggleGroupItem>
