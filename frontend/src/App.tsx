@@ -144,31 +144,34 @@ function App() {
     };
   }, [currentTab, focus, lists]);
 
-  // タブインジケーターの計算
+  // タブ周りの処理
   useEffect(() => {
-    const ref = indicatorRef.current;
-    if (ref) {
-      const tabRef = refsByTabs[currentTab];
-      const pad = 4;
-      if (tabRef.current) {
-        const tab = tabRef.current;
-        ref.style.left = `${tab.offsetLeft + pad}px`;
-        ref.style.width = `${tab.offsetWidth - pad * 2}px`;
+    const pad = 4;
+    const tabRef = refsByTabs[currentTab];
+    const indicator = indicatorRef.current;
+    const tab = tabRef.current;
+    const list = tablistRef.current;
 
-        if (tablistRef.current) {
-          const list = tablistRef.current;
-          if (list.scrollLeft > tab.offsetLeft) {
-            // 左にはみ出している場合
-            list.scrollLeft = tab.offsetLeft;
-          } else if (
-            list.scrollLeft + list.offsetWidth <
-            tab.offsetLeft + tab.offsetWidth
-          ) {
-            // 右にはみ出している場合
-            list.scrollLeft =
-              tab.offsetLeft + tab.offsetWidth - list.offsetWidth;
-          }
-        }
+    if (indicator && tab && list) {
+      // タブインジケーターの位置計算
+      indicator.style.left = `${tab.offsetLeft + pad}px`;
+      indicator.style.width = `${tab.offsetWidth - pad * 2}px`;
+
+      // タブと連動したリストスクロール
+      if (list.scrollLeft > tab.offsetLeft) {
+        // 左にはみ出している場合
+        // setTimeout後にスクロールすることで、スクロール位置が正しく取得できる
+        setTimeout(() => {
+          list.scrollLeft = tab.offsetLeft;
+        }, 0);
+      } else if (
+        list.scrollLeft + list.offsetWidth <
+        tab.offsetLeft + tab.offsetWidth
+      ) {
+        // 右にはみ出している場合
+        setTimeout(() => {
+          list.scrollLeft = tab.offsetLeft + tab.offsetWidth - list.offsetWidth;
+        }, 0);
       }
     }
   }, [currentTab, refsByTabs]);
