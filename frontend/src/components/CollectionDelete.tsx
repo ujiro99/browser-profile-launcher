@@ -46,7 +46,7 @@ export function CollectionDelete({ className, collection, onDeleted }: Props) {
                 <p className="text-base text-muted-foreground whitespace-pre-line">
                   {t("delete-desc")}
                 </p>
-                <p className="text-lg font-bold">{collection}</p>
+                <p className="text-lg font-bold break-all">{collection}</p>
                 <Button
                   variant="destructive"
                   onClick={deleteCollection}

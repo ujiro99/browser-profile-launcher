@@ -2,7 +2,7 @@
   border: none;
   border-radius: 8px;
   outline: none;
-  padding: 8px 10px;
+  padding: 8px 32px 8px 10px;
   width: 100%;
   -webkit-font-smoothing: antialiased;
   font-size: 0.9em;
@@ -12,7 +12,6 @@
 .input-clear-button {
   position: absolute;
   right: 7px;
-  top: 7px;
 }
 
 .input-clear-button > svg {
