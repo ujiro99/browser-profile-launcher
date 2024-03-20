@@ -13,7 +13,7 @@
   "Info": {
     "companyName": "Yujiro Takeda",
     "productName": "chrome-profile-selector",
-    "productVersion": "1.0.0",
+    "productVersion": "1.1.0",
     "copyright": "Copyright (c) 2024 Yujiro Takeda",
     "comments": "Built using Wails (https://wails.io)"
   }
