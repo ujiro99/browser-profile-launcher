@@ -7,7 +7,7 @@
 - You can categorize them into your favorite collections and manage them.
 
 ## Install
-🚧 It's currently under application to the Windows Store.
+[Microsoft Store](https://apps.microsoft.com/detail/9pjncknggf2d)
 
 ## Privacy Policy
 - This application and developer do not collect any personal information or privacy-related information about user.
