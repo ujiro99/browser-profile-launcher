@@ -1,4 +1,4 @@
-# chrome-profile-selector
+<img src="https://github.com/ujiro99/chrome-profile-selector/blob/main/docs/logo.png?raw=true" width="600" />
 
 ## About
 **chrome-profile-selector** is a tool that allows you to easily select and launch your browser profile.
