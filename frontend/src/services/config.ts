@@ -10,6 +10,7 @@ export enum ConfigKey {
   behaviorAfterLaunch = "behaviorAfterLaunch",
   language = "language",
   lastTab = "lastTab",
+  windowSize = "windowSize",
 }
 
 export type ConfigType = {
@@ -19,6 +20,7 @@ export type ConfigType = {
   [ConfigKey.behaviorAfterLaunch]: BehaviorAfterLaunch;
   [ConfigKey.language]: string;
   [ConfigKey.lastTab]: string;
+  [ConfigKey.windowSize]: [number, number];
 };
 
 export type Collection = string;
@@ -42,12 +44,14 @@ export class Config {
   private config = {} as ConfigType;
   private listeners = [] as ChangeListener[];
   private loadedListeners = [] as ChangeListener[];
+  private loaded = false;
 
   private constructor() {
     LoadConfig()
       .then((config) => {
         if (config) {
           this.config = JSON.parse(config);
+          this.loaded = true;
           console.debug("Config Loaded", this.config);
         }
       })
@@ -91,7 +95,7 @@ export class Config {
   addLoadedListener(listener: ChangeListener) {
     this.loadedListeners.push(listener);
     // 既にLoadedの場合は即座に通知
-    if (this.config) {
+    if (this.loaded) {
       listener(this.config);
     }
   }
