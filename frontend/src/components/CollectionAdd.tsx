@@ -29,6 +29,7 @@ export function CollectionAdd() {
     if (value) {
       setCollection([...collections, value]);
       setOpen(false);
+      setValue("");
     }
   };
 
@@ -50,10 +51,12 @@ export function CollectionAdd() {
                 onChange={(e: any) => setValue(e.target.value)}
                 onKeyDown={onKeyDown}
                 className="h-8"
+                defaultValue={value}
               />
               <Button
                 onClick={addCollection}
                 className="py-1 pr-2 pl-1 h-8 rounded-lg text-xs"
+                disabled={!value}
               >
                 <Plus className="fill-neutral-600" />
                 {t("add")}

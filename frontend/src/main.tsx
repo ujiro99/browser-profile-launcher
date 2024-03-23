@@ -10,21 +10,18 @@ import { List } from "../wailsjs/go/main/App";
 import type { profile } from "../wailsjs/go/models";
 import App from "./App";
 import { Config } from "@/services/config";
+import type { ConfigType } from "@/services/config";
 import "./global.css";
 
 const config = Config.getInstance();
-config.addLoadedListener((conf) => {
-  const size = conf.windowSize;
-  WindowSetSize(size[0], size[1]);
-});
 
 const container = document.getElementById("root");
 const root = createRoot(container!);
 
-function render(profiles: profile.Profile[]) {
+function render(profiles: profile.Profile[], config: ConfigType) {
   root.render(
     <React.StrictMode>
-      <App profiles={profiles} />
+      <App profiles={profiles} defaultConfig={config} />
     </React.StrictMode>,
   );
 }
@@ -36,12 +33,18 @@ window.addEventListener("resize", async () => {
   config.set(conf);
 });
 
-async function main() {
-  render(await List());
+function main() {
+  config.addLoadedListener(async (conf) => {
+    const size = conf.windowSize;
+    if (size) {
+      WindowSetSize(size[0], size[1]);
+    }
+    render(await List(), conf);
+  });
 
   EventsOn("profileChanged", async (val) => {
     console.debug("Profile changed", val);
-    render(val);
+    render(val, config.get());
   });
 }
 

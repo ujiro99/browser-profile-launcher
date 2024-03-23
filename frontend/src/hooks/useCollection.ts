@@ -10,7 +10,7 @@ import { uniq } from "../lib/utils";
 type CollectionType = {
   collections: Collection[];
   setCollection: (value: Collection[]) => void;
-  removeCollection: (value: Collection) => void;
+  removeCollection: (value: Collection) => Promise<void>;
   profileCollections: ProfileCollections[];
   setProfileCollection: (value: ProfileCollections[]) => void;
 };
@@ -23,7 +23,11 @@ export const useCollection = (): CollectionType => {
   useEffect(() => {
     const c = Config.getInstance();
     setConfig(c.get());
-    c.addChangeListener((conf) => setConfig(conf));
+    const l = (conf: ConfigType) => setConfig(conf);
+    c.addChangeListener(l);
+    return () => {
+      c.removeChangeListener(l);
+    };
   }, []);
 
   const setCollection = (value: Collection[]) => {
@@ -36,7 +40,7 @@ export const useCollection = (): CollectionType => {
     );
   };
 
-  const removeCollection = (value: Collection) => {
+  const removeCollection = (value: Collection): Promise<void> => {
     const ncs = collections.filter((c) => c !== value);
     const npcs = profileCollections
       .map((p) => {
@@ -46,7 +50,7 @@ export const useCollection = (): CollectionType => {
         };
       })
       .filter((p) => p.collections.length > 0);
-    Config.getInstance().set({
+    return Config.getInstance().set({
       ...config,
       [ConfigKey.collections]: ncs,
       [ConfigKey.profileCollections]: npcs,
