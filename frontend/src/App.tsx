@@ -70,7 +70,12 @@ function App({ profiles }: { profiles: profile.Profile[] }) {
 
   // 表示されるリストを作成
   const list = useMemo(() => {
-    return profiles.map((p) => ({ profile: p }));
+    return profiles
+      .map((p) => ({ profile: p }))
+      .sort((a, b) =>
+        a.profile.shortcut_name.localeCompare(b.profile.shortcut_name),
+      )
+      .sort((a, b) => a.profile.browser.localeCompare(b.profile.browser));
   }, [profiles]);
   const lists = useMemo(() => {
     // デフォルトのタブを追加
