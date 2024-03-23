@@ -17,6 +17,7 @@ import { useCollection } from "@/hooks/useCollection";
 import { useConfig } from "@/hooks/useConfig";
 import { useEnv } from "@/hooks/useEnv";
 import { Config, ConfigKey, BehaviorAfterLaunch } from "@/services/config";
+import type { ConfigType } from "@/services/config";
 import Clock from "@/assets/clock.svg?react";
 import LibraryAdd from "@/assets/library_add.svg?react";
 import * as utils from "./lib/utils";
@@ -109,12 +110,16 @@ function App({ profiles }: { profiles: profile.Profile[] }) {
     inputRef.current?.focus();
 
     // アクティブタブを復帰
-    Config.getInstance().addLoadedListener((conf) => {
+    const l = (conf: ConfigType) => {
       const lastTab = conf[ConfigKey.lastTab];
       if (lastTab) {
         _setCurrentTab(lastTab);
       }
-    });
+    };
+    Config.getInstance().addLoadedListener(l);
+    return () => {
+      Config.getInstance().removeLoadedListener(l);
+    };
   }, []);
 
   useEffect(() => {
@@ -160,8 +165,8 @@ function App({ profiles }: { profiles: profile.Profile[] }) {
   useEffect(() => {
     const pad = 4;
     const tabRef = refsByTabs[currentTab];
+    const tab = tabRef?.current;
     const indicator = indicatorRef.current;
-    const tab = tabRef.current;
     const list = tablistRef.current;
 
     if (indicator && tab && list) {
@@ -235,11 +240,14 @@ function App({ profiles }: { profiles: profile.Profile[] }) {
   };
 
   // tabを移動したら、focusを長さに合わせる
-  const setCurrentTab = (tab: string) => {
-    _setCurrentTab(tab);
-    setFocus(Math.max(Math.min(focus, lists[tab]?.length - 1), 0));
-    setConfig({ ...config, [ConfigKey.lastTab]: tab }, ConfigKey.lastTab);
-  };
+  const setCurrentTab = useCallback(
+    (tab: string) => {
+      _setCurrentTab(tab);
+      setFocus(Math.max(Math.min(focus, lists[tab]?.length - 1), 0));
+      setConfig(tab, ConfigKey.lastTab);
+    },
+    [focus, lists, setConfig],
+  );
 
   // tablist上での横スクロール
   const onWheel = (e: React.WheelEvent<HTMLDivElement>) => {

@@ -1,6 +1,5 @@
 import { LoadConfig, SaveConfig } from "../../wailsjs/go/main/App";
 import type { ProfileKey } from "../lib/utils";
-import { Environment } from "../../wailsjs/runtime/runtime";
 import defaultConfig from "./defaultConfig.json";
 
 export enum ConfigKey {
@@ -36,14 +35,13 @@ export enum BehaviorAfterLaunch {
   minimize = "minimize",
 }
 
-type ChangeListener = (config: ConfigType, area?: ConfigKey) => void;
+type Listener = (config: ConfigType, area?: ConfigKey) => void;
 
 export class Config {
   private static _instance: Config;
-  private isDev = false;
   private config = {} as ConfigType;
-  private listeners = [] as ChangeListener[];
-  private loadedListeners = [] as ChangeListener[];
+  private changeListeners = [] as Listener[];
+  private loadedListeners = [] as Listener[];
   private loaded = false;
 
   private constructor() {
@@ -63,11 +61,6 @@ export class Config {
         this.notifyLoadedListeners();
         this.notifyListeners();
       });
-    Environment().then((env) => {
-      if (env.buildType === "dev") {
-        this.isDev = true;
-      }
-    });
   }
 
   static getInstance(): Config {
@@ -81,18 +74,23 @@ export class Config {
     return this.config;
   }
 
-  set(value: ConfigType, changedKey?: ConfigKey) {
+  set(value: ConfigType, changedKey?: ConfigKey): Promise<void> {
     console.debug("Config Updated", value);
     this.config = value;
     this.notifyListeners(changedKey);
-    SaveConfig(JSON.stringify(this.config, null, 2));
+    return SaveConfig(JSON.stringify(this.config, null, 2));
   }
 
-  addChangeListener(listener: ChangeListener) {
-    this.listeners.push(listener);
+  addChangeListener(listener: Listener) {
+    this.changeListeners.push(listener);
   }
 
-  addLoadedListener(listener: ChangeListener) {
+  removeChangeListener(listener: Listener) {
+    const idx = this.changeListeners.indexOf(listener);
+    this.changeListeners.splice(idx, 1);
+  }
+
+  addLoadedListener(listener: Listener) {
     this.loadedListeners.push(listener);
     // 既にLoadedの場合は即座に通知
     if (this.loaded) {
@@ -100,8 +98,13 @@ export class Config {
     }
   }
 
+  removeLoadedListener(listener: Listener) {
+    const idx = this.loadedListeners.indexOf(listener);
+    this.loadedListeners.splice(idx, 1);
+  }
+
   private notifyListeners(changedKey?: ConfigKey) {
-    for (const l of this.listeners) {
+    for (const l of this.changeListeners) {
       l(this.config, changedKey);
     }
   }

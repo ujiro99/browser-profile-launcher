@@ -15,7 +15,11 @@ export const useHistory = (): HistoryType => {
   useEffect(() => {
     const c = Config.getInstance();
     setConfig(c.get());
-    c.addChangeListener((conf) => setConfig(conf));
+    const l = (conf: ConfigType) => setConfig(conf);
+    c.addChangeListener(l);
+    return () => {
+      c.removeChangeListener(l);
+    };
   }, []);
 
   const addHistory = (value: ProfileKey) => {
