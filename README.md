@@ -7,7 +7,9 @@
 - You can categorize them into your favorite collections and manage them.
 
 ## Install
-[Microsoft Store](https://apps.microsoft.com/detail/9pjncknggf2d)
+<a href="https://apps.microsoft.com/detail/chrome-profile-selector/9pjncknggf2d?launch=true&mode=mini">
+	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="160" alt="Download chrome-profile-selector" />
+</a>
 
 ## Privacy Policy
 - This application and developer do not collect any personal information or privacy-related information about user.
