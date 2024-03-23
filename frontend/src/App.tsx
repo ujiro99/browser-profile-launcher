@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import type { profile } from "../wailsjs/go/models";
-import { List, Run } from "../wailsjs/go/main/App";
+import { Run } from "../wailsjs/go/main/App";
 import { Quit, WindowMinimise } from "../wailsjs/runtime/runtime";
 import { useTranslation } from "react-i18next";
 
@@ -39,11 +39,10 @@ function isDefaultTab(tab: string): boolean {
   return DEFAULT_TABS.includes(tab);
 }
 
-function App() {
+function App({ profiles }: { profiles: profile.Profile[] }) {
   const { collections, profileCollections } = useCollection();
   const tabs = [...DEFAULT_TABS, ...collections];
   const [config, setConfig] = useConfig();
-  const [list, setList] = useState<ListItem[]>([]);
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(FocusDefault);
   const [currentTab, _setCurrentTab] = useState(tabs[0]);
@@ -70,6 +69,9 @@ function App() {
   }, [collections, profileCollections]);
 
   // 表示されるリストを作成
+  const list = useMemo(() => {
+    return profiles.map((p) => ({ profile: p }));
+  }, [profiles]);
   const lists = useMemo(() => {
     // デフォルトのタブを追加
     const l = {
@@ -100,10 +102,6 @@ function App() {
 
   useEffect(() => {
     inputRef.current?.focus();
-    List().then((profiles) => {
-      console.table(profiles);
-      setList(profiles.map((profile) => ({ profile })));
-    });
 
     // アクティブタブを復帰
     Config.getInstance().addLoadedListener((conf) => {

@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"sort"
 	"syscall"
+	"time"
 )
 
 type localState struct {
@@ -27,10 +28,14 @@ type Profile struct {
 	IcoPath      string `json:"ico_path"`
 }
 
+var chromeDir = expand("~/AppData/Local/Google/Chrome/User Data/")
+var edgeDir = expand("~/AppData/Local/Microsoft/Edge/User Data/")
+var localStateFile = "Local State"
+
 func List() []Profile {
 	paths := map[string]string{
-		"chrome": expand("~/AppData/Local/Google/Chrome/User Data/"),
-		"msedge": expand("~/AppData/Local/Microsoft/Edge/User Data/"),
+		"chrome": chromeDir,
+		"msedge": edgeDir,
 	}
 	iconName := map[string]string{
 		"chrome": "Google Profile.ico",
@@ -39,17 +44,25 @@ func List() []Profile {
 
 	var profiles []Profile
 	for b, path := range paths {
-		p, err := parseProfiles(path)
-		if err != nil {
+		retries := 10
+		for i := 0; i < retries; i++ {
+			p, err := parseProfiles(path)
+			if err != nil {
+				// エラーの場合、10msec待つ
+				// ブラウザが起動中の場合、Local Stateファイルがロックされることがある
+				time.Sleep(10 * time.Millisecond)
+				continue
+			}
+			// 取得成功したら、結果用の配列に追加
+			for i, v := range p {
+				p[i].Browser = b
+				p[i].IcoPath = filepath.Join(path, v.Directory, iconName[b])
+			}
+			// sort by ShortcutName
+			sort.SliceStable(p, func(i, j int) bool { return p[i].ShortcutName < p[j].ShortcutName })
+			profiles = append(profiles, p...)
 			break
 		}
-		for i, v := range p {
-			p[i].Browser = b
-			p[i].IcoPath = filepath.Join(path, v.Directory, iconName[b])
-		}
-		// sort by ShortcutName
-		sort.SliceStable(p, func(i, j int) bool { return p[i].ShortcutName < p[j].ShortcutName })
-		profiles = append(profiles, p...)
 	}
 	return profiles
 }
@@ -70,10 +83,9 @@ func expand(path string) string {
 // Local Stateファイルを読み込み、
 // プロファイル構造体を返す。
 func parseProfiles(directory string) ([]Profile, error) {
-	path := filepath.Join(directory, "Local State")
+	path := filepath.Join(directory, localStateFile)
 	text, err := os.ReadFile(path)
 	if err != nil {
-		log.Println("Local Stateファイルが見つかりません:", err)
 		return nil, err
 	}
 
@@ -92,6 +104,7 @@ func parseProfiles(directory string) ([]Profile, error) {
 	return profiles, nil
 }
 
+// 指定したプロファイルのブラウザを起動する
 func Run(browser string, directory string) error {
 	var cmd *exec.Cmd
 	if browser == "chrome" {
@@ -109,4 +122,13 @@ func Run(browser string, directory string) error {
 		return err
 	}
 	return nil
+}
+
+// プロファイルの変更を監視するためのファイルパスを返す
+func FilesForWatch() []string {
+	arr := [...]string{
+		filepath.Join(chromeDir, localStateFile),
+		filepath.Join(edgeDir, localStateFile),
+	}
+	return arr[:]
 }
