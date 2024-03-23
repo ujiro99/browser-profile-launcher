@@ -15,6 +15,7 @@ type InputProps = {
 export function Input(props: InputProps) {
   const [composing, setComposing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const isEmpty = !inputRef.current?.value;
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -62,9 +63,15 @@ export function Input(props: InputProps) {
         ref={inputRef}
         placeholder={props.placeholder}
       />
-      <button className="input-clear-button" type="button" onClick={clickClear}>
-        <Close />
-      </button>
+      {!isEmpty && (
+        <button
+          className="input-clear-button"
+          type="button"
+          onClick={clickClear}
+        >
+          <Close />
+        </button>
+      )}
     </div>
   );
 }
