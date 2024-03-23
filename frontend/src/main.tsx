@@ -36,7 +36,9 @@ window.addEventListener("resize", async () => {
 function main() {
   config.addLoadedListener(async (conf) => {
     const size = conf.windowSize;
-    WindowSetSize(size[0], size[1]);
+    if (size) {
+      WindowSetSize(size[0], size[1]);
+    }
     render(await List(), conf);
   });
 
