@@ -16,7 +16,7 @@ import { useHistory } from "@/hooks/useHistory";
 import { useCollection } from "@/hooks/useCollection";
 import { useConfig } from "@/hooks/useConfig";
 import { useEnv } from "@/hooks/useEnv";
-import { Config, ConfigKey, BehaviorAfterLaunch } from "@/services/config";
+import { ConfigKey, BehaviorAfterLaunch } from "@/services/config";
 import type { ConfigType } from "@/services/config";
 import Clock from "@/assets/clock.svg?react";
 import LibraryAdd from "@/assets/library_add.svg?react";
@@ -40,7 +40,9 @@ function isDefaultTab(tab: string): boolean {
   return DEFAULT_TABS.includes(tab);
 }
 
-function App({ profiles }: { profiles: profile.Profile[] }) {
+type Props = { profiles: profile.Profile[]; defaultConfig: ConfigType };
+
+function App({ profiles, defaultConfig }: Props) {
   const { collections, profileCollections } = useCollection();
   const tabs = [...DEFAULT_TABS, ...collections];
   const [config, setConfig] = useConfig();
@@ -78,6 +80,7 @@ function App({ profiles }: { profiles: profile.Profile[] }) {
       )
       .sort((a, b) => a.profile.browser.localeCompare(b.profile.browser));
   }, [profiles]);
+
   const lists = useMemo(() => {
     // デフォルトのタブを追加
     const l = {
@@ -108,19 +111,12 @@ function App({ profiles }: { profiles: profile.Profile[] }) {
 
   useEffect(() => {
     inputRef.current?.focus();
-
     // アクティブタブを復帰
-    const l = (conf: ConfigType) => {
-      const lastTab = conf[ConfigKey.lastTab];
-      if (lastTab) {
-        _setCurrentTab(lastTab);
-      }
-    };
-    Config.getInstance().addLoadedListener(l);
-    return () => {
-      Config.getInstance().removeLoadedListener(l);
-    };
-  }, []);
+    const lastTab = defaultConfig[ConfigKey.lastTab];
+    if (lastTab) {
+      _setCurrentTab(lastTab);
+    }
+  }, [defaultConfig]);
 
   useEffect(() => {
     const keydown = (e: KeyboardEvent) => {
