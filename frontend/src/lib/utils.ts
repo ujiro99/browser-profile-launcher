@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export type ProfileKey = string;
 export function profileKey(p: profile.Profile): ProfileKey {
-  return `${p.browser}-${p.directory}-${p.shortcut_name}`;
+  return `${p.browser}-${p.directory}`;
 }
 
 export type ListItem = {
