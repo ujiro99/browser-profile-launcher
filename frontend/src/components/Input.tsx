@@ -9,6 +9,7 @@ type InputProps = {
   onChange: React.ChangeEventHandler | undefined;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   className?: string;
+  defaultValue?: string;
 };
 
 export function Input(props: InputProps) {
@@ -57,6 +58,7 @@ export function Input(props: InputProps) {
         onKeyDown={onKeyDown}
         onCompositionStart={() => setComposing(true)}
         onCompositionEnd={() => setComposing(false)}
+        defaultValue={props.defaultValue}
         ref={inputRef}
         placeholder={props.placeholder}
       />
