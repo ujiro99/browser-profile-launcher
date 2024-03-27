@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"chrome-profile-selector/profile"
+	"browser-profile-launcher/profile"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/logger"
@@ -64,14 +64,14 @@ func main() {
 	app := NewApp()
 
 	err := wails.Run(&options.App{
-		Title:  "chrome-profile-selector",
+		Title:  "Browser Profile Launcher",
 		Width:  420,
 		Height: 580,
 		AssetServer: &assetserver.Options{
 			Assets:  assets,
 			Handler: NewIcoLoader(),
 		},
-		Logger:             logger.NewFileLogger("chrome-profile-selector.log"),
+		Logger:             logger.NewFileLogger("browser-profile-launcher.log"),
 		LogLevel:           logger.DEBUG,
 		LogLevelProduction: logger.ERROR,
 		OnStartup:          app.startup,

@@ -9,7 +9,7 @@ import (
 )
 
 var configFile = "config.json"
-var packageName = "chrome-profile-selector"
+var packageName = "browser-profile-launcher"
 
 func Load() (string, error) {
 	configFilePath, err := xdg.ConfigFile(path.Join(packageName, configFile))

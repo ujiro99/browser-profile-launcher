@@ -1,4 +1,4 @@
-module chrome-profile-selector
+module browser-profile-launcher
 
 go 1.21
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"chrome-profile-selector/profile"
+	"browser-profile-launcher/profile"
 	"context"
 	"log"
 	"path/filepath"
