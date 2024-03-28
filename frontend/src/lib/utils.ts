@@ -59,3 +59,24 @@ export function mapListItem(list: ListItem[], keys: ProfileKey[]): ListItem[] {
 export function uniq<T>(arr: T[]) {
   return arr.filter((elm, idx, self) => self.indexOf(elm) === idx);
 }
+
+enum Diff {
+  New = 1,
+  Same = 0,
+  Old = -1,
+}
+
+export function versionDiff(a: string, b: string): Diff {
+  if (!b) {
+    return Diff.Old;
+  }
+  const aVer = a.split(".").map((v) => Number.parseInt(v));
+  const bVer = b.split(".").map((v) => Number.parseInt(v));
+  for (let i = 0; i < aVer.length; i++) {
+    if (aVer[i] === bVer[i]) {
+      continue;
+    }
+    return aVer[i] > bVer[i] ? Diff.New : Diff.Old;
+  }
+  return Diff.Same;
+}

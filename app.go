@@ -3,14 +3,19 @@ package main
 import (
 	"browser-profile-launcher/profile"
 	"context"
+	_ "embed"
 	"log"
 	"path/filepath"
 	"reflect"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/tidwall/gjson"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"golang.org/x/exp/slices"
 )
+
+//go:embed wails.json
+var wailsJSON string
 
 type App struct {
 	ctx context.Context
@@ -44,6 +49,11 @@ func (a *App) LoadConfig() (string, error) {
 
 func (a *App) SaveConfig(text string) error {
 	return Save(text)
+}
+
+func (a *App) GetVersion() string {
+	version := gjson.Get(wailsJSON, "Info.productVersion")
+	return version.String()
 }
 
 func watchProfiles(ctx context.Context) {

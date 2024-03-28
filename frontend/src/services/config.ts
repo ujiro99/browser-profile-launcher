@@ -1,8 +1,10 @@
-import { LoadConfig, SaveConfig } from "../../wailsjs/go/main/App";
+import { LoadConfig, SaveConfig, GetVersion } from "../../wailsjs/go/main/App";
 import type { ProfileKey } from "../lib/utils";
+import { versionDiff, uniq } from "../lib/utils";
 import defaultConfig from "./defaultConfig.json";
 
 export enum ConfigKey {
+  configVersion = "configVersion",
   history = "history",
   collections = "collections",
   profileCollections = "profileCollections",
@@ -13,6 +15,7 @@ export enum ConfigKey {
 }
 
 export type ConfigType = {
+  [ConfigKey.configVersion]: string;
   [ConfigKey.history]: ProfileKey[];
   [ConfigKey.collections]: Collection[];
   [ConfigKey.profileCollections]: ProfileCollections[];
@@ -45,12 +48,21 @@ export class Config {
   private loaded = false;
 
   private constructor() {
-    LoadConfig()
-      .then((config) => {
+    Promise.all([LoadConfig(), GetVersion()])
+      .then(([config, appVer]) => {
         if (config) {
           this.config = JSON.parse(config);
           this.loaded = true;
           console.debug("Config Loaded", this.config);
+
+          const configVer = this.config[ConfigKey.configVersion];
+          const d = versionDiff(appVer, configVer);
+          if (d < 0) {
+            // マイグレーション
+            this.migrate();
+            this.config[ConfigKey.configVersion] =
+              defaultConfig[ConfigKey.configVersion];
+          }
         }
       })
       .catch((err) => {
@@ -112,6 +124,40 @@ export class Config {
   private notifyLoadedListeners(changedKey?: ConfigKey) {
     for (const l of this.loadedListeners) {
       l(this.config, changedKey);
+    }
+  }
+
+  private migrateProfileKey(oldKey: string): ProfileKey {
+    return oldKey.split("-").slice(0, 2).join("-");
+  }
+
+  private migrate() {
+    // ver 1.3.0 -> 1.4.0
+    let profileCollections = this.config[ConfigKey.profileCollections];
+    if (profileCollections) {
+      profileCollections = profileCollections
+        .map((c) => {
+          return {
+            key: this.migrateProfileKey(c.key),
+            collections: c.collections,
+          };
+        })
+        .reduce((acc, cur) => {
+          const f = acc.find((c) => c.key === cur.key);
+          if (!f) {
+            acc.push(cur);
+          } else {
+            f.collections = uniq([...f.collections, ...cur.collections]);
+          }
+          return acc;
+        }, [] as ProfileCollections[]);
+      this.config[ConfigKey.profileCollections] = profileCollections;
+    }
+    const history = this.config[ConfigKey.history];
+    if (history) {
+      this.config[ConfigKey.history] = uniq(
+        history.map((h) => this.migrateProfileKey(h)),
+      );
     }
   }
 }
