@@ -74,7 +74,14 @@ func main() {
 		Logger:             logger.NewFileLogger("browser-profile-launcher.log"),
 		LogLevel:           logger.DEBUG,
 		LogLevelProduction: logger.ERROR,
-		OnStartup:          app.startup,
+		SingleInstanceLock: &options.SingleInstanceLock{
+			UniqueId:               "3ebf5e8f-9955-4a4d-8865-d10f4de79392",
+			OnSecondInstanceLaunch: app.OnSecondInstanceLaunch,
+		},
+		Debug: options.Debug{
+			OpenInspectorOnStartup: true,
+		},
+		OnStartup: app.startup,
 		Bind: []interface{}{
 			app,
 		},

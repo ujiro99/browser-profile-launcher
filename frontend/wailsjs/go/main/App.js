@@ -14,6 +14,10 @@ export function LoadConfig() {
   return window['go']['main']['App']['LoadConfig']();
 }
 
+export function OnSecondInstanceLaunch(arg1) {
+  return window['go']['main']['App']['OnSecondInstanceLaunch'](arg1);
+}
+
 export function Run(arg1, arg2) {
   return window['go']['main']['App']['Run'](arg1, arg2);
 }

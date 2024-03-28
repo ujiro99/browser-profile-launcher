@@ -10,6 +10,7 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/tidwall/gjson"
+	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"golang.org/x/exp/slices"
 )
@@ -54,6 +55,11 @@ func (a *App) SaveConfig(text string) error {
 func (a *App) GetVersion() string {
 	version := gjson.Get(wailsJSON, "Info.productVersion")
 	return version.String()
+}
+
+func (a *App) OnSecondInstanceLaunch(secondInstanceData options.SecondInstanceData) {
+	runtime.WindowUnminimise(a.ctx)
+	runtime.Show(a.ctx)
 }
 
 func watchProfiles(ctx context.Context) {
