@@ -5,6 +5,7 @@ import (
 	"context"
 	_ "embed"
 	"log"
+	"os"
 	"path/filepath"
 	"reflect"
 
@@ -91,6 +92,7 @@ func watchProfiles(ctx context.Context) {
 				if now == nil {
 					continue
 				}
+				// プロファイルが変更された場合だけ、イベントを発行
 				if !reflect.DeepEqual(old, now) {
 					old = now
 					log.Println("Profile changed: ", event.Name)
@@ -105,7 +107,11 @@ func watchProfiles(ctx context.Context) {
 		}
 	}()
 
+	// 監視対象に追加
 	for _, p := range files {
+		if !exists(p) {
+			continue
+		}
 		log.Println("Add watch: ", filepath.Dir(p))
 		err = watcher.Add(filepath.Dir(p))
 		if err != nil {
@@ -115,4 +121,9 @@ func watchProfiles(ctx context.Context) {
 
 	log.Println("Watching start...")
 	<-make(chan struct{})
+}
+
+func exists(filename string) bool {
+	_, err := os.Stat(filename)
+	return err == nil
 }
