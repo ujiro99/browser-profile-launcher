@@ -42,7 +42,7 @@ func List() []Profile {
 		"msedge": "Edge Profile.ico",
 	}
 
-	var profiles []Profile
+	profiles := []Profile{}
 	for b, path := range paths {
 		retries := 10
 		for i := 0; i < retries; i++ {
