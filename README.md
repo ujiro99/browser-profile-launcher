@@ -10,7 +10,7 @@
 
 ## Install
 
-<a href="https://apps.microsoft.com/detail/browser-profile-launcher/9pjncknggf2d?launch=true&mode=mini">
+<a href="https://apps.microsoft.com/detail/browser-profile-launcher/9pjncknggf2d?mode=mini">
 	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="160" alt="Download Browser Profile Launcher" />
 </a>
 
