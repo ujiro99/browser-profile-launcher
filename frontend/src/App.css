@@ -78,6 +78,15 @@ body {
   @apply bg-neutral-100;
 }
 
+.tab-separator {
+  position: relative;
+  height: 20px;
+  padding: 0.5px;
+  bottom: 2px;
+  margin: 0 6px;
+  @apply bg-neutral-300;
+}
+
 .tab-remove {
   margin-top: 10px;
   text-align: center;

@@ -222,9 +222,7 @@ function App({ profiles, defaultConfig }: Props) {
 
   const onDragStart = (e: React.DragEvent<HTMLElement>) => {
     let id = e.currentTarget.id;
-    if (!id.startsWith(TAB_PREFIX)) {
-      return
-    }
+    if (!id.startsWith(TAB_PREFIX)) return
     id = id.slice(TAB_PREFIX.length);
     setDragTab(id)
     setIsDragging(true);
@@ -237,7 +235,6 @@ function App({ profiles, defaultConfig }: Props) {
   };
 
   const onDragEnter = (e: React.DragEvent<HTMLElement>) => {
-    console.log('on drag enter', e);
     if (e.currentTarget.id.startsWith(TAB_PREFIX)) {
       const dest = e.currentTarget.id.slice(TAB_PREFIX.length);
       moveCollection(dragTab, dest); 
@@ -318,18 +315,19 @@ function App({ profiles, defaultConfig }: Props) {
         onValueChange={setCurrentTab}
       >
         <TabsList
-          className={`p-0 h-[34px] w-full relative bg-transparent scroll-horizontal ${clsx(isDragging && 'dragging') }`}
+          className={`p-0 h-[34px] w-full relative bg-transparent scroll-horizontal ${clsx(isDragging && 'dragging')}`}
           onWheel={onWheel}
           ref={tablistRef}
         >
           {tabs.map((tab) => (
+          <>
             <TabsTrigger
               className="tab-button"
               id={`${TAB_PREFIX}${tab}`}
               value={tab}
               key={tab}
               ref={refsByTabs[tab]}
-              draggable
+              draggable={!isDefaultTab(tab)}
               onDragStart={onDragStart}
               onDragEnd={onDragEnd}
               onDragEnter={onDragEnter}
@@ -342,6 +340,8 @@ function App({ profiles, defaultConfig }: Props) {
               {tab === "history" && <Clock className="tab-icon" />}
               {t(tab)}
             </TabsTrigger>
+            {tab === "history" && <div className="tab-separator" />}
+            </>
           ))}
           <CollectionAdd />
           <div className="tab-indicator" ref={indicatorRef} />
