@@ -4,6 +4,7 @@ import type { profile } from "../wailsjs/go/models";
 import { Run } from "../wailsjs/go/main/App";
 import { Quit, WindowMinimise } from "../wailsjs/runtime/runtime";
 import { useTranslation } from "react-i18next";
+import { clsx } from "clsx";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -54,6 +55,7 @@ function App({ profiles, defaultConfig }: Props) {
   const [errorMsg, setErrorMsg] = useState("");
 
   const [isDragging, setIsDragging] = useState(false);
+  const [dragTab, setDragTab] = useState("");
   const [isDroppable, setIsDroppable] = useState(false);
 
   const [history, addHistory] = useHistory();
@@ -224,39 +226,37 @@ function App({ profiles, defaultConfig }: Props) {
       return
     }
     id = id.slice(TAB_PREFIX.length);
+    setDragTab(id)
     setIsDragging(true);
-    console.log('on drag start', id);
-    e.dataTransfer.setData('text/plain', id);
     e.dataTransfer.dropEffect = 'move';
+    e.dataTransfer.effectAllowed = 'move';
   };
 
   const onDragEnd = (e: React.DragEvent<HTMLElement>) => {
-    // console.log('on drag end', e);
     setIsDragging(false);
   };
 
-  /* Itemがdrag zoneに入ったとき */
   const onDragEnter = (e: React.DragEvent<HTMLElement>) => {
-    // console.log('on drag enter', e);
-    if (e.currentTarget.id === 'drop-zone') {
+    console.log('on drag enter', e);
+    if (e.currentTarget.id.startsWith(TAB_PREFIX)) {
+      const dest = e.currentTarget.id.slice(TAB_PREFIX.length);
+      moveCollection(dragTab, dest); 
       setIsDroppable(true);
     }
   };
 
-  /* Itemがdrag zoneから出たとき */
   const onDragLeave = (e: React.DragEvent<HTMLElement>) => {
     // 放しても実行される
     // console.log('on drag leave', e);
-    if (e.currentTarget.id === 'drop-zone') {
+    if (e.currentTarget.id.startsWith(TAB_PREFIX)) {
       setIsDroppable(false);
     }
   };
 
   const onDrop = (e: React.DragEvent<HTMLElement>) => {
-    const dragId = e.dataTransfer.getData('text/plain');
-    const dropId = e.currentTarget.id.slice(TAB_PREFIX.length);
+    const dest = e.currentTarget.id.slice(TAB_PREFIX.length);
     setIsDroppable(false);
-    moveCollection(dragId, dropId); 
+    moveCollection(dragTab, dest); 
   };
 
 
@@ -318,7 +318,7 @@ function App({ profiles, defaultConfig }: Props) {
         onValueChange={setCurrentTab}
       >
         <TabsList
-          className="p-0 h-[34px] w-full relative bg-transparent scroll-horizontal"
+          className={`p-0 h-[34px] w-full relative bg-transparent scroll-horizontal ${clsx(isDragging && 'dragging') }`}
           onWheel={onWheel}
           ref={tablistRef}
         >

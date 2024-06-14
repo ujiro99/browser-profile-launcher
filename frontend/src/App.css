@@ -73,7 +73,7 @@ body {
   outline: none;
 }
 
-.tab-button:hover,
+:not(.dragging) > .tab-button:hover,
 .tab-button[data-state="active"]:hover {
   @apply bg-neutral-100;
 }
