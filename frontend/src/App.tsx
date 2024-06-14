@@ -40,16 +40,22 @@ function isDefaultTab(tab: string): boolean {
   return DEFAULT_TABS.includes(tab);
 }
 
+const TAB_PREFIX = "tab-";
+
 type Props = { profiles: profile.Profile[]; defaultConfig: ConfigType };
 
 function App({ profiles, defaultConfig }: Props) {
-  const { collections, profileCollections } = useCollection();
+  const { collections, profileCollections, moveCollection } = useCollection();
   const tabs = [...DEFAULT_TABS, ...collections];
   const [config, setConfig] = useConfig();
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(FocusDefault);
   const [currentTab, _setCurrentTab] = useState(tabs[0]);
   const [errorMsg, setErrorMsg] = useState("");
+
+  const [isDragging, setIsDragging] = useState(false);
+  const [isDroppable, setIsDroppable] = useState(false);
+
   const [history, addHistory] = useHistory();
   const { t } = useTranslation();
   const { isDev } = useEnv();
@@ -212,6 +218,48 @@ function App({ profiles, defaultConfig }: Props) {
     });
   };
 
+  const onDragStart = (e: React.DragEvent<HTMLElement>) => {
+    let id = e.currentTarget.id;
+    if (!id.startsWith(TAB_PREFIX)) {
+      return
+    }
+    id = id.slice(TAB_PREFIX.length);
+    setIsDragging(true);
+    console.log('on drag start', id);
+    e.dataTransfer.setData('text/plain', id);
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const onDragEnd = (e: React.DragEvent<HTMLElement>) => {
+    // console.log('on drag end', e);
+    setIsDragging(false);
+  };
+
+  /* Itemがdrag zoneに入ったとき */
+  const onDragEnter = (e: React.DragEvent<HTMLElement>) => {
+    // console.log('on drag enter', e);
+    if (e.currentTarget.id === 'drop-zone') {
+      setIsDroppable(true);
+    }
+  };
+
+  /* Itemがdrag zoneから出たとき */
+  const onDragLeave = (e: React.DragEvent<HTMLElement>) => {
+    // 放しても実行される
+    // console.log('on drag leave', e);
+    if (e.currentTarget.id === 'drop-zone') {
+      setIsDroppable(false);
+    }
+  };
+
+  const onDrop = (e: React.DragEvent<HTMLElement>) => {
+    const dragId = e.dataTransfer.getData('text/plain');
+    const dropId = e.currentTarget.id.slice(TAB_PREFIX.length);
+    setIsDroppable(false);
+    moveCollection(dragId, dropId); 
+  };
+
+
   // 前のタブに移動
   const setPrevTab = useCallback(() => {
     let idx = tabs.findIndex((tab) => tab === currentTab);
@@ -277,9 +325,19 @@ function App({ profiles, defaultConfig }: Props) {
           {tabs.map((tab) => (
             <TabsTrigger
               className="tab-button"
+              id={`${TAB_PREFIX}${tab}`}
               value={tab}
               key={tab}
               ref={refsByTabs[tab]}
+              draggable
+              onDragStart={onDragStart}
+              onDragEnd={onDragEnd}
+              onDragEnter={onDragEnter}
+              onDragLeave={onDragLeave}
+              onDragOver={(e) => {
+                e.preventDefault(); // これがないとdropイベントが発火しない
+              }}
+              onDrop={onDrop}
             >
               {tab === "history" && <Clock className="tab-icon" />}
               {t(tab)}

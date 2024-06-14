@@ -11,6 +11,7 @@ type CollectionType = {
   collections: Collection[];
   setCollection: (value: Collection[]) => void;
   removeCollection: (value: Collection) => Promise<void>;
+  moveCollection: (src: Collection, dest: Collection) => void;
   profileCollections: ProfileCollections[];
   setProfileCollection: (value: ProfileCollections[]) => void;
 };
@@ -57,6 +58,19 @@ export const useCollection = (): CollectionType => {
     });
   };
 
+  const moveCollection = (src: Collection, dest: Collection) => {
+    const destIdx = collections.indexOf(dest);
+    const newVal = collections.filter((c) => c !== src);
+    newVal.splice(destIdx , 0, src);
+    Config.getInstance().set(
+      {
+        ...config,
+        [ConfigKey.collections]: newVal,
+      },
+      ConfigKey.collections,
+    );
+  };
+
   const setProfileCollection = (value: ProfileCollections[]) => {
     Config.getInstance().set(
       {
@@ -71,6 +85,7 @@ export const useCollection = (): CollectionType => {
     collections,
     setCollection,
     removeCollection,
+    moveCollection,
     profileCollections,
     setProfileCollection,
   };
