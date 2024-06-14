@@ -222,12 +222,12 @@ function App({ profiles, defaultConfig }: Props) {
 
   const onDragStart = (e: React.DragEvent<HTMLElement>) => {
     let id = e.currentTarget.id;
-    if (!id.startsWith(TAB_PREFIX)) return
+    if (!id.startsWith(TAB_PREFIX)) return;
     id = id.slice(TAB_PREFIX.length);
-    setDragTab(id)
+    setDragTab(id);
     setIsDragging(true);
-    e.dataTransfer.dropEffect = 'move';
-    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.effectAllowed = "move";
   };
 
   const onDragEnd = (e: React.DragEvent<HTMLElement>) => {
@@ -237,7 +237,7 @@ function App({ profiles, defaultConfig }: Props) {
   const onDragEnter = (e: React.DragEvent<HTMLElement>) => {
     if (e.currentTarget.id.startsWith(TAB_PREFIX)) {
       const dest = e.currentTarget.id.slice(TAB_PREFIX.length);
-      moveCollection(dragTab, dest); 
+      moveCollection(dragTab, dest);
       setIsDroppable(true);
     }
   };
@@ -250,12 +250,15 @@ function App({ profiles, defaultConfig }: Props) {
     }
   };
 
+  const onDragOver = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault(); // これがないとdropイベントが発火しない
+  };
+
   const onDrop = (e: React.DragEvent<HTMLElement>) => {
     const dest = e.currentTarget.id.slice(TAB_PREFIX.length);
     setIsDroppable(false);
-    moveCollection(dragTab, dest); 
+    moveCollection(dragTab, dest);
   };
-
 
   // 前のタブに移動
   const setPrevTab = useCallback(() => {
@@ -315,32 +318,43 @@ function App({ profiles, defaultConfig }: Props) {
         onValueChange={setCurrentTab}
       >
         <TabsList
-          className={`p-0 h-[34px] w-full relative bg-transparent scroll-horizontal ${clsx(isDragging && 'dragging')}`}
+          className={`p-0 h-[34px] w-full relative bg-transparent scroll-horizontal ${clsx(
+            isDragging && "dragging",
+          )}`}
           onWheel={onWheel}
           ref={tablistRef}
         >
           {tabs.map((tab) => (
-          <>
-            <TabsTrigger
-              className="tab-button"
-              id={`${TAB_PREFIX}${tab}`}
-              value={tab}
-              key={tab}
-              ref={refsByTabs[tab]}
-              draggable={!isDefaultTab(tab)}
-              onDragStart={onDragStart}
-              onDragEnd={onDragEnd}
-              onDragEnter={onDragEnter}
-              onDragLeave={onDragLeave}
-              onDragOver={(e) => {
-                e.preventDefault(); // これがないとdropイベントが発火しない
-              }}
-              onDrop={onDrop}
-            >
-              {tab === "history" && <Clock className="tab-icon" />}
-              {t(tab)}
-            </TabsTrigger>
-            {tab === "history" && <div className="tab-separator" />}
+            <>
+              {isDefaultTab(tab) ? 
+              <TabsTrigger
+                className="tab-button"
+                id={`${TAB_PREFIX}${tab}`}
+                value={tab}
+                key={tab}
+                ref={refsByTabs[tab]}
+              >
+                {tab === "history" && <Clock className="tab-icon" />}
+                {t(tab)}
+              </TabsTrigger> :
+              <TabsTrigger
+                className="tab-button"
+                id={`${TAB_PREFIX}${tab}`}
+                value={tab}
+                key={tab}
+                ref={refsByTabs[tab]}
+                draggable
+                onDragStart={onDragStart}
+                onDragEnd={onDragEnd}
+                onDragEnter={onDragEnter}
+                onDragLeave={onDragLeave}
+                onDragOver={onDragOver}
+                onDrop={onDrop}
+              >
+                {tab === "history" && <Clock className="tab-icon" />}
+                {t(tab)}
+              </TabsTrigger>}
+              {tab === "history" && <div className="tab-separator" />}
             </>
           ))}
           <CollectionAdd />
