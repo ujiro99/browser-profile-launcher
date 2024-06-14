@@ -25,11 +25,16 @@ export type ConfigType = {
   [ConfigKey.windowSize]: [number, number];
 };
 
-export type Collection = string;
+export type CollectionName = string;
+
+export type Collection = {
+  name: CollectionName;
+  icon: string;
+};
 
 export type ProfileCollections = {
   key: ProfileKey;
-  collections: Collection[];
+  collections: CollectionName[];
 };
 
 export enum BehaviorAfterLaunch {

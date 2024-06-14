@@ -48,7 +48,7 @@ type Props = { profiles: profile.Profile[]; defaultConfig: ConfigType };
 
 function App({ profiles, defaultConfig }: Props) {
   const { collections, profileCollections, moveCollection } = useCollection();
-  const tabs = [...DEFAULT_TABS, ...collections];
+  const tabs = [...DEFAULT_TABS, ...collections.map((c) => c.name)];
   const [config, setConfig] = useConfig();
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(FocusDefault);
@@ -70,9 +70,9 @@ function App({ profiles, defaultConfig }: Props) {
     return collections.reduce(
       (acc, cur) => {
         const pcs = profileCollections.filter((p) =>
-          p.collections.includes(cur),
+          p.collections.includes(cur.name),
         );
-        acc[cur] = pcs.map((p) => p.key);
+        acc[cur.name] = pcs.map((p) => p.key);
         return acc;
       },
       {} as { [key: string]: ProfileKey[] },
@@ -236,8 +236,11 @@ function App({ profiles, defaultConfig }: Props) {
 
   const onDragEnter = (e: React.DragEvent<HTMLElement>) => {
     if (e.currentTarget.id.startsWith(TAB_PREFIX)) {
-      const dest = e.currentTarget.id.slice(TAB_PREFIX.length);
-      moveCollection(dragTab, dest);
+      const src = t2c(dragTab);
+      const dest = t2c(e.currentTarget.id.slice(TAB_PREFIX.length));
+      if (src && dest) {
+        moveCollection(src, dest);
+      }
       setIsDragging(true);
     }
   };
@@ -252,8 +255,11 @@ function App({ profiles, defaultConfig }: Props) {
 
   const onDrop = (e: React.DragEvent<HTMLElement>) => {
     if (e.currentTarget.id.startsWith(TAB_PREFIX)) {
-      const dest = e.currentTarget.id.slice(TAB_PREFIX.length);
-      moveCollection(dragTab, dest);
+      const src = t2c(dragTab);
+      const dest = t2c(e.currentTarget.id.slice(TAB_PREFIX.length));
+      if (src && dest) {
+        moveCollection(src, dest);
+      }
       setIsDragging(false);
     }
   };
@@ -276,14 +282,14 @@ function App({ profiles, defaultConfig }: Props) {
 
   // 削除したら、一つ前のタブに移動
   const onDeletedTab = (collection: Collection) => {
-    if (collection === currentTab) {
+    if (collection.name === currentTab) {
       setPrevTab();
     }
   };
 
   // CurrentTabを更新してリストなども更新
   const onEdited = (after: Collection) => {
-    _setCurrentTab(after);
+    _setCurrentTab(after.name);
   };
 
   // tabを移動したら、focusを長さに合わせる
@@ -301,6 +307,18 @@ function App({ profiles, defaultConfig }: Props) {
     if (tablistRef.current) {
       tablistRef.current.scrollLeft += e.deltaY;
     }
+  };
+
+  const t2c = (tab: string): Collection => {
+    return collections.find((c) => c.name === tab) as Collection;
+  };
+
+  const i = (tab: string) => {
+    const c = t2c(tab);
+    if (c != null) {
+      return c.icon;
+    }
+    return null;
   };
 
   return (
@@ -356,7 +374,8 @@ function App({ profiles, defaultConfig }: Props) {
                   onDrop={onDrop}
                 >
                   {tab === "history" && <Clock className="tab-icon" />}
-                  {t(tab)}
+                  {i(tab)}
+                  {tab}
                 </TabsTrigger>
               )}
               {tab === "history" && <div className="tab-separator" />}
@@ -386,8 +405,8 @@ function App({ profiles, defaultConfig }: Props) {
               )}
               {!isDefaultTab(tab) && (
                 <div className="buttons">
-                  <CollectionEdit collection={tab} onEdited={onEdited} />
-                  <CollectionDelete collection={tab} onDeleted={onDeletedTab} />
+                  <CollectionEdit collection={t2c(tab)} onEdited={onEdited} />
+                  <CollectionDelete collection={t2c(tab)} onDeleted={onDeletedTab} />
                 </div>
               )}
             </ScrollArea>

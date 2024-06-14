@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { useCollection } from "@/hooks/useCollection";
 import type { Collection } from "@/services/config";
 import Warning from "../assets/warning.svg?react";
+import { c2s } from "@/lib/utils";
 
 import "./CollectionAdd.css";
 
@@ -45,7 +46,9 @@ export function CollectionDelete({ collection, onDeleted }: Props) {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-2 text-center">
-            <span className="text-lg font-bold break-all">{collection}</span>
+            <span className="text-lg font-bold break-all">
+              {c2s(collection)}
+            </span>
             <Button
               variant="destructive"
               onClick={deleteCollection}

@@ -25,16 +25,17 @@ export function CollectionEdit({ collection, onEdited }: Props) {
   const { t } = useTranslation();
   const { editCollection } = useCollection();
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(collection);
+  const [name, setName] = useState(collection.name);
+  const [icon, setIcon] = useState("");
   const [errorMsg, setErrorMsg] = useState<string>();
 
   const edit = () => {
-    const ret = editCollection(collection, value);
+    const ret = editCollection(collection, { name, icon });
     if (!ret) {
       setErrorMsg(t("edit-duplicated"));
       return;
     }
-    onEdited(value);
+    onEdited({ name, icon });
     setOpen(false);
   };
 
@@ -44,7 +45,7 @@ export function CollectionEdit({ collection, onEdited }: Props) {
     }
   };
 
-  const isVaild = value !== collection && value !== "";
+  const isVaild = name !== collection.name && name !== "";
 
   return (
     <div className="CollectionEdit">
@@ -62,10 +63,10 @@ export function CollectionEdit({ collection, onEdited }: Props) {
           <div className="grid gap-2 text-center">
             <Input
               placeholder={t("add-placeholder")}
-              onChange={(e: any) => setValue(e.target.value)}
+              onChange={(e: any) => setName(e.target.value)}
               onKeyDown={onKeyDown}
               className="h-8"
-              defaultValue={value}
+              defaultValue={name}
             />
             {errorMsg && (
               <span className="text-sm text-rose-600">{errorMsg}</span>

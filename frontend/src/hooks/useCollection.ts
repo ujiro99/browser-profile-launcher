@@ -47,31 +47,31 @@ export const useCollection = (): CollectionType => {
       return false;
     }
     // rename collection
-    const idx = collections.indexOf(before);
-    const newCollections = collections.filter((c) => c !== before);
+    const idx = collections.findIndex((c) => equals(c, before));
+    const newCollections = collections.filter((c) => !equals(c, before));
     newCollections.splice(idx, 0, after);
     // rename profileCollection
     for (const p of profileCollections) {
-      p.collections = p.collections.map((c) => (c === before ? after : c));
+      p.collections = p.collections.map((c) =>
+        c === before.name ? after.name : c,
+      );
     }
     // Save
-    Config.getInstance().set(
-      {
-        ...config,
-        [ConfigKey.collections]: newCollections,
-        [ConfigKey.profileCollections]: profileCollections,
-      }
-    );
-    return true
+    Config.getInstance().set({
+      ...config,
+      [ConfigKey.collections]: newCollections,
+      [ConfigKey.profileCollections]: profileCollections,
+    });
+    return true;
   };
 
   const removeCollection = (value: Collection): Promise<void> => {
-    const ncs = collections.filter((c) => c !== value);
+    const ncs = collections.filter((c) => !equals(c, value));
     const npcs = profileCollections
       .map((p) => {
         return {
           ...p,
-          collections: p.collections.filter((c) => c !== value),
+          collections: p.collections.filter((c) => c !== value.name),
         };
       })
       .filter((p) => p.collections.length > 0);
@@ -83,9 +83,9 @@ export const useCollection = (): CollectionType => {
   };
 
   const moveCollection = (src: Collection, dest: Collection) => {
-    const destIdx = collections.indexOf(dest);
-    const newVal = collections.filter((c) => c !== src);
-    newVal.splice(destIdx, 0, src);
+    const newVal = collections.filter((c) => !equals(c, src));
+    const idx = collections.findIndex((c) => equals(c, dest));
+    newVal.splice(idx, 0, src);
     Config.getInstance().set(
       {
         ...config,
@@ -105,9 +105,13 @@ export const useCollection = (): CollectionType => {
     );
   };
 
+  const equals = (a: Collection, b: Collection): boolean => {
+    return a.name === b.name;
+  };
+
   const isDuplicate = (value: Collection): boolean => {
-    return collections.some((c) => c === value);
-  }
+    return collections.some((c) => equals(c, value));
+  };
 
   return {
     collections,

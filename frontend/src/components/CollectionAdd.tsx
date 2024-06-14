@@ -14,7 +14,8 @@ import "./CollectionAdd.css";
 
 export function CollectionAdd() {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const [name, setName] = useState("");
+  const [icon, setIcon] = useState("");
   const { t } = useTranslation();
   const { collections, setCollection } = useCollection();
 
@@ -26,10 +27,10 @@ export function CollectionAdd() {
   };
 
   const addCollection = () => {
-    if (value) {
-      setCollection([...collections, value]);
+    if (name) {
+      setCollection([...collections, { name, icon }]);
       setOpen(false);
-      setValue("");
+      setName("");
     }
   };
 
@@ -48,15 +49,15 @@ export function CollectionAdd() {
             <div className="CollectionPopup__input">
               <Input
                 placeholder={t("add-placeholder")}
-                onChange={(e: any) => setValue(e.target.value)}
+                onChange={(e: any) => setName(e.target.value)}
                 onKeyDown={onKeyDown}
                 className="h-8"
-                defaultValue={value}
+                defaultValue={name}
               />
               <Button
                 onClick={addCollection}
                 className="py-1 pr-2 pl-1 h-8 rounded-lg text-xs"
-                disabled={!value}
+                disabled={!name}
               >
                 <Plus className="fill-neutral-600" />
                 {t("add")}

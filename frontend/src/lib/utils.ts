@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import type { profile } from "../../wailsjs/go/models";
 import Fuse from "fuse.js";
 import type { RangeTuple } from "fuse.js";
+import type { Collection } from "@/services/config";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -58,6 +59,10 @@ export function mapListItem(list: ListItem[], keys: ProfileKey[]): ListItem[] {
 
 export function uniq<T>(arr: T[]) {
   return arr.filter((elm, idx, self) => self.indexOf(elm) === idx);
+}
+
+export function c2s(c: Collection): string {
+  return `${c.icon}${c.name}`;
 }
 
 enum Diff {

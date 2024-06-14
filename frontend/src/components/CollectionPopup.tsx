@@ -9,7 +9,7 @@ import {
 import LibraryAdd from "@/assets/library_add.svg?react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useCollection } from "@/hooks/useCollection";
-import { profileKey } from "@/lib/utils";
+import { profileKey, c2s } from "@/lib/utils";
 
 import "./CollectionPopup.css";
 
@@ -54,11 +54,11 @@ export function CollectionPopup({ className, profile }: CollectionPopuProps) {
             >
               {collections.map((c) => (
                 <ToggleGroupItem
-                  value={c}
-                  key={c}
+                  value={c2s(c)}
+                  key={c2s(c)}
                   className="px-3 pb-[3px] h-7 text-neutral-500 font-medium hover:font-bold rounded-full text-sm border"
                 >
-                  {c}
+                  {c2s(c)}
                 </ToggleGroupItem>
               ))}
             </ToggleGroup>
