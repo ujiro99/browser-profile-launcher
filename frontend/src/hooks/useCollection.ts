@@ -10,7 +10,7 @@ import { uniq } from "../lib/utils";
 type CollectionType = {
   collections: Collection[];
   setCollection: (value: Collection[]) => void;
-  editCollection: (before: Collection, after: Collection) => void;
+  editCollection: (before: Collection, after: Collection) => boolean;
   removeCollection: (value: Collection) => Promise<void>;
   moveCollection: (src: Collection, dest: Collection) => void;
   profileCollections: ProfileCollections[];
@@ -42,7 +42,10 @@ export const useCollection = (): CollectionType => {
     );
   };
 
-  const editCollection = (before: Collection, after: Collection) => {
+  const editCollection = (before: Collection, after: Collection): boolean => {
+    if (isDuplicate(after)) {
+      return false;
+    }
     // rename collection
     const idx = collections.indexOf(before);
     const newCollections = collections.filter((c) => c !== before);
@@ -59,6 +62,7 @@ export const useCollection = (): CollectionType => {
         [ConfigKey.profileCollections]: profileCollections,
       }
     );
+    return true
   };
 
   const removeCollection = (value: Collection): Promise<void> => {
@@ -100,6 +104,10 @@ export const useCollection = (): CollectionType => {
       ConfigKey.profileCollections,
     );
   };
+
+  const isDuplicate = (value: Collection): boolean => {
+    return collections.some((c) => c === value);
+  }
 
   return {
     collections,

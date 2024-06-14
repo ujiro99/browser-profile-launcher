@@ -15,7 +15,8 @@
   "edit": "Edit",
   "edit-collection": "Editing Collections",
   "edit-comfirm": "OK",
-  "edit-desc": "Do you want to edit this collection?\nThis operation cannot be undone.",
+  "edit-desc": "Do you want to edit this collection's name?\nThis operation cannot be undone.",
+  "edit-duplicated": "The collection name is duplicated.",
   "no-results": "There are no applicable profiles.",
   "tips": [
     "↑: Move the cursor upwards in the list",

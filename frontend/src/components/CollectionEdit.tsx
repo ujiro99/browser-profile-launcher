@@ -25,17 +25,32 @@ type Props = {
 export function CollectionEdit({ collection, onEdited }: Props) {
   const { t } = useTranslation();
   const { editCollection } = useCollection();
+  const [open, setOpen] = useState(false);
   const [value, setValue] = useState(collection);
+  const [errorMsg, setErrorMsg] = useState<string>();
 
   const edit = () => {
-    editCollection(collection, value);
+    const ret = editCollection(collection, value);
+    if (!ret) {
+      setErrorMsg(t("edit-duplicated"));
+      return;
+    }
     onEdited(value);
+    setOpen(false);
   };
+
+  const onKeyDown = (e: any) => {
+    if (e.key === "Enter") {
+      e.stopPropagation();
+    }
+  };
+
+  const isVaild = value !== collection && value !== "";
 
   return (
     <div className="CollectionEdit">
-      <Dialog>
-        <DialogTrigger className="text-neutral-400 hover:text-rose-600 hover:bg-rose-50 py-1 px-3 rounded-lg transition text-sm">
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger className="text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 py-1 px-3 rounded-lg transition text-sm">
           {t("edit")}
         </DialogTrigger>
         <DialogContent className="w-72 rounded">
@@ -49,18 +64,21 @@ export function CollectionEdit({ collection, onEdited }: Props) {
             <Input
               placeholder={t("add-placeholder")}
               onChange={(e: any) => setValue(e.target.value)}
+              onKeyDown={onKeyDown}
               className="h-8"
               defaultValue={value}
             />
-            <DialogClose asChild>
-              <Button
-                variant="destructive"
-                onClick={edit}
-                className="center mt-2 mx-[auto] py-1 px-2 h-8 w-14 rounded-lg text-md"
-              >
-                {t("edit-comfirm")}
-              </Button>
-            </DialogClose>
+            {errorMsg && (
+              <span className="text-sm text-rose-600">{errorMsg}</span>
+            )}
+            <Button
+              variant="destructive"
+              onClick={edit}
+              className="center mt-2 mx-[auto] py-1 px-2 h-8 w-14 rounded-lg text-md"
+              disabled={!isVaild}
+            >
+              {t("edit-comfirm")}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
