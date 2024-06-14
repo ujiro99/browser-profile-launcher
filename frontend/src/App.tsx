@@ -57,7 +57,6 @@ function App({ profiles, defaultConfig }: Props) {
 
   const [isDragging, setIsDragging] = useState(false);
   const [dragTab, setDragTab] = useState("");
-  const [isDroppable, setIsDroppable] = useState(false);
 
   const [history, addHistory] = useHistory();
   const { t } = useTranslation();
@@ -239,16 +238,12 @@ function App({ profiles, defaultConfig }: Props) {
     if (e.currentTarget.id.startsWith(TAB_PREFIX)) {
       const dest = e.currentTarget.id.slice(TAB_PREFIX.length);
       moveCollection(dragTab, dest);
-      setIsDroppable(true);
+      setIsDragging(true);
     }
   };
 
   const onDragLeave = (e: React.DragEvent<HTMLElement>) => {
-    // 放しても実行される
-    // console.log('on drag leave', e);
-    if (e.currentTarget.id.startsWith(TAB_PREFIX)) {
-      setIsDroppable(false);
-    }
+    setIsDragging(false);
   };
 
   const onDragOver = (e: React.DragEvent<HTMLElement>) => {
@@ -256,9 +251,11 @@ function App({ profiles, defaultConfig }: Props) {
   };
 
   const onDrop = (e: React.DragEvent<HTMLElement>) => {
-    const dest = e.currentTarget.id.slice(TAB_PREFIX.length);
-    setIsDroppable(false);
-    moveCollection(dragTab, dest);
+    if (e.currentTarget.id.startsWith(TAB_PREFIX)) {
+      const dest = e.currentTarget.id.slice(TAB_PREFIX.length);
+      moveCollection(dragTab, dest);
+      setIsDragging(false);
+    }
   };
 
   // 前のタブに移動
