@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileList } from "@/components/ProfileList";
 import { CollectionAdd } from "@/components/CollectionAdd";
+import { CollectionEdit } from "@/components/CollectionEdit";
 import { CollectionDelete } from "@/components/CollectionDelete";
 import { Input } from "@/components/Input";
 import { Tips } from "@/components/Tips";
@@ -18,7 +19,7 @@ import { useCollection } from "@/hooks/useCollection";
 import { useConfig } from "@/hooks/useConfig";
 import { useEnv } from "@/hooks/useEnv";
 import { ConfigKey, BehaviorAfterLaunch } from "@/services/config";
-import type { ConfigType } from "@/services/config";
+import type { Collection, ConfigType } from "@/services/config";
 import Clock from "@/assets/clock.svg?react";
 import LibraryAdd from "@/assets/library_add.svg?react";
 import * as utils from "./lib/utils";
@@ -277,10 +278,15 @@ function App({ profiles, defaultConfig }: Props) {
   }, [currentTab, tabs]);
 
   // 削除したら、一つ前のタブに移動
-  const onDeletedTab = (collection: string) => {
+  const onDeletedTab = (collection: Collection) => {
     if (collection === currentTab) {
       setPrevTab();
     }
+  };
+
+  // CurrentTabを更新してリストなども更新
+  const onEdited = (after: Collection) => {
+    _setCurrentTab(after);
   };
 
   // tabを移動したら、focusを長さに合わせる
@@ -326,34 +332,36 @@ function App({ profiles, defaultConfig }: Props) {
         >
           {tabs.map((tab) => (
             <>
-              {isDefaultTab(tab) ? 
-              <TabsTrigger
-                className="tab-button"
-                id={`${TAB_PREFIX}${tab}`}
-                value={tab}
-                key={tab}
-                ref={refsByTabs[tab]}
-              >
-                {tab === "history" && <Clock className="tab-icon" />}
-                {t(tab)}
-              </TabsTrigger> :
-              <TabsTrigger
-                className="tab-button"
-                id={`${TAB_PREFIX}${tab}`}
-                value={tab}
-                key={tab}
-                ref={refsByTabs[tab]}
-                draggable
-                onDragStart={onDragStart}
-                onDragEnd={onDragEnd}
-                onDragEnter={onDragEnter}
-                onDragLeave={onDragLeave}
-                onDragOver={onDragOver}
-                onDrop={onDrop}
-              >
-                {tab === "history" && <Clock className="tab-icon" />}
-                {t(tab)}
-              </TabsTrigger>}
+              {isDefaultTab(tab) ? (
+                <TabsTrigger
+                  className="tab-button"
+                  id={`${TAB_PREFIX}${tab}`}
+                  value={tab}
+                  key={tab}
+                  ref={refsByTabs[tab]}
+                >
+                  {tab === "history" && <Clock className="tab-icon" />}
+                  {t(tab)}
+                </TabsTrigger>
+              ) : (
+                <TabsTrigger
+                  className="tab-button"
+                  id={`${TAB_PREFIX}${tab}`}
+                  value={tab}
+                  key={tab}
+                  ref={refsByTabs[tab]}
+                  draggable
+                  onDragStart={onDragStart}
+                  onDragEnd={onDragEnd}
+                  onDragEnter={onDragEnter}
+                  onDragLeave={onDragLeave}
+                  onDragOver={onDragOver}
+                  onDrop={onDrop}
+                >
+                  {tab === "history" && <Clock className="tab-icon" />}
+                  {t(tab)}
+                </TabsTrigger>
+              )}
               {tab === "history" && <div className="tab-separator" />}
             </>
           ))}
@@ -380,11 +388,10 @@ function App({ profiles, defaultConfig }: Props) {
                 )
               )}
               {!isDefaultTab(tab) && (
-                <CollectionDelete
-                  className="tab-remove"
-                  collection={tab}
-                  onDeleted={onDeletedTab}
-                />
+                <div className="buttons">
+                  <CollectionEdit collection={tab} onEdited={onEdited} />
+                  <CollectionDelete collection={tab} onDeleted={onDeletedTab} />
+                </div>
               )}
             </ScrollArea>
           </TabsContent>

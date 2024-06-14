@@ -10,6 +10,7 @@ import { uniq } from "../lib/utils";
 type CollectionType = {
   collections: Collection[];
   setCollection: (value: Collection[]) => void;
+  editCollection: (before: Collection, after: Collection) => void;
   removeCollection: (value: Collection) => Promise<void>;
   moveCollection: (src: Collection, dest: Collection) => void;
   profileCollections: ProfileCollections[];
@@ -41,6 +42,25 @@ export const useCollection = (): CollectionType => {
     );
   };
 
+  const editCollection = (before: Collection, after: Collection) => {
+    // rename collection
+    const idx = collections.indexOf(before);
+    const newCollections = collections.filter((c) => c !== before);
+    newCollections.splice(idx, 0, after);
+    // rename profileCollection
+    for (const p of profileCollections) {
+      p.collections = p.collections.map((c) => (c === before ? after : c));
+    }
+    // Save
+    Config.getInstance().set(
+      {
+        ...config,
+        [ConfigKey.collections]: newCollections,
+        [ConfigKey.profileCollections]: profileCollections,
+      }
+    );
+  };
+
   const removeCollection = (value: Collection): Promise<void> => {
     const ncs = collections.filter((c) => c !== value);
     const npcs = profileCollections
@@ -61,7 +81,7 @@ export const useCollection = (): CollectionType => {
   const moveCollection = (src: Collection, dest: Collection) => {
     const destIdx = collections.indexOf(dest);
     const newVal = collections.filter((c) => c !== src);
-    newVal.splice(destIdx , 0, src);
+    newVal.splice(destIdx, 0, src);
     Config.getInstance().set(
       {
         ...config,
@@ -84,6 +104,7 @@ export const useCollection = (): CollectionType => {
   return {
     collections,
     setCollection,
+    editCollection,
     removeCollection,
     moveCollection,
     profileCollections,

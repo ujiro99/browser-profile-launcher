@@ -87,9 +87,10 @@ body {
   @apply bg-neutral-300;
 }
 
-.tab-remove {
-  margin-top: 10px;
-  text-align: center;
+.buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
 }
 
 .error {

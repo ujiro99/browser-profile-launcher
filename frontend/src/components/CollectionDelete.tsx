@@ -15,12 +15,11 @@ import Warning from "../assets/warning.svg?react";
 import "./CollectionAdd.css";
 
 type Props = {
-  className?: string;
   collection: Collection;
   onDeleted: (collection: Collection) => void;
 };
 
-export function CollectionDelete({ className, collection, onDeleted }: Props) {
+export function CollectionDelete({ collection, onDeleted }: Props) {
   const { t } = useTranslation();
   const { removeCollection } = useCollection();
 
@@ -30,7 +29,7 @@ export function CollectionDelete({ className, collection, onDeleted }: Props) {
   };
 
   return (
-    <div className={`CollectionDelete ${className}`}>
+    <div className="CollectionDelete">
       <Dialog>
         <DialogTrigger className="text-neutral-400 hover:text-rose-600 hover:bg-rose-50 py-1 px-3 rounded-lg transition text-sm">
           {t("delete")}
@@ -50,7 +49,7 @@ export function CollectionDelete({ className, collection, onDeleted }: Props) {
             <Button
               variant="destructive"
               onClick={deleteCollection}
-              className="center mt-2 mx-[auto] py-1 px-2 h-8 w-14 rounded-lg text-md"
+              className="center mt-2 mx-[auto] py-1 px-2 h-8 w-16 rounded-lg text-md"
             >
               {t("delete")}
             </Button>
