@@ -357,7 +357,7 @@ function App({ profiles, defaultConfig }: Props) {
                   ref={refsByTabs[tab]}
                 >
                   {tab === "history" && <Clock className="tab-icon" />}
-                  {t(tab)}
+                  <span className="tab-button__name">{t(tab)}</span>
                 </TabsTrigger>
               ) : (
                 <TabsTrigger
@@ -375,11 +375,13 @@ function App({ profiles, defaultConfig }: Props) {
                   onDrop={onDrop}
                 >
                   {tab === "history" && <Clock className="tab-icon" />}
-                  {i(tab)}
-                  {tab}
+                  {i(tab) && <span className="tab-button__icon">{i(tab)}</span>}
+                  <span className="tab-button__name">{tab}</span>
                 </TabsTrigger>
               )}
-              {tab === "history" && <div className="tab-separator" key="$$separator" />}
+              {tab === "history" && (
+                <div className="tab-separator" key="$$separator" />
+              )}
             </>
           ))}
           <CollectionAdd key="$$add" />
@@ -407,7 +409,10 @@ function App({ profiles, defaultConfig }: Props) {
               {!isDefaultTab(tab) && (
                 <div className="buttons">
                   <CollectionEdit collection={t2c(tab)} onEdited={onEdited} />
-                  <CollectionDelete collection={t2c(tab)} onDeleted={onDeletedTab} />
+                  <CollectionDelete
+                    collection={t2c(tab)}
+                    onDeleted={onDeletedTab}
+                  />
                 </div>
               )}
             </ScrollArea>
