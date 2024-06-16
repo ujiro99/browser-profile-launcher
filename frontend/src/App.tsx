@@ -325,7 +325,7 @@ function App({ profiles, defaultConfig }: Props) {
     <div id="App">
       <div id="input" className="input-box">
         <Input
-          className="flex-1"
+          className="flex-1 h-full"
           onChange={updateQuery}
           placeholder={t("keywordSearch")}
           style={{ height: "100%" }}

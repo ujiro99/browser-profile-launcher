@@ -54,7 +54,7 @@ export function Input(props: InputProps) {
 
   return (
     <div className={`relative text-left	${props.className || ""}`}>
-      <div className="flex items-center w-full">
+      <div className="flex items-center w-full h-full">
         <input
           type="text"
           className="input"
