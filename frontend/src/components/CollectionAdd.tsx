@@ -6,8 +6,9 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import { useCollection } from "@/hooks/useCollection";
+import { EmojiPicker } from "@/components/EmojiPicker";
 import { Input } from "@/components/Input";
+import { useCollection } from "@/hooks/useCollection";
 import Plus from "@/assets/plus.svg?react";
 
 import "./CollectionAdd.css";
@@ -26,18 +27,23 @@ export function CollectionAdd() {
     }
   };
 
+  const onEmojiSelect = (emoji: any) => {
+    setIcon(emoji.native);
+  };
+
   const addCollection = () => {
     if (name) {
       setCollection([...collections, { name, icon }]);
       setOpen(false);
       setName("");
+      setIcon("");
     }
   };
 
   return (
     <div className="CollectionAdd">
-      <Popover modal={true} open={open} onOpenChange={setOpen}>
-        <PopoverTrigger className="CollectionAdd__button">
+      <Popover modal={false} open={open} onOpenChange={setOpen}>
+        <PopoverTrigger className="CollectionAdd__trigger">
           <Plus />
         </PopoverTrigger>
         <PopoverContent collisionPadding={8}>
@@ -46,20 +52,25 @@ export function CollectionAdd() {
               <h4 className="font-medium leading-none">{t("collections")}</h4>
               <p className="text-sm text-muted-foreground">{t("add-desc")}</p>
             </div>
-            <div className="CollectionPopup__input">
-              <Input
-                placeholder={t("add-placeholder")}
-                onChange={(e: any) => setName(e.target.value)}
-                onKeyDown={onKeyDown}
-                className="h-8"
-                defaultValue={name}
-              />
+            <div className="CollectionAdd__input">
+              <div className="flex gap-1">
+                <EmojiPicker
+                  onEmojiSelect={onEmojiSelect}
+                  defaultEmoji={icon}
+                />
+                <Input
+                  placeholder={t("add-placeholder")}
+                  onChange={(e: any) => setName(e.target.value)}
+                  onKeyDown={onKeyDown}
+                  defaultValue={name}
+                />
+              </div>
               <Button
                 onClick={addCollection}
                 className="py-1 pr-2 pl-1 h-8 rounded-lg text-xs"
                 disabled={!name}
               >
-                <Plus className="fill-neutral-600" />
+                <Plus className="fill-neutral-600 w-5" />
                 {t("add")}
               </Button>
             </div>
