@@ -62,7 +62,7 @@ export function uniq<T>(arr: T[]) {
 }
 
 export function c2s(c: Collection): string {
-  return `${c.icon}${c.name}`;
+  return `${c.icon || ''}${c.name}`;
 }
 
 enum Diff {
