@@ -328,6 +328,7 @@ function App({ profiles, defaultConfig }: Props) {
           className="flex-1"
           onChange={updateQuery}
           placeholder={t("keywordSearch")}
+          style={{ height: "100%" }}
         />
         <Tips />
       </div>

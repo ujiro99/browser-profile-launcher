@@ -6,12 +6,13 @@ import {
   WindowGetSize,
   WindowSetSize,
 } from "../wailsjs/runtime/runtime";
+
+import "./global.css";
 import { List } from "../wailsjs/go/main/App";
 import type { profile } from "../wailsjs/go/models";
 import App from "./App";
 import { Config } from "@/services/config";
 import type { ConfigType } from "@/services/config";
-import "./global.css";
 
 const config = Config.getInstance();
 

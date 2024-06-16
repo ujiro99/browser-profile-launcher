@@ -43,7 +43,7 @@ export const useCollection = (): CollectionType => {
   };
 
   const editCollection = (before: Collection, after: Collection): boolean => {
-    if (isDuplicate(after)) {
+    if (isDuplicate(before, after) || !isChanged(before, after)) {
       return false;
     }
     // rename collection
@@ -109,8 +109,16 @@ export const useCollection = (): CollectionType => {
     return a.name === b.name;
   };
 
-  const isDuplicate = (value: Collection): boolean => {
-    return collections.some((c) => equals(c, value));
+  const isChanged = (a: Collection, b: Collection): boolean => {
+    return a.name !== b.name || a.icon !== b.icon;
+  };
+
+  const isDuplicate = (a: Collection, b: Collection): boolean => {
+    if (a.name === b.name) {
+      return false;
+    } else {
+      return collections.some((c) => equals(c, b));
+    }
   };
 
   return {
