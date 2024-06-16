@@ -379,11 +379,11 @@ function App({ profiles, defaultConfig }: Props) {
                   {tab}
                 </TabsTrigger>
               )}
-              {tab === "history" && <div className="tab-separator" />}
+              {tab === "history" && <div className="tab-separator" key="$$separator" />}
             </>
           ))}
-          <CollectionAdd />
-          <div className="tab-indicator" ref={indicatorRef} />
+          <CollectionAdd key="$$add" />
+          <div className="tab-indicator" key="$$indicator" ref={indicatorRef} />
         </TabsList>
         {tabs.map((tab) => (
           <TabsContent value={tab} key={tab} className="tab-content mt-2">
