@@ -1,0 +1,11 @@
+.LaunchingContent  {
+  width: 200px;
+  border-radius: 16px;
+  text-align: center;
+  @apply gap-1;
+}
+
+.LaunchingContent > button {
+  display: none;
+}
+

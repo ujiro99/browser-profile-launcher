@@ -7,7 +7,6 @@ import {
   useCallback,
   useContext,
 } from "react";
-import type { profile } from "../wailsjs/go/models";
 import { Run } from "../wailsjs/go/main/App";
 import { Quit, WindowMinimise } from "../wailsjs/runtime/runtime";
 import { useTranslation } from "react-i18next";
@@ -19,6 +18,7 @@ import { ProfileList } from "@/components/ProfileList";
 import { CollectionAdd } from "@/components/CollectionAdd";
 import { CollectionEdit } from "@/components/CollectionEdit";
 import { CollectionDelete } from "@/components/CollectionDelete";
+import { Launching } from "@/components/Launching";
 import { Input } from "@/components/Input";
 import { Tips } from "@/components/Tips";
 import { useHistory } from "@/hooks/useHistory";
@@ -65,9 +65,9 @@ function App({ defaultConfig }: Props) {
   const [focus, setFocus] = useState(FocusDefault);
   const [currentTab, _setCurrentTab] = useState(tabs[0]);
   const [errorMsg, setErrorMsg] = useState("");
-
   const [isDragging, setIsDragging] = useState(false);
   const [dragTab, setDragTab] = useState("");
+  const [launching, setLaunching] = useState(false);
 
   const [history, addHistory] = useHistory();
   const { t } = useTranslation();
@@ -231,7 +231,9 @@ function App({ defaultConfig }: Props) {
     }
     let options = utils.convLaunchOption(d.launchOptions);
     console.debug("Launch", p.browser, p.directory, options);
+    setLaunching(true)
     Run(p.browser, p.directory, options).then((err) => {
+      setLaunching(false)
       setErrorMsg(err);
       if (!err && p) {
         // 履歴に追加
@@ -351,6 +353,7 @@ function App({ defaultConfig }: Props) {
 
   return (
     <div id="App">
+      <Launching visible={launching} />
       <div id="input" className="input-box">
         <Input
           className="flex-1 h-full"

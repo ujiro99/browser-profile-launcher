@@ -36,5 +36,6 @@
   "option-placeholder-name": "*Required",
   "option-placeholder-value": "*Optional",
   "option-edge": "Unfortunately, the launch option is not available in Microsoft Edge.",
+  "launching": "Launching...",
   "": ""
 }
