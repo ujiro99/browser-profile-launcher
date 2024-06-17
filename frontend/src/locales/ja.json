@@ -34,5 +34,6 @@
   "option-add-option": "オプションを追加",
   "option-confirm": "保存",
   "option-placeholder-name": "オプション名",
-  "option-placeholder-value": "値(※任意)"
+  "option-placeholder-value": "値(※任意)",
+  "option-edge": "残念ですがMicrosoft Edgeでは起動オプションを使用できません。"
 }

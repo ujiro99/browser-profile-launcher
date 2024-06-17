@@ -75,7 +75,11 @@ export function ProfileOption({ detail, profile, className }: Props) {
             <DialogHeader>
               <DialogTitle>{t("profile-options")}</DialogTitle>
             </DialogHeader>
-            <ProfileOptionInner detail={detail} onSave={edit} />
+            {isEdge ? (
+              <p className="text-neutral-500 w-[210px] mx-[auto]">{t("option-edge")}</p>
+            ) : (
+              <ProfileOptionInner detail={detail} onSave={edit} />
+            )}
           </DialogContent>
         </DialogPortal>
       </Dialog>
