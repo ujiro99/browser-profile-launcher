@@ -11,6 +11,6 @@ export function LoadConfig():Promise<string>;
 
 export function OnSecondInstanceLaunch(arg1:options.SecondInstanceData):Promise<void>;
 
-export function Run(arg1:string,arg2:string):Promise<string>;
+export function Run(arg1:string,arg2:string,arg3:Array<string>):Promise<string>;
 
 export function SaveConfig(arg1:string):Promise<void>;

@@ -18,8 +18,8 @@ export function OnSecondInstanceLaunch(arg1) {
   return window['go']['main']['App']['OnSecondInstanceLaunch'](arg1);
 }
 
-export function Run(arg1, arg2) {
-  return window['go']['main']['App']['Run'](arg1, arg2);
+export function Run(arg1, arg2, arg3) {
+  return window['go']['main']['App']['Run'](arg1, arg2, arg3);
 }
 
 export function SaveConfig(arg1) {

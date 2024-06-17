@@ -12,6 +12,11 @@
   "delete": "Delete",
   "delete-collection": "Deleting Collections",
   "delete-desc": "Do you want to delete this collection?\nThis operation cannot be undone.",
+  "edit": "Edit",
+  "edit-collection": "Editing Collections",
+  "edit-comfirm": "OK",
+  "edit-desc": "Do you want to edit this collection's name?\nThis operation cannot be undone.",
+  "edit-duplicated": "The collection name is duplicated.",
   "no-results": "There are no applicable profiles.",
   "tips": [
     "↑: Move the cursor upwards in the list",
@@ -22,5 +27,15 @@
     "Shift + Tab: Move the active tab to the left",
     "Enter: Launch the profile at the cursor position (disabled while inputting)"
   ],
+  "profile-options": "Launch Options",
+  "option-name": "Option Name",
+  "option-value": "Option Value",
+  "option-empty": "Option not yet set.\nPlease add it from the button 👇.",
+  "option-add-option": "Add Option",
+  "option-confirm": "Save",
+  "option-placeholder-name": "*Required",
+  "option-placeholder-value": "*Optional",
+  "option-edge": "Unfortunately, the launch option is not available in Microsoft Edge.",
+  "launching": "Launching...",
   "": ""
 }

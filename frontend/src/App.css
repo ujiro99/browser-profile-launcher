@@ -58,29 +58,51 @@ body {
   width: 16px;
   height: 16px;
   fill: #737373;
-  margin: 2px 2px 0 0;
+  margin: 2px 0 0 0;
 }
 
 .tab-content {
   height: calc(100% - var(--input-height));
 }
 
-#App .tab-button {
+.tab-button {
   @apply py-1;
-  @apply px-2;
+  @apply px-1;
   margin-top: -6px;
   box-shadow: none;
   outline: none;
+  box-shadow: none;
 }
 
-.tab-button:hover,
+.tab-button__name {
+  padding: 0 4px;
+}
+.tab-button__icon {
+  padding-left: 2px;
+}
+.tab-icon + .tab-button__name,
+.tab-button__icon + .tab-button__name {
+  padding-left: 1px;
+}
+
+:not(.dragging) > .tab-button:hover,
 .tab-button[data-state="active"]:hover {
   @apply bg-neutral-100;
 }
 
-.tab-remove {
-  margin-top: 10px;
-  text-align: center;
+.tab-separator {
+  position: relative;
+  height: 20px;
+  padding: 0.5px;
+  bottom: 2px;
+  margin: 0 6px;
+  @apply bg-neutral-300;
+}
+
+.buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
 }
 
 .error {

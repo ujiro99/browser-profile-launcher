@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import type { profile as profileModel } from "../../wailsjs/go/models";
 import {
@@ -9,7 +9,7 @@ import {
 import LibraryAdd from "@/assets/library_add.svg?react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useCollection } from "@/hooks/useCollection";
-import { profileKey } from "@/lib/utils";
+import { profileKey, c2s } from "@/lib/utils";
 
 import "./CollectionPopup.css";
 
@@ -24,11 +24,26 @@ export function CollectionPopup({ className, profile }: CollectionPopuProps) {
     useCollection();
   const empty = collections.length === 0;
   const key = useMemo(() => profileKey(profile), [profile]);
-  const current = profileCollections.find((c) => key === c.key);
+  const defalut = profileCollections.find((c) => key === c.key);
+  const [current, setCurrent] = useState(defalut);
+
+  useEffect(() => {
+    setCurrent(defalut);
+  }, [defalut]);
 
   const onChange = (collections: string[]) => {
+    setCurrent({ key, collections });
+  };
+
+  const onInteractOutside = () => {
     let newVal = profileCollections.filter((c) => c.key !== key);
-    newVal = [...newVal, { key, collections }];
+    newVal = [
+      ...newVal,
+      {
+        key,
+        collections: current?.collections || [],
+      },
+    ];
     setProfileCollection(newVal);
   };
 
@@ -38,7 +53,10 @@ export function CollectionPopup({ className, profile }: CollectionPopuProps) {
         <PopoverTrigger className="CollectionButton">
           <LibraryAdd />
         </PopoverTrigger>
-        <PopoverContent collisionPadding={8}>
+        <PopoverContent
+          collisionPadding={8}
+          onInteractOutside={onInteractOutside}
+        >
           <div className="grid gap-2">
             <div className="space-y-2">
               <h4 className="font-medium leading-none">{t("collections")}</h4>
@@ -49,16 +67,16 @@ export function CollectionPopup({ className, profile }: CollectionPopuProps) {
             <ToggleGroup
               type="multiple"
               className="justify-start flex-wrap"
-              defaultValue={current?.collections || []}
+              defaultValue={defalut?.collections || []}
               onValueChange={onChange}
             >
               {collections.map((c) => (
                 <ToggleGroupItem
-                  value={c}
-                  key={c}
+                  value={c.name}
+                  key={c.name}
                   className="px-3 pb-[3px] h-7 text-neutral-500 font-medium hover:font-bold rounded-full text-sm border"
                 >
-                  {c}
+                  {c2s(c)}
                 </ToggleGroupItem>
               ))}
             </ToggleGroup>

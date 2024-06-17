@@ -1,19 +1,6 @@
-.CollectionPopup__input {
-  @apply grid;
-  @apply gap-1;
-  grid-template-columns: 1fr 60px;
-}
-
-.CollectionPopup__input svg {
-  --size: 18px;
-  width: var(--size);
-  height: var(--size);
-}
-
 .CollectionButton svg {
-  --size: 28px;
-  width: var(--size);
-  height: var(--size);
+  width: 28px;
+  height: 30px;
   transition:
     background,
     fill 0.14s ease-out;

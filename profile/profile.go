@@ -105,13 +105,15 @@ func parseProfiles(directory string) ([]Profile, error) {
 }
 
 // 指定したプロファイルのブラウザを起動する
-func Run(browser string, directory string) error {
+func Run(browser string, directory string, options []string) error {
 	var cmd *exec.Cmd
 	if browser == "chrome" {
 		args := []string{"/c", "start", "chrome", "--profile-directory=" + directory}
+		args = append(args, options...)
 		cmd = exec.Command("cmd", args...)
 	} else if browser == "msedge" {
 		args := []string{"/c", "start", "msedge", "--profile-directory=" + directory}
+		args = append(args, options...)
 		cmd = exec.Command("cmd", args...)
 	}
 	if cmd == nil {

@@ -4,7 +4,7 @@
   margin-top: -6px;
 }
 
-.CollectionAdd__button svg {
+.CollectionAdd__trigger svg {
   width: var(--size);
   height: var(--size);
   transition:
@@ -15,9 +15,15 @@
   @apply rounded-md;
 }
 
-.CollectionAdd__button svg:hover {
+.CollectionAdd__trigger svg:hover {
   background: var(--hover-bg);
   @apply fill-neutral-800;
+}
+
+.CollectionAdd__input {
+  @apply grid;
+  @apply gap-1;
+  grid-template-columns: 1fr 60px;
 }
 
 .CollectionDelete__title-warning {
@@ -27,4 +33,20 @@
   margin-right: 0.2em;
   display: inline-block;
   @apply fill-neutral-600;
+}
+
+#emoji-picker > button {
+  display: none;
+}
+
+.EmojiTrigger {
+  @apply text-neutral-600;
+  @apply bg-neutral-100;
+  @apply hover:text-neutral-800;
+  @apply hover:bg-neutral-200;
+  @apply rounded-lg;
+  @apply transition;
+  @apply text-lg;
+  @apply p-[2px];
+  @apply w-[32px];
 }

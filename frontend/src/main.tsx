@@ -6,12 +6,14 @@ import {
   WindowGetSize,
   WindowSetSize,
 } from "../wailsjs/runtime/runtime";
+
+import "./global.css";
 import { List } from "../wailsjs/go/main/App";
 import type { profile } from "../wailsjs/go/models";
 import App from "./App";
 import { Config } from "@/services/config";
 import type { ConfigType } from "@/services/config";
-import "./global.css";
+import { ProfilesContext } from "@/contexts";
 
 const config = Config.getInstance();
 
@@ -21,7 +23,9 @@ const root = createRoot(container!);
 function render(profiles: profile.Profile[], config: ConfigType) {
   root.render(
     <React.StrictMode>
-      <App profiles={profiles} defaultConfig={config} />
+      <ProfilesContext.Provider value={profiles}>
+        <App defaultConfig={config} />
+      </ProfilesContext.Provider>
     </React.StrictMode>,
   );
 }

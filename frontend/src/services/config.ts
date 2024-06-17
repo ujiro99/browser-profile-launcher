@@ -1,13 +1,14 @@
 import { LoadConfig, SaveConfig, GetVersion } from "../../wailsjs/go/main/App";
 import type { ProfileKey } from "../lib/utils";
-import { versionDiff, uniq } from "../lib/utils";
+import { versionDiff, VersionDiff, uniq } from "../lib/utils";
 import defaultConfig from "./defaultConfig.json";
 
 export enum ConfigKey {
   configVersion = "configVersion",
   history = "history",
   collections = "collections",
-  profileCollections = "profileCollections",
+  profileDetail = "profileDetail",
+  profileCollections = "profileCollections", // deprecated
   behaviorAfterLaunch = "behaviorAfterLaunch",
   language = "language",
   lastTab = "lastTab",
@@ -18,18 +19,32 @@ export type ConfigType = {
   [ConfigKey.configVersion]: string;
   [ConfigKey.history]: ProfileKey[];
   [ConfigKey.collections]: Collection[];
-  [ConfigKey.profileCollections]: ProfileCollections[];
+  [ConfigKey.profileDetail]: ProfileDetail[];
+  [ConfigKey.profileCollections]?: ProfileDetail[]; // deprecated
   [ConfigKey.behaviorAfterLaunch]: BehaviorAfterLaunch;
   [ConfigKey.language]: string;
   [ConfigKey.lastTab]: string;
   [ConfigKey.windowSize]: [number, number];
 };
 
-export type Collection = string;
+export type CollectionName = string;
 
-export type ProfileCollections = {
+export type Collection = {
+  name: CollectionName;
+  icon: string;
+};
+
+export type ProfileDetail = {
   key: ProfileKey;
-  collections: Collection[];
+  collections: CollectionName[];
+  aliasName?: string;
+  launchOptions?: LaunchOption[];
+};
+
+export type LaunchOption = {
+  id: string;
+  optionName: string;
+  value?: string;
 };
 
 export enum BehaviorAfterLaunch {
@@ -56,12 +71,14 @@ export class Config {
           console.debug("Config Loaded", this.config);
 
           const configVer = this.config[ConfigKey.configVersion];
-          const d = versionDiff(appVer, configVer);
-          if (d < 0) {
+          const d = versionDiff(configVer, appVer);
+          if (d === VersionDiff.Old) {
             // マイグレーション
             this.migrate();
             this.config[ConfigKey.configVersion] =
               defaultConfig[ConfigKey.configVersion];
+            SaveConfig(JSON.stringify(this.config, null, 2));
+            console.debug("Config Migrated", this.config);
           }
         }
       })
@@ -132,7 +149,12 @@ export class Config {
   }
 
   private migrate() {
-    // ver 1.3.0 -> 1.4.0
+    this.migrate140();
+    this.migrate150();
+  }
+
+  // ver 1.3.0 -> 1.4.0
+  private migrate140() {
     let profileCollections = this.config[ConfigKey.profileCollections];
     if (profileCollections) {
       profileCollections = profileCollections
@@ -150,7 +172,7 @@ export class Config {
             f.collections = uniq([...f.collections, ...cur.collections]);
           }
           return acc;
-        }, [] as ProfileCollections[]);
+        }, [] as ProfileDetail[]);
       this.config[ConfigKey.profileCollections] = profileCollections;
     }
     const history = this.config[ConfigKey.history];
@@ -159,5 +181,25 @@ export class Config {
         history.map((h) => this.migrateProfileKey(h)),
       );
     }
+  }
+
+  // ver 1.4.0 -> 1.5.0
+  private migrate150() {
+    // - collectionsをオブジェクト化し、iconフィールド追加
+    let collections = this.config[ConfigKey.collections];
+    if (collections && collections.length > 0) {
+      if (typeof collections[0] === "string") {
+        collections = collections.map((c) => {
+          return { name: c as unknown as string, icon: "" };
+        });
+        this.config[ConfigKey.collections] = collections;
+      }
+    }
+    // - profileCollection -> profileDetail
+    const profileCollections = this.config[ConfigKey.profileCollections];
+    if (profileCollections) {
+      this.config[ConfigKey.profileDetail] = profileCollections;
+    }
+    delete this.config.profileCollections;
   }
 }

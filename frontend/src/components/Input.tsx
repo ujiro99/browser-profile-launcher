@@ -10,6 +10,8 @@ type InputProps = {
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   className?: string;
   defaultValue?: string;
+  errorMsg?: string;
+  style?: React.CSSProperties;
 };
 
 export function Input(props: InputProps) {
@@ -51,26 +53,32 @@ export function Input(props: InputProps) {
   }, []);
 
   return (
-    <div className={`relative flex items-center ${props.className}`}>
-      <input
-        type="text"
-        className="input"
-        onChange={props.onChange}
-        onKeyDown={onKeyDown}
-        onCompositionStart={() => setComposing(true)}
-        onCompositionEnd={() => setComposing(false)}
-        defaultValue={props.defaultValue}
-        ref={inputRef}
-        placeholder={props.placeholder}
-      />
-      {!isEmpty && (
-        <button
-          className="input-clear-button"
-          type="button"
-          onClick={clickClear}
-        >
-          <Close />
-        </button>
+    <div className={`relative text-left	${props.className || ""}`}>
+      <div className="flex items-center w-full h-full">
+        <input
+          type="text"
+          className="input"
+          onChange={props.onChange}
+          onKeyDown={onKeyDown}
+          onCompositionStart={() => setComposing(true)}
+          onCompositionEnd={() => setComposing(false)}
+          defaultValue={props.defaultValue}
+          ref={inputRef}
+          placeholder={props.placeholder}
+          style={props.style}
+        />
+        {!isEmpty && (
+          <button
+            className="input-clear-button"
+            type="button"
+            onClick={clickClear}
+          >
+            <Close />
+          </button>
+        )}
+      </div>
+      {props.errorMsg && (
+        <span className="text-sm text-rose-600 pl-3">{props.errorMsg}</span>
       )}
     </div>
   );
