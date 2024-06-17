@@ -102,15 +102,15 @@ export function convLaunchOption(opts?: LaunchOption[]): string[] {
   return opts.map((opt) => opt2s(opt));
 }
 
-enum Diff {
+export enum VersionDiff {
   New = 1,
   Same = 0,
   Old = -1,
 }
 
-export function versionDiff(a: string, b: string): Diff {
+export function versionDiff(a: string, b: string): VersionDiff {
   if (!b) {
-    return Diff.Old;
+    return VersionDiff.Old;
   }
   const aVer = a.split(".").map((v) => Number.parseInt(v));
   const bVer = b.split(".").map((v) => Number.parseInt(v));
@@ -118,9 +118,9 @@ export function versionDiff(a: string, b: string): Diff {
     if (aVer[i] === bVer[i]) {
       continue;
     }
-    return aVer[i] > bVer[i] ? Diff.New : Diff.Old;
+    return aVer[i] > bVer[i] ? VersionDiff.New : VersionDiff.Old;
   }
-  return Diff.Same;
+  return VersionDiff.Same;
 }
 
 export function sleep(ms: number) {
