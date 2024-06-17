@@ -1,13 +1,16 @@
 import type { RangeTuple } from "fuse.js";
 import type { profile as goProfile } from "../../wailsjs/go/models";
+import type { ProfileDetail } from "@/services/config";
 import { CollectionPopup } from "./CollectionPopup";
+import { ProfileOption } from "./ProfileOption";
 
 import "./Item.css";
 
 type ItemProps = {
   profile: goProfile.Profile;
+  detail: ProfileDetail;
   indices?: readonly RangeTuple[];
-  onClick: (profile: goProfile.Profile) => void;
+  onClick: (detail: ProfileDetail) => void;
 };
 
 type LabelMatch = {
@@ -15,13 +18,14 @@ type LabelMatch = {
   match?: boolean;
 };
 
-export function Item({ profile, indices, onClick }: ItemProps) {
+export function Item({ profile, detail, indices, onClick }: ItemProps) {
   const icoPath = `/profile.ico?browser=${profile.browser}&directory=${profile.directory}`;
 
   const click = () => {
-    onClick(profile);
+    onClick(detail);
   };
 
+  // キーワードの部分一致をハイライトする
   let labels: LabelMatch[] = [{ str: profile.shortcut_name }];
   if (indices) {
     labels = [];
@@ -62,6 +66,7 @@ export function Item({ profile, indices, onClick }: ItemProps) {
           })}
         </p>
       </button>
+      <ProfileOption className="profileItem__option" detail={detail} />
       <CollectionPopup className="profileItem__collection" profile={profile} />
     </div>
   );

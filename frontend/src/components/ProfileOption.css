@@ -1,0 +1,32 @@
+.ProfileOption__trigger svg {
+  width: 24px;
+  height: 30px;
+  transition:
+    background,
+    fill 0.14s ease-out;
+  padding: 2px;
+  @apply fill-neutral-400;
+  @apply rounded-md;
+}
+
+.ProfileOption__trigger svg:hover {
+  background: var(--hover-bg);
+  @apply fill-neutral-700;
+}
+
+.ProfileOption__delete > svg {
+  --size: 28px;
+  width: var(--size);
+  height: var(--size);
+  transition:
+    background,
+    fill 0.14s ease-out;
+  padding: 4px;
+  @apply fill-neutral-500;
+  @apply rounded-full;
+}
+
+.ProfileOption__delete > svg:hover {
+  background: #e5e5e5;
+  @apply fill-neutral-800;
+}

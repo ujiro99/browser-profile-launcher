@@ -18,6 +18,7 @@ import type { Collection } from "@/services/config";
 import { sleep } from "@/lib/utils";
 
 import "./CollectionAdd.css";
+import "./Dialog.css";
 
 type Props = {
   collection: Collection;
@@ -108,7 +109,6 @@ export function CollectionEdit({ collection, onEdited }: Props) {
                 />
               </div>
               <Button
-                variant="destructive"
                 onClick={edit}
                 className="center mt-2 mx-[auto] py-1 px-2 h-8 w-14 rounded-lg text-md"
                 disabled={!isVaild}

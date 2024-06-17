@@ -27,5 +27,12 @@
     "Shift + Tab: Move the active tab to the left",
     "Enter: Launch the profile at the cursor position (disabled while inputting)"
   ],
+  "profile-options": "Launch Options",
+  "option-name": "Option Name",
+  "option-value": "Value",
+  "option-add-option": "Add Option",
+  "option-confirm": "Save",
+  "option-placeholder-name": "*Required",
+  "option-placeholder-value": "*Optional",
   "": ""
 }

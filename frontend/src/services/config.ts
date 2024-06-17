@@ -7,7 +7,7 @@ export enum ConfigKey {
   configVersion = "configVersion",
   history = "history",
   collections = "collections",
-  profileCollections = "profileCollections",
+  profileDetail = "profileDetail",
   behaviorAfterLaunch = "behaviorAfterLaunch",
   language = "language",
   lastTab = "lastTab",
@@ -18,7 +18,7 @@ export type ConfigType = {
   [ConfigKey.configVersion]: string;
   [ConfigKey.history]: ProfileKey[];
   [ConfigKey.collections]: Collection[];
-  [ConfigKey.profileCollections]: ProfileCollections[];
+  [ConfigKey.profileDetail]: ProfileDetail[];
   [ConfigKey.behaviorAfterLaunch]: BehaviorAfterLaunch;
   [ConfigKey.language]: string;
   [ConfigKey.lastTab]: string;
@@ -32,10 +32,18 @@ export type Collection = {
   icon: string;
 };
 
-export type ProfileCollections = {
+export type ProfileDetail = {
   key: ProfileKey;
   collections: CollectionName[];
+  aliasName?: string;
+  launchOptions?: LaunchOption[]
 };
+
+export type LaunchOption = {
+  id: string;
+  optionName: string;
+  value?: string;
+}
 
 export enum BehaviorAfterLaunch {
   none = "none",
@@ -138,7 +146,7 @@ export class Config {
 
   private migrate() {
     // ver 1.3.0 -> 1.4.0
-    let profileCollections = this.config[ConfigKey.profileCollections];
+    let profileCollections = this.config[ConfigKey.profileDetail];
     if (profileCollections) {
       profileCollections = profileCollections
         .map((c) => {
@@ -155,8 +163,8 @@ export class Config {
             f.collections = uniq([...f.collections, ...cur.collections]);
           }
           return acc;
-        }, [] as ProfileCollections[]);
-      this.config[ConfigKey.profileCollections] = profileCollections;
+        }, [] as ProfileDetail[]);
+      this.config[ConfigKey.profileDetail] = profileCollections;
     }
     const history = this.config[ConfigKey.history];
     if (history) {

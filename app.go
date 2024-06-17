@@ -33,8 +33,8 @@ func (a *App) startup(ctx context.Context) {
 	go watchProfiles(ctx)
 }
 
-func (a *App) Run(browser string, directory string) string {
-	err := profile.Run(browser, directory)
+func (a *App) Run(browser string, directory string, options []string) string {
+	err := profile.Run(browser, directory, options)
 	if err != nil {
 		return err.Error()
 	}

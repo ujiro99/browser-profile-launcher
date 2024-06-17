@@ -35,29 +35,6 @@
   @apply fill-neutral-600;
 }
 
-.DialogOverlay {
-  background: rgba(0 0 0 / 0.5);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: grid;
-  place-items: center;
-  overflow-y: auto;
-}
-
-.DialogOverlay[data-state="open"] {
-  animation: enter 150ms ease-out;
-  opacity: 1;
-  --tw-enter-opacity: 0;
-}
-
-.DialogOverlay[data-state="closed"] {
-  animation: exit 150ms ease-in;
-  --tw-exit-opacity: 0;
-}
-
 #emoji-picker > button {
   display: none;
 }

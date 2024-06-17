@@ -3,7 +3,7 @@ import { Config, ConfigKey } from "../services/config";
 import type {
   ConfigType,
   Collection,
-  ProfileCollections,
+  ProfileDetail,
 } from "../services/config";
 import { uniq } from "../lib/utils";
 
@@ -13,14 +13,14 @@ type CollectionType = {
   editCollection: (before: Collection, after: Collection) => boolean;
   removeCollection: (value: Collection) => Promise<void>;
   moveCollection: (src: Collection, dest: Collection) => void;
-  profileCollections: ProfileCollections[];
-  setProfileCollection: (value: ProfileCollections[]) => void;
+  profileCollections: ProfileDetail[];
+  setProfileCollection: (value: ProfileDetail[]) => void;
 };
 
 export const useCollection = (): CollectionType => {
   const [config, setConfig] = useState<ConfigType>({} as ConfigType);
   const collections = config[ConfigKey.collections] || [];
-  const profileCollections = config[ConfigKey.profileCollections] || [];
+  const profileCollections = config[ConfigKey.profileDetail] || [];
 
   useEffect(() => {
     const c = Config.getInstance();
@@ -60,7 +60,7 @@ export const useCollection = (): CollectionType => {
     Config.getInstance().set({
       ...config,
       [ConfigKey.collections]: newCollections,
-      [ConfigKey.profileCollections]: profileCollections,
+      [ConfigKey.profileDetail]: profileCollections,
     });
     return true;
   };
@@ -78,7 +78,7 @@ export const useCollection = (): CollectionType => {
     return Config.getInstance().set({
       ...config,
       [ConfigKey.collections]: ncs,
-      [ConfigKey.profileCollections]: npcs,
+      [ConfigKey.profileDetail]: npcs,
     });
   };
 
@@ -95,13 +95,23 @@ export const useCollection = (): CollectionType => {
     );
   };
 
-  const setProfileCollection = (value: ProfileCollections[]) => {
+  const setProfileCollection = (value: ProfileDetail[]) => {
+    const newVal = profileCollections.map((p) => { 
+      const d = value.find((v) => v.key === p.key);
+      if (!d) {
+        return p;
+      }
+      return {
+        ...p,
+        collections: d.collections,
+      };
+    })
     Config.getInstance().set(
       {
         ...config,
-        [ConfigKey.profileCollections]: value,
+        [ConfigKey.profileDetail]: newVal,
       },
-      ConfigKey.profileCollections,
+      ConfigKey.profileDetail,
     );
   };
 

@@ -27,5 +27,11 @@
     "Shift + Tab: アクティブタブを左に移動",
     "Enter: カーソル位置のプロファイルを起動(入力中は無効)"
   ],
-  "": ""
+  "profile-options": "プロファイルの起動オプション",
+  "option-name": "オプションの名前",
+  "option-value": "値",
+  "option-add-option": "オプションを追加",
+  "option-confirm": "保存",
+  "option-placeholder-name": "オプション名",
+  "option-placeholder-value": "値(※任意)"
 }

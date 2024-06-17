@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import type { profile } from "../../wailsjs/go/models";
+import type { ProfileDetail } from "@/services/config";
 
 import type { ListItem } from "../lib/utils";
 import { Item } from "./Item";
@@ -9,7 +9,7 @@ import "./ProfileList.css";
 type ListProps = {
   list: ListItem[];
   focusIdx: number;
-  onClick: (profile: profile.Profile) => void;
+  onClick: (detail: ProfileDetail) => void;
 };
 
 export function ProfileList({ list, focusIdx, onClick }: ListProps) {

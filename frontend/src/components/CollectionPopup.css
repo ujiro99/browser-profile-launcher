@@ -1,7 +1,6 @@
 .CollectionButton svg {
-  --size: 28px;
-  width: var(--size);
-  height: var(--size);
+  width: 28px;
+  height: 30px;
   transition:
     background,
     fill 0.14s ease-out;

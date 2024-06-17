@@ -11,6 +11,7 @@ import Picker from "@emoji-mart/react";
 import Smile from "@/assets/smile.svg?react";
 import { sleep } from "@/lib/utils";
 import "./CollectionAdd.css";
+import "./Dialog.css";
 
 type Props = {
   onEmojiSelect: (emoji: any) => void;

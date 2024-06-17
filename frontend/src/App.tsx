@@ -1,5 +1,12 @@
 import React from "react";
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+  useContext,
+} from "react";
 import type { profile } from "../wailsjs/go/models";
 import { Run } from "../wailsjs/go/main/App";
 import { Quit, WindowMinimise } from "../wailsjs/runtime/runtime";
@@ -18,8 +25,10 @@ import { useHistory } from "@/hooks/useHistory";
 import { useCollection } from "@/hooks/useCollection";
 import { useConfig } from "@/hooks/useConfig";
 import { useEnv } from "@/hooks/useEnv";
+import { useProfile } from "@/hooks/useProfile";
 import { ConfigKey, BehaviorAfterLaunch } from "@/services/config";
-import type { Collection, ConfigType } from "@/services/config";
+import type { Collection, ConfigType, ProfileDetail } from "@/services/config";
+import { ProfilesContext } from "@/contexts";
 import Clock from "@/assets/clock.svg?react";
 import LibraryAdd from "@/assets/library_add.svg?react";
 import * as utils from "./lib/utils";
@@ -44,10 +53,12 @@ function isDefaultTab(tab: string): boolean {
 
 const TAB_PREFIX = "tab-";
 
-type Props = { profiles: profile.Profile[]; defaultConfig: ConfigType };
+type Props = { defaultConfig: ConfigType };
 
-function App({ profiles, defaultConfig }: Props) {
+function App({ defaultConfig }: Props) {
+  const profiles = useContext(ProfilesContext);
   const { collections, profileCollections, moveCollection } = useCollection();
+  const { profileDetails } = useProfile();
   const tabs = [...DEFAULT_TABS, ...collections.map((c) => c.name)];
   const [config, setConfig] = useConfig();
   const [query, setQuery] = useState("");
@@ -82,12 +93,17 @@ function App({ profiles, defaultConfig }: Props) {
   // 表示されるリストを作成
   const list = useMemo(() => {
     return profiles
-      .map((p) => ({ profile: p }))
+      .map((p) => {
+        const detail = profileDetails.find(
+          (d) => d.key === utils.profileKey(p),
+        );
+        return { profile: p, detail } as ListItem;
+      })
       .sort((a, b) =>
         a.profile.shortcut_name.localeCompare(b.profile.shortcut_name),
       )
       .sort((a, b) => a.profile.browser.localeCompare(b.profile.browser));
-  }, [profiles]);
+  }, [profiles, profileDetails]);
 
   const lists = useMemo(() => {
     // デフォルトのタブを追加
@@ -127,7 +143,12 @@ function App({ profiles, defaultConfig }: Props) {
   }, [defaultConfig]);
 
   useEffect(() => {
+    // キーボード操作
     const keydown = (e: KeyboardEvent) => {
+      // ダイアログが開いている場合は何もしない
+      if (document.querySelector('[role="dialog"]')){
+        return;
+      }
       const key = e.code;
       if (key === "ArrowUp") {
         if (focus > FocusDefault) {
@@ -153,7 +174,7 @@ function App({ profiles, defaultConfig }: Props) {
           if (item) {
             const { browser, directory } = item.profile;
             console.debug("Enter", browser, directory);
-            onClick(item.profile);
+            onClick(item.detail);
             e.preventDefault();
           }
         }
@@ -202,10 +223,17 @@ function App({ profiles, defaultConfig }: Props) {
     setFocus(FocusDefault);
   };
 
-  const onClick = (p: profile.Profile) => {
-    Run(p.browser, p.directory).then((err) => {
+  const onClick = (d: ProfileDetail) => {
+    let p = profiles.find((p) => utils.profileKey(p) === d.key);
+    if (p == null) {
+      console.error("Profile not found", d);
+      return;
+    }
+    let options = utils.convLaunchOption(d.launchOptions);
+    console.debug("Launch", p.browser, p.directory, options);
+    Run(p.browser, p.directory, options).then((err) => {
       setErrorMsg(err);
-      if (!err) {
+      if (!err && p) {
         // 履歴に追加
         addHistory(utils.profileKey(p));
 

@@ -37,14 +37,23 @@
   color: #333;
 }
 
-.profileItem__collection {
+.profileItem__option {
   position: absolute;
-  right: 8px;
+  right: 6px;
   top: 6px;
   opacity: 0;
   transition: opacity 0.14s ease-out;
 }
 
+.profileItem__collection {
+  position: absolute;
+  right: 30px;
+  top: 6px;
+  opacity: 0;
+  transition: opacity 0.14s ease-out;
+}
+
+.profileItem:hover .profileItem__option, 
 .profileItem:hover .profileItem__collection {
   opacity: 1;
 }
