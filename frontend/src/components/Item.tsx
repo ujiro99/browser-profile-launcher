@@ -66,7 +66,7 @@ export function Item({ profile, detail, indices, onClick }: ItemProps) {
           })}
         </p>
       </button>
-      <ProfileOption className="profileItem__option" detail={detail} />
+      <ProfileOption className="profileItem__option" detail={detail} profile={profile} />
       <CollectionPopup className="profileItem__collection" profile={profile} />
     </div>
   );
