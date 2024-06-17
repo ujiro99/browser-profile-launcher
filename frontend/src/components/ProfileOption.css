@@ -30,3 +30,10 @@
   background: #e5e5e5;
   @apply fill-neutral-800;
 }
+
+.ProfileOption__empty {
+  @apply text-neutral-500;
+  @apply text-base;
+  padding: 0.6rem 0;
+  white-space: break-spaces;
+}

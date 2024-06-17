@@ -16,6 +16,7 @@ import { EmojiPicker } from "@/components/EmojiPicker";
 import { useCollection } from "@/hooks/useCollection";
 import type { Collection } from "@/services/config";
 import { sleep } from "@/lib/utils";
+import Save from "@/assets/save.svg?react";
 
 import "./CollectionAdd.css";
 import "./Dialog.css";
@@ -110,9 +111,10 @@ export function CollectionEdit({ collection, onEdited }: Props) {
               </div>
               <Button
                 onClick={edit}
-                className="center mt-2 mx-[auto] py-1 px-2 h-8 w-14 rounded-lg text-md"
+                className="center mt-2 mx-[auto] py-1 px-3 h-9 rounded-lg text-md"
                 disabled={!isVaild}
               >
+                <Save className="fill-neutral-500 w-6 mr-1 mt-[2px]" />
                 {t("edit-comfirm")}
               </Button>
             </div>

@@ -17,6 +17,7 @@ import type { ProfileDetail } from "@/services/config";
 import Vert from "@/assets/vert.svg?react";
 import Plus from "@/assets/plus.svg?react";
 import Close from "@/assets/close.svg?react";
+import Save from "@/assets/save.svg?react";
 
 import "./ProfileOption.css";
 import "./Dialog.css";
@@ -32,6 +33,7 @@ export function ProfileOption({ detail, className }: Props) {
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
   const [options, setOptions] = useState(detail.launchOptions || []);
+  const isEmpty = options.length === 0;
 
   useEffect(() => {
     setOptions(detail.launchOptions || []);
@@ -69,7 +71,7 @@ export function ProfileOption({ detail, className }: Props) {
 
   const onKeyDownOverlay = (e: any) => {
     e.stopPropagation();
-  }
+  };
 
   const addOption = () => {
     setOptions([...options, { id: rand(), optionName: "", value: "" }]);
@@ -115,30 +117,34 @@ export function ProfileOption({ detail, className }: Props) {
                   <span className="flex-1">{t("option-name")}</span>
                   <span className="flex-1">{t("option-value")}</span>
                 </li>
-                {options.map((option, idx) => (
-                  <li className="flex gap-1 my-1" key={option.id}>
-                    <Input
-                      placeholder={t("option-placeholder-name")}
-                      onChange={onChangeName(idx)}
-                      onKeyDown={onKeyDown}
-                      defaultValue={option.optionName}
-                    />
-                    <Input
-                      placeholder={t("option-placeholder-value")}
-                      onChange={onChangeValue(idx)}
-                      onKeyDown={onKeyDown}
-                      defaultValue={option.value}
-                    />
+                {isEmpty ? (
+                  <p className="ProfileOption__empty">{t("option-empty")}</p>
+                ) : (
+                  options.map((option, idx) => (
+                    <li className="flex gap-1 my-1" key={option.id}>
+                      <Input
+                        placeholder={t("option-placeholder-name")}
+                        onChange={onChangeName(idx)}
+                        onKeyDown={onKeyDown}
+                        defaultValue={option.optionName}
+                      />
+                      <Input
+                        placeholder={t("option-placeholder-value")}
+                        onChange={onChangeValue(idx)}
+                        onKeyDown={onKeyDown}
+                        defaultValue={option.value}
+                      />
 
-                    <button
-                      className="ProfileOption__delete"
-                      type="button"
-                      onClick={onClickDelete(idx)}
-                    >
-                      <Close />
-                    </button>
-                  </li>
-                ))}
+                      <button
+                        className="ProfileOption__delete"
+                        type="button"
+                        onClick={onClickDelete(idx)}
+                      >
+                        <Close />
+                      </button>
+                    </li>
+                  ))
+                )}
               </ul>
               <Button
                 onClick={addOption}
@@ -150,8 +156,9 @@ export function ProfileOption({ detail, className }: Props) {
               </Button>
               <Button
                 onClick={edit}
-                className="center mt-4 mx-[auto] py-1 px-4 rounded-lg text-md"
+                className="center mt-4 mx-[auto] py-1 px-4 h-9 rounded-lg text-md"
               >
+                <Save className="fill-neutral-500 w-6 mr-1 mt-[2px]" />
                 {t("option-confirm")}
               </Button>
             </div>
