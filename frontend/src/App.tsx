@@ -146,7 +146,7 @@ function App({ defaultConfig }: Props) {
     // キーボード操作
     const keydown = (e: KeyboardEvent) => {
       // ダイアログが開いている場合は何もしない
-      if (document.querySelector('[role="dialog"]')){
+      if (document.querySelector('[role="dialog"]')) {
         return;
       }
       const key = e.code;
@@ -231,9 +231,9 @@ function App({ defaultConfig }: Props) {
     }
     let options = utils.convLaunchOption(d.launchOptions);
     console.debug("Launch", p.browser, p.directory, options);
-    setLaunching(true)
+    setLaunching(true);
     Run(p.browser, p.directory, options).then((err) => {
-      setLaunching(false)
+      setLaunching(false);
       setErrorMsg(err);
       if (!err && p) {
         // 履歴に追加

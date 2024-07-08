@@ -21,6 +21,13 @@ const container = document.getElementById("root");
 const root = createRoot(container!);
 
 function render(profiles: profile.Profile[], config: ConfigType) {
+  // for Mac OS
+  for (const p of profiles) {
+    if (p.shortcut_name === "") {
+      p.shortcut_name = p.name;
+    }
+  }
+
   root.render(
     <React.StrictMode>
       <ProfilesContext.Provider value={profiles}>

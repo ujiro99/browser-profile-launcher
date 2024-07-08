@@ -4,10 +4,12 @@ import (
 	"browser-profile-launcher/profile"
 	"context"
 	_ "embed"
+	"errors"
 	"log"
 	"os"
 	"path/filepath"
 	"reflect"
+	"syscall"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/tidwall/gjson"
@@ -115,6 +117,11 @@ func watchProfiles(ctx context.Context) {
 		log.Println("Add watch: ", filepath.Dir(p))
 		err = watcher.Add(filepath.Dir(p))
 		if err != nil {
+			if errors.Is(err, syscall.EOPNOTSUPP) {
+				// サポートされていない操作に対する処理
+				log.Println("Operation not supported on socket")
+				continue
+			}
 			log.Fatal(err)
 		}
 	}
