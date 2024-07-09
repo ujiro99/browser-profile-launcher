@@ -82,7 +82,7 @@ body {
 }
 .tab-icon + .tab-button__name,
 .tab-button__icon + .tab-button__name {
-  padding-left: 1px;
+  padding-left: 2px;
 }
 
 :not(.dragging) > .tab-button:hover,

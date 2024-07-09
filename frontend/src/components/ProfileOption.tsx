@@ -76,7 +76,9 @@ export function ProfileOption({ detail, profile, className }: Props) {
               <DialogTitle>{t("profile-options")}</DialogTitle>
             </DialogHeader>
             {isEdge ? (
-              <p className="text-neutral-500 w-[210px] mx-[auto]">{t("option-edge")}</p>
+              <p className="text-neutral-500 w-[210px] mx-[auto]">
+                {t("option-edge")}
+              </p>
             ) : (
               <ProfileOptionInner detail={detail} onSave={edit} />
             )}
@@ -177,7 +179,7 @@ function ProfileOptionInner({ detail, onSave }: InnerProps) {
         onClick={onClick}
         className="center mt-4 mx-[auto] py-1 px-4 h-9 rounded-lg text-md"
       >
-        <Save className="fill-neutral-500 w-6 mr-1 mt-[1px]" />
+        <Save className="fill-neutral-500 w-6 mr-1" />
         {t("option-confirm")}
       </Button>
     </div>
