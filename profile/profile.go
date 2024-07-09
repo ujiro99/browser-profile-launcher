@@ -42,7 +42,10 @@ func List() []Profile {
 			// 取得成功したら、結果用の配列に追加
 			for i, v := range p {
 				p[i].Browser = b
-				p[i].IcoPath = filepath.Join(path, v.Directory, iconName[b])
+				var iconPath = filepath.Join(path, v.Directory, iconName[b])
+				if exists(iconPath) {
+					p[i].IcoPath = iconPath
+				}
 			}
 			// sort by ShortcutName
 			sort.SliceStable(p, func(i, j int) bool { return p[i].ShortcutName < p[j].ShortcutName })
@@ -64,6 +67,11 @@ func expand(path string) string {
 	}
 	path = os.ExpandEnv(path)
 	return filepath.Clean(path)
+}
+
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
 }
 
 // Local Stateファイルを読み込み、

@@ -3,6 +3,7 @@ import type { profile as goProfile } from "../../wailsjs/go/models";
 import type { ProfileDetail } from "@/services/config";
 import { CollectionPopup } from "./CollectionPopup";
 import { ProfileOption } from "./ProfileOption";
+import AccountCircle from "@/assets/account_circle.svg?react";
 
 import "./Item.css";
 
@@ -19,6 +20,7 @@ type LabelMatch = {
 };
 
 export function Item({ profile, detail, indices, onClick }: ItemProps) {
+  const hasIcon = profile.ico_path != null && profile.ico_path.length > 0;
   const icoPath = `/profile.ico?browser=${profile.browser}&directory=${profile.directory}`;
 
   const click = () => {
@@ -45,11 +47,15 @@ export function Item({ profile, detail, indices, onClick }: ItemProps) {
   return (
     <div className="profileItem">
       <button type="button" className="profileItem__button" onClick={click}>
-        <img
-          className="profileItem__img"
-          src={icoPath}
-          alt={profile.shortcut_name}
-        />
+        {hasIcon ? (
+          <img
+            className="profileItem__img"
+            src={icoPath}
+            alt={profile.shortcut_name}
+          />
+        ) : (
+          <AccountCircle className="profileItem__img fill-gray-400" />
+        )}
         <p className="profileItem__label">
           {labels.map((label, i) => {
             if (label.match) {
