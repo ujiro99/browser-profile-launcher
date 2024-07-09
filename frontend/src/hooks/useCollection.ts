@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
-import { Config, ConfigKey } from "../services/config";
-import type {
-  ConfigType,
-  Collection,
-  ProfileDetail,
-} from "../services/config";
-import { uniq } from "../lib/utils";
+import { Config, ConfigKey } from "@/services/config";
+import type { ConfigType, Collection, ProfileDetail } from "@/services/config";
+import { uniq } from "@/lib/utils";
 
 type CollectionType = {
   collections: Collection[];
@@ -20,7 +16,7 @@ type CollectionType = {
 export const useCollection = (): CollectionType => {
   const [config, setConfig] = useState<ConfigType>({} as ConfigType);
   const collections = config[ConfigKey.collections] || [];
-  const profileCollections = config[ConfigKey.profileDetail] || [];
+  const profileDetails = config[ConfigKey.profileDetail] || [];
 
   useEffect(() => {
     const c = Config.getInstance();
@@ -51,7 +47,7 @@ export const useCollection = (): CollectionType => {
     const newCollections = collections.filter((c) => !equals(c, before));
     newCollections.splice(idx, 0, after);
     // rename profileCollection
-    for (const p of profileCollections) {
+    for (const p of profileDetails) {
       p.collections = p.collections.map((c) =>
         c === before.name ? after.name : c,
       );
@@ -60,14 +56,14 @@ export const useCollection = (): CollectionType => {
     Config.getInstance().set({
       ...config,
       [ConfigKey.collections]: newCollections,
-      [ConfigKey.profileDetail]: profileCollections,
+      [ConfigKey.profileDetail]: profileDetails,
     });
     return true;
   };
 
   const removeCollection = (value: Collection): Promise<void> => {
     const ncs = collections.filter((c) => !equals(c, value));
-    const npcs = profileCollections
+    const npcs = profileDetails
       .map((p) => {
         return {
           ...p,
@@ -96,7 +92,8 @@ export const useCollection = (): CollectionType => {
   };
 
   const setProfileCollection = (value: ProfileDetail[]) => {
-    const newVal = profileCollections.map((p) => { 
+    // 既存のプロファイルを更新
+    const newVal = profileDetails.map((p) => {
       const d = value.find((v) => v.key === p.key);
       if (!d) {
         return p;
@@ -105,7 +102,13 @@ export const useCollection = (): CollectionType => {
         ...p,
         collections: d.collections,
       };
-    })
+    });
+    // 新規のプロファイルを追加
+    for (const d of value) {
+      if (!newVal.find((v) => v.key === d.key)) {
+        newVal.push(d);
+      }
+    }
     Config.getInstance().set(
       {
         ...config,
@@ -137,7 +140,7 @@ export const useCollection = (): CollectionType => {
     editCollection,
     removeCollection,
     moveCollection,
-    profileCollections,
+    profileCollections: profileDetails,
     setProfileCollection,
   };
 };
