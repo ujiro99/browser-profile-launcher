@@ -18,30 +18,35 @@
   background: var(--hover-bg);
 }
 
+.profileItem {
+  --icon-size: 28px;
+}
+
 .profileItem__icon {
-  width: 1.8em;
-  height: 1.8em;
+  width: var(--icon-size);
+  height: var(--icon-size);
   margin-right: 0.6em;
   position: relative;
 }
 
 .profileItem__browser {
-  width: 1.8em;
-  height: 1.8em;
+  width: var(--icon-size);
+  height: var(--icon-size);
 }
 
 .profileItem__img {
-  width: 1.8em;
-  height: 1.8em;
+  width: var(--icon-size);
+  height: var(--icon-size);
   border-radius: 50%;
 }
 
 .profileItem__icon.--mac .profileItem__img {
-  width: 1.2em;
-  height: 1.2em;
+  width: 20px;
+  height: 20px;
   position: absolute;
   bottom: 0;
   right: -4px;
+  background-color: #fff;
 }
 
 .profileItem__label {
