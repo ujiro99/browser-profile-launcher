@@ -169,15 +169,17 @@ function ProfileOptionInner({ detail, onSave }: InnerProps) {
       </ul>
       <Button
         onClick={addOption}
+        className="mx-[auto] py-1 px-3 h-8 text-sm rounded-lg"
+        variant="secondary"
         disabled={!enableAdd}
-        className="mx-[auto] py-1 px-3 h-8 text-sm bg-neutral-100 rounded-lg"
       >
         <Plus className="fill-neutral-500 w-5 mr-1" />
         {t("option-add-option")}
       </Button>
       <Button
         onClick={onClick}
-        className="center mt-4 mx-[auto] py-1 px-4 h-9 rounded-lg text-md"
+        className="center mt-5 mx-[auto] py-1 px-4 h-9 rounded-lg text-md"
+        variant="outline"
       >
         <Save className="fill-neutral-500 w-6 mr-1" />
         {t("option-confirm")}

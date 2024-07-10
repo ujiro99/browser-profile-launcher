@@ -112,6 +112,7 @@ export function CollectionEdit({ collection, onEdited }: Props) {
               <Button
                 onClick={edit}
                 className="center mt-2 mx-[auto] py-1 px-3 h-9 rounded-lg text-md"
+                variant="outline"
                 disabled={!isVaild}
               >
                 <Save className="fill-neutral-500 w-6 mr-1" />
