@@ -8,7 +8,7 @@ require (
 	github.com/adrg/xdg v0.4.0
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/tidwall/gjson v1.9.3
-	github.com/wailsapp/wails/v2 v2.9.1
+	github.com/wailsapp/wails/v2 v2.8.0
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
 )
 

@@ -1,20 +1,3 @@
-export namespace options {
-	
-	export class SecondInstanceData {
-	
-	
-	    static createFrom(source: any = {}) {
-	        return new SecondInstanceData(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	
-	    }
-	}
-
-}
-
 export namespace profile {
 	
 	export class Profile {
