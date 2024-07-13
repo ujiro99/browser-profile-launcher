@@ -3,7 +3,11 @@ import { twMerge } from "tailwind-merge";
 import type { profile } from "../../wailsjs/go/models";
 import Fuse from "fuse.js";
 import type { RangeTuple } from "fuse.js";
-import type { Collection, ProfileDetail, LaunchOption } from "@/services/config";
+import type {
+  Collection,
+  ProfileDetail,
+  LaunchOption,
+} from "@/services/config";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -75,26 +79,16 @@ export function uniq<T>(arr: T[]) {
   return arr.filter((elm, idx, self) => self.indexOf(elm) === idx);
 }
 
-/**
- * Collection名を取得する
- * @param c Collection
- *
- * @returns Collectionの文字列表現
- */
-export function c2s(c: Collection): string {
-  return `${c.icon || ""}${c.name}`;
-}
-
 function opt2s(opt: LaunchOption): string {
   return opt.value ? `--${opt.optionName}=${opt.value}` : `--${opt.optionName}`;
 }
 
 /**
-  * LaunchOptionを文字列に変換する
-  * @param opts LaunchOptionの配列
-  *
-  * @returns コマンドオプションとして渡される文字列
-  */
+ * LaunchOptionを文字列に変換する
+ * @param opts LaunchOptionの配列
+ *
+ * @returns コマンドオプションとして渡される文字列
+ */
 export function convLaunchOption(opts?: LaunchOption[]): string[] {
   if (!opts || opts.length === 0) {
     return [];
@@ -142,8 +136,19 @@ export function profile2detail(profile: profile.Profile): ProfileDetail {
 }
 
 /**
-  * keyとかに使用するランダムな文字列を生成する
-  */
+ * keyとかに使用するランダムな文字列を生成する
+ */
 export function rand(): string {
-  return Math.random().toString(16).slice(2)
+  return Math.random().toString(16).slice(2);
+}
+
+/**
+ * タブ名からCollectionを取得する
+ *
+ * @param name タブ名
+ * @param collections Collectionの配列
+ * @returns Collection
+ */
+export function t2c(name: string, collections: Collection[]): Collection {
+  return collections.find((c) => c.name === name) as Collection;
 }

@@ -38,6 +38,7 @@ body {
   scroll-behavior: smooth;
   justify-content: flex-start;
 }
+
 .scroll-horizontal::-webkit-scrollbar {
   display: none;
 }
@@ -54,13 +55,6 @@ body {
   @apply duration-100;
 }
 
-.tab-icon {
-  width: 16px;
-  height: 16px;
-  fill: #737373;
-  margin: 2px 0 0 0;
-}
-
 .tab-content {
   height: calc(100% - var(--input-height));
 }
@@ -74,18 +68,7 @@ body {
   box-shadow: none;
 }
 
-.tab-button__name {
-  padding: 0 4px;
-}
-.tab-button__icon {
-  padding-left: 2px;
-}
-.tab-icon + .tab-button__name,
-.tab-button__icon + .tab-button__name {
-  padding-left: 2px;
-}
-
-:not(.dragging) > .tab-button:hover,
+:not(.dragging)>.tab-button:hover,
 .tab-button[data-state="active"]:hover {
   @apply bg-neutral-100;
 }

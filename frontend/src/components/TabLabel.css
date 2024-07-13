@@ -1,0 +1,23 @@
+.TabLabel__name {
+  padding: 0 4px;
+}
+
+.TabLabel__icon {
+  padding-left: 2px;
+}
+
+.TabLabel__icon.--svg {
+  width: 16px;
+  height: 16px;
+  fill: #737373;
+  display: inline;
+  vertical-align: text-bottom;
+}
+
+.TabLabel__icon+.TabLabel__name {
+  padding-left: 2px;
+}
+
+button>.TabLabel {
+  cursor: pointer;
+}

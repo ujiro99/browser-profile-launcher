@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/popover";
 import LibraryAdd from "@/assets/library_add.svg?react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { TabLabel } from "@/components/TabLabel";
 import { useCollection } from "@/hooks/useCollection";
-import { profileKey, c2s } from "@/lib/utils";
+import { profileKey } from "@/lib/utils";
 
 import "./CollectionPopup.css";
 
@@ -74,9 +75,9 @@ export function CollectionPopup({ className, profile }: CollectionPopuProps) {
                 <ToggleGroupItem
                   value={c.name}
                   key={c.name}
-                  className="px-3 pb-[3px] h-7 text-neutral-500 font-medium hover:font-bold rounded-full text-sm border"
+                  className="px-2 pb-[3px] h-7 text-neutral-500 font-medium hover:font-bold rounded-full text-sm border"
                 >
-                  {c2s(c)}
+                  <TabLabel tab={c.name} />
                 </ToggleGroupItem>
               ))}
             </ToggleGroup>
