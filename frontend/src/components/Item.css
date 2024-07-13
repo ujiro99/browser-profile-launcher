@@ -32,12 +32,16 @@
 .profileItem__browser {
   width: var(--icon-size);
   height: var(--icon-size);
+  display: none;
+}
+
+.profileItem__icon.--mac .profileItem__browser {
+  display: none;
 }
 
 .profileItem__img {
   width: var(--icon-size);
   height: var(--icon-size);
-  border-radius: 50%;
 }
 
 .profileItem__icon.--mac .profileItem__img {
@@ -47,6 +51,7 @@
   bottom: 0;
   right: -4px;
   background-color: #fff;
+  border-radius: 50%;
 }
 
 .profileItem__label {

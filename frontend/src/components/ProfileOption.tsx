@@ -178,10 +178,10 @@ function ProfileOptionInner({ detail, onSave }: InnerProps) {
       </Button>
       <Button
         onClick={onClick}
-        className="center mt-5 mx-[auto] py-1 px-4 h-9 rounded-lg text-md"
+        className="center mt-5 mx-[auto] py-1 px-4 h-9 rounded-lg text-md text-neutral-500"
         variant="outline"
       >
-        <Save className="fill-neutral-500 w-6 mr-1" />
+        <Save className="fill-neutral-500 w-5 mr-1" />
         {t("option-confirm")}
       </Button>
     </div>

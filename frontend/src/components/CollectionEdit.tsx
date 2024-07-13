@@ -111,11 +111,11 @@ export function CollectionEdit({ collection, onEdited }: Props) {
               </div>
               <Button
                 onClick={edit}
-                className="center mt-2 mx-[auto] py-1 px-3 h-9 rounded-lg text-md"
+                className="center mt-2 mx-[auto] py-1 px-3 h-9 rounded-lg text-md text-neutral-500"
                 variant="outline"
                 disabled={!isVaild}
               >
-                <Save className="fill-neutral-500 w-6 mr-1" />
+                <Save className="fill-neutral-500 w-5 mr-1" />
                 {t("edit-comfirm")}
               </Button>
             </div>
