@@ -9,15 +9,23 @@ jobs:
       matrix:
         build:
           [
-            { name: wailsTest, platform: windows/amd64, os: windows-latest },
-            { name: wailsTest, platform: darwin/universal, os: macos-latest },
+            {
+              name: browser-profile-launcher,
+              platform: windows/amd64,
+              os: windows-latest,
+            },
+            {
+              name: browser-profile-launcher,
+              platform: darwin/universal,
+              os: macos-latest,
+            },
           ]
     runs-on: ${{ matrix.build.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@v2.2
+      - uses: dAppServer/wails-build-action@v2
         with:
           build-name: ${{ matrix.build.name }}
           build-platform: ${{ matrix.build.platform }}
