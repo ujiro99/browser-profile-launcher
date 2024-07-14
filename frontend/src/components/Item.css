@@ -18,10 +18,40 @@
   background: var(--hover-bg);
 }
 
-.profileItem__img {
-  width: 1.8em;
-  height: 1.8em;
+.profileItem {
+  --icon-size: 28px;
+}
+
+.profileItem__icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
   margin-right: 0.6em;
+  position: relative;
+}
+
+.profileItem__browser {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  display: none;
+}
+
+.profileItem__icon.--mac .profileItem__browser {
+  display: inline;
+}
+
+.profileItem__img {
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+
+.profileItem__icon.--mac .profileItem__img {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: 0;
+  right: -4px;
+  background-color: #fff;
+  border-radius: 50%;
 }
 
 .profileItem__label {
@@ -53,7 +83,7 @@
   transition: opacity 0.14s ease-out;
 }
 
-.profileItem:hover .profileItem__option, 
+.profileItem:hover .profileItem__option,
 .profileItem:hover .profileItem__collection {
   opacity: 1;
 }

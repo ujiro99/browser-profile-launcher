@@ -14,7 +14,7 @@ var packageName = "browser-profile-launcher"
 var packageNameOld = "chrome-profile-selector"
 
 func Load() (string, error) {
-	configFilePath, err := xdg.ConfigFile(path.Join(packageName, configFile))
+	configFilePath, err := xdg.SearchConfigFile(path.Join(packageName, configFile))
 	if err != nil {
 		log.Println("コンフィグファイルが見つかりません:", configFilePath)
 	}
@@ -23,7 +23,7 @@ func Load() (string, error) {
 		return ret, nil
 	}
 
-	oldFilePath, err := xdg.ConfigFile(path.Join(packageNameOld, configFile))
+	oldFilePath, err := xdg.SearchConfigFile(path.Join(packageNameOld, configFile))
 	if err != nil {
 		log.Println("コンフィグファイルが見つかりません:", oldFilePath)
 	}

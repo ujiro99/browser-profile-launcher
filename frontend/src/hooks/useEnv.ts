@@ -5,6 +5,7 @@ import type { EnvironmentInfo } from "../../wailsjs/runtime/runtime";
 type EnvType = {
   env: EnvironmentInfo;
   isDev: boolean;
+  isMac: boolean;
 };
 
 export const useEnv = (): EnvType => {
@@ -20,5 +21,6 @@ export const useEnv = (): EnvType => {
   return {
     env,
     isDev: env?.buildType === "dev",
+    isMac: env?.platform === "darwin",
   };
 };

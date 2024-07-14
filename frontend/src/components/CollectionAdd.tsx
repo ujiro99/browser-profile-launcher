@@ -68,6 +68,7 @@ export function CollectionAdd() {
               <Button
                 onClick={addCollection}
                 className="py-1 pr-2 pl-1 h-8 rounded-lg text-xs"
+                variant="outline"
                 disabled={!name}
               >
                 <Plus className="fill-neutral-600 w-5" />

@@ -2,14 +2,11 @@ package profile
 
 import (
 	"encoding/json"
-	"errors"
 	"log"
 	"os"
-	"os/exec"
 	"os/user"
 	"path/filepath"
 	"sort"
-	"syscall"
 	"time"
 )
 
@@ -28,20 +25,9 @@ type Profile struct {
 	IcoPath      string `json:"ico_path"`
 }
 
-var chromeDir = expand("~/AppData/Local/Google/Chrome/User Data/")
-var edgeDir = expand("~/AppData/Local/Microsoft/Edge/User Data/")
-var localStateFile = "Local State"
+const localStateFile = "Local State"
 
 func List() []Profile {
-	paths := map[string]string{
-		"chrome": chromeDir,
-		"msedge": edgeDir,
-	}
-	iconName := map[string]string{
-		"chrome": "Google Profile.ico",
-		"msedge": "Edge Profile.ico",
-	}
-
 	profiles := []Profile{}
 	for b, path := range paths {
 		retries := 10
@@ -56,7 +42,10 @@ func List() []Profile {
 			// 取得成功したら、結果用の配列に追加
 			for i, v := range p {
 				p[i].Browser = b
-				p[i].IcoPath = filepath.Join(path, v.Directory, iconName[b])
+				var iconPath = filepath.Join(path, v.Directory, iconName[b])
+				if exists(iconPath) {
+					p[i].IcoPath = iconPath
+				}
 			}
 			// sort by ShortcutName
 			sort.SliceStable(p, func(i, j int) bool { return p[i].ShortcutName < p[j].ShortcutName })
@@ -78,6 +67,11 @@ func expand(path string) string {
 	}
 	path = os.ExpandEnv(path)
 	return filepath.Clean(path)
+}
+
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
 }
 
 // Local Stateファイルを読み込み、
@@ -102,28 +96,6 @@ func parseProfiles(directory string) ([]Profile, error) {
 		profiles[i].Directory = v
 	}
 	return profiles, nil
-}
-
-// 指定したプロファイルのブラウザを起動する
-func Run(browser string, directory string, options []string) error {
-	var cmd *exec.Cmd
-	if browser == "chrome" {
-		args := []string{"/c", "start", "chrome", "--profile-directory=" + directory}
-		args = append(args, options...)
-		cmd = exec.Command("cmd", args...)
-	} else if browser == "msedge" {
-		args := []string{"/c", "start", "msedge", "--profile-directory=" + directory}
-		args = append(args, options...)
-		cmd = exec.Command("cmd", args...)
-	}
-	if cmd == nil {
-		return errors.New("Invalid browser")
-	}
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-	return nil
 }
 
 // プロファイルの変更を監視するためのファイルパスを返す

@@ -21,6 +21,7 @@ import { CollectionDelete } from "@/components/CollectionDelete";
 import { Launching } from "@/components/Launching";
 import { Input } from "@/components/Input";
 import { Tips } from "@/components/Tips";
+import { TabLabel } from "@/components/TabLabel";
 import { useHistory } from "@/hooks/useHistory";
 import { useCollection } from "@/hooks/useCollection";
 import { useConfig } from "@/hooks/useConfig";
@@ -29,7 +30,6 @@ import { useProfile } from "@/hooks/useProfile";
 import { ConfigKey, BehaviorAfterLaunch } from "@/services/config";
 import type { Collection, ConfigType, ProfileDetail } from "@/services/config";
 import { ProfilesContext } from "@/contexts";
-import Clock from "@/assets/clock.svg?react";
 import LibraryAdd from "@/assets/library_add.svg?react";
 import * as utils from "./lib/utils";
 import type { ListItem, ProfileKey } from "./lib/utils";
@@ -146,7 +146,7 @@ function App({ defaultConfig }: Props) {
     // キーボード操作
     const keydown = (e: KeyboardEvent) => {
       // ダイアログが開いている場合は何もしない
-      if (document.querySelector('[role="dialog"]')){
+      if (document.querySelector('[role="dialog"]')) {
         return;
       }
       const key = e.code;
@@ -231,9 +231,9 @@ function App({ defaultConfig }: Props) {
     }
     let options = utils.convLaunchOption(d.launchOptions);
     console.debug("Launch", p.browser, p.directory, options);
-    setLaunching(true)
+    setLaunching(true);
     Run(p.browser, p.directory, options).then((err) => {
-      setLaunching(false)
+      setLaunching(false);
       setErrorMsg(err);
       if (!err && p) {
         // 履歴に追加
@@ -340,15 +340,7 @@ function App({ defaultConfig }: Props) {
   };
 
   const t2c = (tab: string): Collection => {
-    return collections.find((c) => c.name === tab) as Collection;
-  };
-
-  const i = (tab: string) => {
-    const c = t2c(tab);
-    if (c != null) {
-      return c.icon;
-    }
-    return null;
+    return utils.t2c(tab, collections);
   };
 
   return (
@@ -387,8 +379,7 @@ function App({ defaultConfig }: Props) {
                   key={tab}
                   ref={refsByTabs[tab]}
                 >
-                  {tab === "history" && <Clock className="tab-icon" />}
-                  <span className="tab-button__name">{t(tab)}</span>
+                  <TabLabel tab={tab} />
                 </TabsTrigger>
               ) : (
                 <TabsTrigger
@@ -405,9 +396,7 @@ function App({ defaultConfig }: Props) {
                   onDragOver={onDragOver}
                   onDrop={onDrop}
                 >
-                  {tab === "history" && <Clock className="tab-icon" />}
-                  {i(tab) && <span className="tab-button__icon">{i(tab)}</span>}
-                  <span className="tab-button__name">{tab}</span>
+                  <TabLabel tab={tab} />
                 </TabsTrigger>
               )}
               {tab === "history" && (
