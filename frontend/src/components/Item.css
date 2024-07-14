@@ -36,7 +36,7 @@
 }
 
 .profileItem__icon.--mac .profileItem__browser {
-  display: none;
+  display: inline;
 }
 
 .profileItem__img {
