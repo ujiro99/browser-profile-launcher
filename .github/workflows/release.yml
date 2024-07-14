@@ -1,6 +1,9 @@
-name: Wails build
+name: Wails release
 
-on: [pull_request]
+on:
+  push:
+    tags:
+      - "v*"
 
 jobs:
   build:
@@ -29,4 +32,4 @@ jobs:
         with:
           build-name: ${{ matrix.build.name }}
           build-platform: ${{ matrix.build.platform }}
-          package: false
+          package: true
