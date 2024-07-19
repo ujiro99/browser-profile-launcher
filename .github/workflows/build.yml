@@ -10,12 +10,12 @@ jobs:
         build:
           [
             {
-              name: Browser Profile Launcher.exe,
+              name: "Browser Profile Launcher.exe",
               platform: windows/amd64,
               os: windows-latest,
             },
             {
-              name: Browser Profile Launcher.app,
+              name: "Browser Profile Launcher",
               platform: darwin/universal,
               os: macos-latest,
               package: false,
