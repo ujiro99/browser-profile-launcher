@@ -10,14 +10,15 @@ jobs:
         build:
           [
             {
-              name: browser-profile-launcher,
+              name: Browser Profile Launcher.exe,
               platform: windows/amd64,
               os: windows-latest,
             },
             {
-              name: browser-profile-launcher,
+              name: Browser Profile Launcher.app,
               platform: darwin/universal,
               os: macos-latest,
+              package: false,
             },
           ]
     runs-on: ${{ matrix.build.os }}
