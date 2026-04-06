@@ -10,22 +10,25 @@ import (
 var (
 	chromeDir = expand("~/Library/Application Support/Google/Chrome/")
 	edgeDir   = expand("~/Library/Application Support/Microsoft Edge/")
+	braveDir  = expand("~/Library/Application Support/BraveSoftware/Brave-Browser/")
 )
 
 var paths = map[string]string{
 	"Google Chrome":  chromeDir,
 	"Microsoft Edge": edgeDir,
+	"Brave Browser":  braveDir,
 }
 
 var iconName = map[string]string{
 	"Google Chrome":  "Google Profile Picture.png",
 	"Microsoft Edge": "Edge Profile Picture.png",
+	"Brave Browser":  "Brave Profile Picture.png",
 }
 
 // 指定したプロファイルのブラウザを起動する
 func Run(browser string, directory string, options []string) error {
 	var cmd *exec.Cmd
-	if browser == "Google Chrome" || browser == "Microsoft Edge" {
+	if browser == "Google Chrome" || browser == "Microsoft Edge" || browser == "Brave Browser" {
 		args := []string{"-n", "-a", browser, "--args", "--profile-directory=" + directory}
 		args = append(args, options...)
 		cmd = exec.Command("open", args...)

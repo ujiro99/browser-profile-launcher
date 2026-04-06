@@ -103,6 +103,7 @@ func FilesForWatch() []string {
 	arr := [...]string{
 		filepath.Join(chromeDir, localStateFile),
 		filepath.Join(edgeDir, localStateFile),
+		filepath.Join(braveDir, localStateFile),
 	}
 	return arr[:]
 }

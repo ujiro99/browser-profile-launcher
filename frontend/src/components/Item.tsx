@@ -7,6 +7,7 @@ import { ProfileOption } from "./ProfileOption";
 import AccountCircle from "@/assets/account_circle.svg?react";
 import Chrome from "@/assets/google_chrome.svg?react";
 import Edge from "@/assets/microsoft_edge.svg?react";
+import Brave from "@/assets/brave_browser.svg?react";
 import { useEnv } from "@/hooks/useEnv";
 
 import "./Item.css";
@@ -83,12 +84,15 @@ function ProfileIcon({ profile }: profileIconProps) {
   const hasIcon = profile.ico_path != null && profile.ico_path.length > 0;
   const icoPath = `/profile.ico?browser=${profile.browser}&directory=${profile.directory}`;
   const isChrome = profile.browser.match("[Cc]hrome");
+  const isBrave = profile.browser.match("[Bb]rave");
   const { isMac } = useEnv();
 
   return (
     <div className={`profileItem__icon ${clsx({ "--mac": isMac })}`}>
       {isChrome ? (
         <Chrome className="profileItem__browser" />
+      ) : isBrave ? (
+        <Brave className="profileItem__browser" />
       ) : (
         <Edge className="profileItem__browser" />
       )}
