@@ -83,8 +83,8 @@ type profileIconProps = {
 function ProfileIcon({ profile }: profileIconProps) {
   const hasIcon = profile.ico_path != null && profile.ico_path.length > 0;
   const icoPath = `/profile.ico?browser=${profile.browser}&directory=${profile.directory}`;
-  const isChrome = profile.browser.match("[Cc]hrome");
-  const isBrave = profile.browser.match("[Bb]rave");
+  const isChrome = /[Cc]hrome/.test(profile.browser);
+  const isBrave = /[Bb]rave/.test(profile.browser);
   const { isMac } = useEnv();
 
   return (
