@@ -122,7 +122,8 @@ func watchProfiles(ctx context.Context) {
 				log.Println("Operation not supported on socket")
 				continue
 			}
-			log.Fatal(err)
+			log.Printf("Failed to add watcher for %s: %v", p, err)
+			continue
 		}
 	}
 
