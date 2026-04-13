@@ -24,3 +24,7 @@
 
 If you need support, please create a new issue from the issues page.  
 [Issue Page](https://github.com/ujiro99/browser-profile-launcher/issues)
+
+## Credits
+
+- <a href="https://icons8.com/icon/ZAPJV5FAO4PW/brave-web-browser">Brave Web Browser</a> icon by <a href="https://icons8.com">Icons8</a>
