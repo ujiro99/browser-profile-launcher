@@ -23,7 +23,7 @@ var paths = map[string]string{
 var iconName = map[string]string{
 	"chrome": "Google Profile.ico",
 	"msedge": "Edge Profile.ico",
-	"brave":  "Brave Profile.ico",
+	"brave":  "Google Profile.ico",
 }
 
 // 指定したプロファイルのブラウザを起動する
