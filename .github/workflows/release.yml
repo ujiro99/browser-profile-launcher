@@ -18,12 +18,14 @@ jobs:
               name: Browser Profile Launcher.exe,
               platform: windows/amd64,
               os: windows-latest,
+              nsis: true,
             },
             {
               name: browser-profile-launcher,
               platform: darwin/universal,
               os: macos-latest,
               package: false,
+              nsis: false,
             },
           ]
     runs-on: ${{ matrix.build.os }}
@@ -37,4 +39,5 @@ jobs:
         with:
           build-name: ${{ matrix.build.name }}
           build-platform: ${{ matrix.build.platform }}
+          nsis: ${{ matrix.build.nsis }}
           package: true
