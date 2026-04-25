@@ -38,7 +38,9 @@ jobs:
       - name: Install NSIS (Windows)
         if: runner.os == 'Windows'
         shell: bash
-        run: choco install nsis --no-progress -y
+        run: |
+          choco install nsis --no-progress -y
+          echo "C:\Program Files (x86)\NSIS" >> $GITHUB_PATH
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
