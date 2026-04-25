@@ -24,7 +24,6 @@ jobs:
               name: browser-profile-launcher,
               platform: darwin/universal,
               os: macos-latest,
-              package: false,
               nsis: false,
             },
           ]
