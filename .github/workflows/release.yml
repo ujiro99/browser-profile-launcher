@@ -12,28 +12,53 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build:
-          [
-            {
-              name: Browser Profile Launcher.exe,
-              platform: windows/amd64,
-              os: windows-latest,
-            },
-            {
-              name: browser-profile-launcher,
-              platform: darwin/universal,
-              os: macos-latest,
-            },
-          ]
-    runs-on: ${{ matrix.build.os }}
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+        include:
+          - os: windows-latest
+            platform: windows/amd64
+          - os: macos-latest
+            platform: darwin/universal
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@v2.2
+
+      - uses: actions/setup-go@v5
         with:
-          build-name: ${{ matrix.build.name }}
-          build-platform: ${{ matrix.build.platform }}
-          package: true
+          go-version: "1.22"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Install Wails
+        shell: bash
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: wails build --platform ${{ matrix.platform }} -webview2 download -nsis
+
+      - name: Build (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: wails build --platform ${{ matrix.platform }} -webview2 download
+
+      - name: Package macOS app
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          ditto -c -k build/bin/browser-profile-launcher.app build/bin/browser-profile-launcher.app.zip
+          productbuild --component build/bin/browser-profile-launcher.app /Applications build/bin/browser-profile-launcher.pkg
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wails Build ${{ runner.os }}
+          path: build/bin/
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: build/bin/*
